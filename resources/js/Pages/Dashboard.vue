@@ -13,16 +13,13 @@ const props = defineProps({
     roles: Number,
     rolesNameds: Object,
     numberPermissions: Number,
-    ultimaInspeccion: String,
 })
 
 const dashboard =[
-    'inspecciones',
     // 'Informes',
     // 'roles',
 ];
 const dashLinks =[
-    'inspeccion',
     // 'Informes',
     // 'roles',
 ];
@@ -31,33 +28,20 @@ const dashSinS = dashboard.map((value, index, array) => {
 })
 const colores =[
     'bg-gray-400',
-    'bg-gray-500',
+    // 'bg-gray-500',
     // 'bg-gray-600',
 ];
 const descripcion =[
     'Descripcion',
-    'Descripcion',
+    // 'Descripcion',
     // 'descripcion',
 ];
 const laImg =[
     'KeyIcon',
-    'KeyIcon',
+    // 'KeyIcon',
     // 'KeyIcon',
     // 'KeyIcon',
 ];
-
-const pendientes =[
-    // {'titulo' : 'Informes', 'descrip':
-    //         'Probar al 100% la seccion de recoleccion de informacion'},
-    // {'titulo' : 'Historico?', 'descrip':
-    //         'Hace falta un nombre para la inspeccion'},
-    // {'titulo' : 'CRUDS', 'descrip':
-    //         'Areas de inspeccion'},
-    // {'titulo' : 'Solo Alejo', 'descrip':
-    //         'tema de los permisos, sin verificar'},
-    // {'titulo' : 'Solo Alejo2', 'descrip':
-    //         'descarga de excel'},
-]
 const downloadAnexos = () => {
     window.open('downloadAnexos', '_blank')
 }
@@ -81,34 +65,18 @@ const downloadAnexos = () => {
                             <p class="mt-2 text-lg">{{ descripcion[index] }}</p>
                         </div>
                         <div class="mt-4 flex items-center justify-between">
-                            
+
                             <Link :href="route(dashLinks[index]+'.index')" class="flex font-bold items-center space-x-4 mx-2">
                                 <button class="px-4 py-2 bg-white text-black rounded-full shadow-md focus:outline-none">
                                     Ver
                                 </button>
                             </Link>
-                            <span class="text-sm">{{ lang().button.lastUpdated }}: {{ props.ultimaInspeccion}} </span>
                         </div>
                     </div>
                 </div>
             </div>
-<!--            <h2 class="text-4xl mt-32" v-if="can(['isSuper'])">Pendientes </h2>-->
 
-            <div v-if="can(['isSuper'])" class="flex gap-6">
-                <div v-for="(pendiente, index) in pendientes" :key="index"
-                    class="px-4 py-6 my-2 w-1/2 flex justify-between
-                     bg-amber-600/70 dark:bg-amber-400/80 items-center overflow-hidden
-                     rounded-lg shadow-2xl hover:bg-blue-500">
-                    <div class="flex flex-col">
-                        <p class="text-4xl font-bold">{{ pendiente.titulo }}</p>
-                        <p class="">{{ pendiente.descrip }}</p>
-                    </div>
-                    <div>
-                        <ShieldCheckIcon class="w-12 h-auto" />
-                    </div>
-                </div>
-            </div>
-            
+
 <!--            <h2 class="text-4xl mt-32">Roles</h2>-->
 <!--            <div class="grid grid-cols-2 gap-2">-->
 <!--                <div v-for="(rol, index) in rolesNameds"-->
@@ -126,6 +94,6 @@ const downloadAnexos = () => {
 <!--            </div>-->
 
         </div>
-        
+
     </AuthenticatedLayout>
 </template>

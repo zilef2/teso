@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\helpers\HelpExcel;
 use App\helpers\Myhelp;
 use App\Imports\PersonalImport;
+use App\Models\cuenta;
 use App\Models\Formulario;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -20,7 +21,7 @@ class SubiExcel extends Controller
 
         return Inertia::render('Excel/subirExceles', [
             'title' => __('app.label.user'),
-            'numUsuarios' => (Formulario::Where('enviado',1)->count()),
+            'numUsuarios' => (cuenta::Where('id','>',0)->count()),
         ]);
     }
 
@@ -40,7 +41,7 @@ class SubiExcel extends Controller
             '# Incongruencias: ',
             '# Usuarios Inexistentes: ',
         ];
-        
+
 
         foreach ($contares as $key => $value) {
             $$value = $personalImp->{$value};
@@ -61,7 +62,7 @@ class SubiExcel extends Controller
     }
 
     public function uploadExcel(Request $request){
-        Myhelp::EscribirEnLog($this, get_called_class(), 'uploadtrabajadors importando', false);
+        Myhelp::EscribirEnLog($this, get_called_class(), 'importando', false);
         $countfilas = 0;
         try {
             DB::beginTransaction();
@@ -72,7 +73,7 @@ class SubiExcel extends Controller
                 if ($mensageWarning != ''){
                     DB::rollback();
                     return back()->with('warning', $mensageWarning);
-                } 
+                }
 
                 $personalImp = new PersonalImport();
                 Excel::import($personalImp, $request->archivo1);
@@ -82,7 +83,7 @@ class SubiExcel extends Controller
                 $MensajeWarning = $this->MensajeWar($personalImp);
                 if ($MensajeWarning !== '') {
                     Formulario::where('user_id', $personalImp->usuario->id)->update(['enviado' => 1]);
-                    
+
                     return back()->with('success', 'Formularios nuevos: ' . $countfilas)
                         ->with('warning2', $MensajeWarning);
                 }
@@ -92,8 +93,8 @@ class SubiExcel extends Controller
                 if ($countfilas == 0){
                     return back()->with('success', __('app.label.op_successfully') . ' No hubo cambios');
                 } else{
-                    Formulario::where('user_id', $personalImp->usuario->id)->update(['enviado' => 1]);
-                    
+//                    cuenta::where('user_id', $personalImp->usuario->id)->update(['enviado' => 1]);
+
                     return back()->with('success', __('app.label.op_successfully') . ' Se leyeron ' . $countfilas . ' filas con exito');
                 }
 
@@ -106,7 +107,7 @@ class SubiExcel extends Controller
             $lasession = session('larow') ?? 'error de session';
             $lasession = $lasession[0] ?? 'error de session';
             $mensajeError = $th->getMessage() . ' L:' . $th->getLine() . ' Ubi: ' . $th->getFile();
-            
+
             Myhelp::EscribirEnLog($this, 'IMPORT:users', ' Fallo importacion: ' . $mensajeError, false);
             return back()->with('error', __('app.label.op_not_successfully') . ' Usuario del error: ' . $lasession . ' error en la iteracion ' . $countfilas . ' ' . $th->getMessage() . ' L:' . $th->getLine() . ' Ubi: ' . $th->getFile());
         }

@@ -47,6 +47,12 @@ function uploadFiletrabajadors() {
     });
 }
 
+let formatoNecesita =[
+'codigo_cuenta_contable',
+    'numero_cuenta_bancaria',
+    'banco',
+    'tipo_de_recurso'
+]
 // data.UniversidadSelect = vectorSelect(data.UniversidadSelect,props.UniversidadSelect,'una')
 
 // const downloadExcel = () => { window.open('users/export/' + form.quincena + '/' + (form.fecha_ini.month) + '/' + form.fecha_ini.year, '_blank') }
@@ -92,15 +98,20 @@ function uploadFiletrabajadors() {
                                                 {{ form.progress.percentage }}%
                                             </progress>
 
-                                            <PrimaryButton v-show="can(['create user'])" :disabled="form.archivo1 == null"
-                                                class="rounded-none my-4" :class="{ 'bg-gray-200' : form.archivo1 == null}">
-                                                {{ lang().button.subir }}
+                                            <div class="flex">
+
+                                            <PrimaryButton v-show="can(['create user']) && form.archivo1 !== null" :disabled="form.archivo1 == null"
+                                                class=" my-4 rounded-md mx-2" :class="{ 'bg-gray-200' : form.archivo1 == null}">
+                                                {{ lang().button.subir }} excel
                                             </PrimaryButton>
+                                            </div>
                                         </form>
 
-                                        <h2 class="text-xl text-gray-900 dark:text-white">El formato necesita las siguientes columnas</h2>
+                                        <h2 class="text-xl text-gray-900 dark:text-white mt-12">El formato necesita las siguientes columnas</h2>
                                         <ul class="list-decimal my-6 mx-5">
-                                            <li class="text-lg">Nombre</li>
+                                            <li v-for="campos in formatoNecesita" class="text-lg">
+                                                {{ campos }}
+                                            </li>
                                         </ul>
 
                                         <div class="flex items-center flex-wrap my-6">

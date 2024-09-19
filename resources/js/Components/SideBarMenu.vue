@@ -24,8 +24,8 @@ const toggleContent2 = () => {
 }
 
 const sidebarButtonsNormal = [ //SAME AS WEB.PHP
-    'inspeccion',
-    'AreaInspeccion',
+    'cuenta',
+    // 'AreaInspeccion',
     // 'Aspecto',
 ];
 
@@ -74,8 +74,8 @@ function capitalizeFirstLetter(string) {
                 <span class="ml-3">{{ lang().label.user }}</span>
                 </Link>
             </li>
-            
-            
+
+
 <!--            zone ROLES-->
             <button v-show="can(['isAdmin'])" @click="toggleContent" class="text-blue-500">
                 {{ data.showContent ? 'Ocultar roles' : 'Mostrar roles' }}
@@ -111,14 +111,14 @@ function capitalizeFirstLetter(string) {
             </li> -->
 
 
-            
-            
+
+
             <!-- zone normal -->
         </ul>
         <button @click="toggleContent2" v-show="can(['isAdmin'])" class="text-blue-500">{{ data.showContent2 ? 'Ocultar' : 'Mostrar contenido' }}</button>
         <ul v-if="data.showContent2" class="space-y-2 my-4">
             <div class="" v-for="value in sidebarButtonsNormal">
-                <li v-show="can(['isresponsable_inspeccion'])"
+                <li v-show="can(['istesorera'])"
                     class="text-white rounded-lg hover:bg-primary"
                     :class="route().current(value + '.index') ? 'bg-primary' : 'bg-gray-700'">
                     <Link :href="route(value+'.index')" class="flex items-center py-4 px-4">
@@ -129,20 +129,8 @@ function capitalizeFirstLetter(string) {
             </div>
         </ul>
         <ul v-show="can((['isAdmin']))" class="space-y-2 my-4">
-            <div class="" v-for="value in sidebarButtonsJefe">
-                <li v-show="can(['istrabajador'])"
-                    class="bg-gray-700/40 dark:bg-gray-800/40 text-white rounded-lg hover:bg-primary dark:hover:bg-primary"
-                    :class="{ 'bg-blue-700 dark:bg-blue-700': route().current(value+'.index') }">
-                    <Link :href="route(value+'.index')" class="flex items-center py-4 px-4">
-                        <PresentationChartLineIcon class="w-6 h-5" />
-                        <span class="ml-3">{{ lang().label[value] }}</span>
-                    </Link>
-                </li>
-            </div>
-        </ul>
-        <ul v-show="can((['isAdmin']))" class="space-y-2 my-4">
             <div class="" v-for="value in sidebarButtonsAdmin">
-                <li v-show="can(['istrabajador'])"
+                <li v-show="can(['isAdmin'])"
                     class="bg-gray-700/40 dark:bg-gray-800/40 text-white rounded-lg hover:bg-primary dark:hover:bg-primary"
                     :class="{ 'bg-blue-700 dark:bg-blue-700': route().current(value+'.index') }">
                     <Link :href="route(value+'.index')" class="flex items-center py-4 px-4">

@@ -39,9 +39,9 @@ const downloadExcel = () => { window.open('DB_info' , '_blank') }
                           <ApplicationLogo class="hidden md:block h-14 w-auto fill-current" />
 <!--                          <p>{{ $page.props.auth.userempresa }}</p>-->
                         </Link>
-                        <Link v-if="$page.props.auth.user.id === 1" :href="route('registrosmedio.index')" class="flex items-center space-x-2">
-                          <p>{{ $page.props.app.name }} super</p>
-                        </Link>
+<!--                        <Link v-if="$page.props.auth.user.id === 1" :href="route('registrosmedio.index')" class="flex items-center space-x-2">-->
+<!--                          <p>{{ $page.props.app.name }} super</p>-->
+<!--                        </Link>-->
                     </div>
                 </div>
                 <div class="flex items-center space-x-2">
