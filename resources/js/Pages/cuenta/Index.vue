@@ -1,6 +1,6 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import {Head, router, usePage} from '@inertiajs/vue3';
+import {Head,Link, router, usePage} from '@inertiajs/vue3';
 import Breadcrumb from '@/Components/Breadcrumb.vue';
 import TextInput from '@/Components/TextInput.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
@@ -47,6 +47,7 @@ const data = reactive({
     selectedId: [],
     multipleSelect: false,
     createOpen: false,
+    subirOpen: false,
     editOpen: false,
     deleteOpen: false,
     // deleteBulkOpen: false,
@@ -94,10 +95,12 @@ const select = () => {
 // text // number // dinero // date // datetime // foreign
 const titulos = [
     // { order: 'codigo', label: 'codigo', type: 'text' },
-    { order: 'nombre', label: 'nombre', type: 'text' },
+    { order: 'codigo_cuenta_contable', label: 'codigo_cuenta_contable', type: 'text' },
+    { order: 'numero_cuenta_bancaria', label: 'numero_cuenta_bancaria', type: 'text' },
+    { order: 'banco', label: 'banco', type: 'text' },
+    { order: 'tipo_de_recurso', label: 'tipo_de_recurso', type: 'text' },
   // { order: 'inventario', label: 'inventario', type: 'foreign',nameid:'nombre'},
 ];
-
 </script>
 
 <template>
@@ -110,13 +113,26 @@ const titulos = [
             <div class="px-4 sm:px-0">
                 <div class="rounded-lg overflow-hidden w-fit">
                     <PrimaryButton class="rounded-none" @click="data.createOpen = true"
-                        v-if="can(['create cuenta'])">
+                        v-if="can(['istesorera'])">
                         {{ lang().button.new }}
+                    </PrimaryButton>
+
+                    <PrimaryButton class="rounded-none" @click="data.subirOpen = true"
+                        v-if="can(['isSuper'])">
+                        Subir
                     </PrimaryButton>
 
                     <Create v-if="can(['create cuenta'])" :numberPermissions="props.numberPermissions"
                         :titulos="titulos" :show="data.createOpen" @close="data.createOpen = false" :title="props.title"
                         :losSelect=props.losSelect />
+                    <Link v-if="can(['isSuper'])" :href="route('subirexceles')">
+                        <PrimaryButton class="rounded-none">
+                            Subir Cuentas
+                        </PrimaryButton>
+                    </Link>
+<!--                    <SubirCuenta v-if="can(['isSuper'])" :numberPermissions="props.numberPermissions"-->
+<!--                        :titulos="titulos" :show="data.subirOpen" @close="data.subirOpen = false" :title="props.title"-->
+<!--                        :losSelect=props.losSelect />-->
 
                     <Edit v-if="can(['update cuenta'])" :titulos="titulos"
                         :numberPermissions="props.numberPermissions" :show="data.editOpen" @close="data.editOpen = false"

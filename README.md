@@ -1,6 +1,6 @@
-# Presupuesto CMA
+# tesoreria CMA
 
-Se recolectará toda la informacion de los lideres de cada area que tiene la institucion.
+Se recolectará parte de la informacion de financiera de caja (flujo de caja) de la institucion.
 
 Algunas caracteristicas del software son:
 

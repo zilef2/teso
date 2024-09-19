@@ -1,5 +1,17 @@
 <?php
 
+    /*
+     *
+     * codigo_cuenta_contable
+numero_cuenta_bancaria
+banco
+tipo_de_recurso
+
+    cuenta
+    cuentas
+
+    recuerda los de transaccion
+     */
 return [
     'side' => [
         'inspeccion'=> 'Inspeccion',
@@ -16,7 +28,7 @@ return [
         //aspecto
         'Aspecto' => 'Aspectos',
         'aspecto' => 'Aspectos',
-        
+
         //resposnable
         'Responsable'=> 'Responsable',
         'firma'=> 'Firma',
@@ -26,7 +38,7 @@ return [
         //inspeccion
         'inspeccion'=> 'inspeccion',
         'AreaInspeccion'=> 'Area de Inspeccion',
-        
+
         //idea
         'idea'=> 'idea',
         'Idea'=> 'Idea',
@@ -210,10 +222,10 @@ return [
         'prev' => 'Anterior',
         'next' => 'Siguiente',
         'delete_account' => 'Borar cuenta',
-        'view' => 'Vista',  
-        'continue' => 'Continuar',  
-        'waitPlease' => 'Espere, Por favor...',  
-        'wait' => 'Espere...',  
+        'view' => 'Vista',
+        'continue' => 'Continuar',
+        'waitPlease' => 'Espere, Por favor...',
+        'wait' => 'Espere...',
         'lastUpdated' => 'Ultima actualizacion',
     ],
     'placeholder' => [

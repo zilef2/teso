@@ -18,29 +18,17 @@ class UserSeederCustomize extends Seeder
      */
     public function run(){
         $genPa = env('sap_gen');
-        
+
 //        $tiposResponsable = DB::table('tipo_users')->pluck('nombre')->toArray();
-        
+
         $nombresGenericos = [
-//            ['name' => 'Diana Marcela Cardona Gomez', 'cc' => '1152447749', 'email' => 'profesional.ambiental@colmayor.edu.co', 'sexo' => 'Femenino', 'rol' => 'responsable_inspeccion' , 'tipo_user' => $tiposResponsable[1]],
-            ['name' => 'Edwin David Moreno Quintero', 'cc' => '112', 'email' => 'ambiental@colmayor.edu.co', 'sexo' => 'Masculino', 'rol' => 'responsable_inspeccion'],
-            ['name' => 'Jennyfer Figueroa Cano', 'cc' => '113', 'email' => 'jennyfer.figueroa@colmayor.edu.co', 'sexo' => 'Femenino', 'rol' => 'responsable_inspeccion'],
-            ['name' => 'Daniel Cuartas Arboleda', 'cc' => '8161368', 'email' => 'daniel.cuartas@colmayor.edu.co', 'sexo' => 'Masculino', 'rol' => 'responsable_inspeccion'],
-            ['name' => 'Mildrey Andrea Florez Ortiz', 'cc' => '115', 'email' => 'sstcolmayor1@colmayor.edu.co', 'sexo' => 'Femenino', 'rol' => 'responsable_inspeccion'],
-            ['name' => 'Nora Inés Cano Muñoz', 'cc' => '116', 'email' => 'sstcolmayor3@colmayor.edu.co', 'sexo' => 'Femenino', 'rol' => 'responsable_inspeccion'],
-            ['name' => 'Sandra Yurany Vásquez Tangarife', 'cc' => '117', 'email' => 'sandra.yurany@colmayor.edu.co', 'sexo' => 'Femenino', 'rol' => 'responsable_inspeccion'],
-            ['name' => 'Sandra Liliana García Ferrraro', 'cc' => '118', 'email' => 'sandra.garcia@colmayor.edu.co', 'sexo' => 'Femenino', 'rol' => 'responsable_inspeccion'],
-            ['name' => 'Maria Alejandra Ortiz Restrepo', 'cc' => '119', 'email' => 'maria.ortizr@colmayor.edu.co', 'sexo' => 'Femenino', 'rol' => 'responsable_inspeccion'],
-            ['name' => 'Carlos Eduardo Carvajal Tangarife', 'cc' => '120', 'email' => 'saludocupacional@colmayor.edu.co', 'sexo' => 'Masculino', 'rol' => 'responsable_inspeccion'],
+            ['name' => 'Edwin David Moreno Quintero', 'cc' => '112', 'email' => 'ambiental@colmayor.edu.co', 'sexo' => 'Masculino', 'rol' => 'tesorera'],
+            ['name' => 'Jennyfer Figueroa Cano', 'cc' => '113', 'email' => 'jennyfer.figueroa@colmayor.edu.co', 'sexo' => 'Femenino', 'rol' => 'administrativo'],
         ];
-/* ROLES
-            'responsable_de_recibir_la_inspeccion',//1
-            'copasst', //2
-            'lider_del_proceso', //3
-            'verificador', //4
-        'responsable_inspeccion',// 5
-*/
-        
+        /* ROLES
+            'tesorera',//1
+        */
+
         $myhelp = new Myhelp();
         foreach ($nombresGenericos as $key => $value) {
             $primeraParte = $myhelp->cortarFrase($value['name'],1);

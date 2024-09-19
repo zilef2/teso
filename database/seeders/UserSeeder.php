@@ -35,7 +35,7 @@ class UserSeeder extends Seeder
 
         $admin = User::create([
             'name'              => "$nombreAdmin $App",
-            'email'             => "alejofg2+9@gmail.com",
+            'email'             => "alejofg2+11@gmail.com",
             'password'          => bcrypt($genPa),
 //            'password'          => bcrypt($genPa.'uiu'), //cont_insuiu
             'email_verified_at' => date('Y-m-d H:i'),
@@ -47,7 +47,7 @@ class UserSeeder extends Seeder
 
         //baja categoria
         $nombresGenericos = [
-            ['name' => 'transacciones', 'cc'=> '1234444', 'rol' => 'transacciones'],
+            ['name' => 'transacciones', 'cc'=> '1234444', 'rol' => 'tesorera'],
 //            ['name' => 'bgenerico', 'cc'=> '1234459', 'rol' => 'copasst'],
 //            ['name' => 'cgenerico', 'cc'=> '1234445', 'rol' => 'lider_del_proceso'],
 //            ['name' => 'dgenerico', 'cc'=> '1234446', 'rol' => 'verificador'],
