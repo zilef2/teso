@@ -1,7 +1,7 @@
 @echo on
-set destination=C:\laragon\www\cmainspecciones\cmainspecciones.zip
+set destination=C:\laragon\www\teso\teso.zip
 del %destination%
-cd C:\laragon\www\cmainspecciones
+cd C:\laragon\www\teso
 del /F /S hot
-npm run build && "C:\Program Files\7-Zip\7z.exe" a -r -x!"C:\laragon\www\cmainspecciones\vendor" -x!"C:\laragon\www\cmainspecciones\storage" -x!"C:\laragon\www\cmainspecciones\node_modules" -x!"C:\laragon\www\cmainspecciones\public\hot.*"  %destination% "C:\laragon\www\cmainspecciones\app" "C:\laragon\www\cmainspecciones\resources" "C:\laragon\www\cmainspecciones\routes" "C:\laragon\www\cmainspecciones\database" "C:\laragon\www\cmainspecciones\public" "C:\laragon\www\cmainspecciones\lang"
+npm run build && "C:\Program Files\7-Zip\7z.exe" a -r -x!"C:\laragon\www\teso\vendor" -x!"C:\laragon\www\teso\storage" -x!"C:\laragon\www\teso\node_modules" -x!"C:\laragon\www\teso\public\hot.*"  %destination% "C:\laragon\www\teso\app" "C:\laragon\www\teso\resources" "C:\laragon\www\teso\routes" "C:\laragon\www\teso\database" "C:\laragon\www\teso\public" "C:\laragon\www\teso\lang"
 pause

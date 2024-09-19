@@ -47,9 +47,8 @@ class HandleInertiaRequests extends Middleware
                 'perpage' => [
                     ['label' => '5', 'value' => 5],
                     ['label' => '10', 'value' => 10],
-                    ['label' => '50', 'value' => 50],
                     ['label' => '100', 'value' => 100],
-//                    ['label' => '1000', 'value' => 1000],
+                    ['label' => '300', 'value' => 300],
                 ],
             ],
             'locale' => function () {

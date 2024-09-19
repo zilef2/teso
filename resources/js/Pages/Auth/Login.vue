@@ -86,7 +86,7 @@ const submit = () => {
                     :class="{ 'opacity-25': form.processing }"
                     :disabled="form.processing"
                 >
-                    {{ form.processing ? lang().button.login + '...' : lang().button.login }}
+                    {{ form.processing ? lang().button.login + '...' : lang().button.login }} ahora
                 </PrimaryButton>
             </div>
         </form>

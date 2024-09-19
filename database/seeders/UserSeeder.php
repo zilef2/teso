@@ -64,7 +64,7 @@ class UserSeeder extends Seeder
             $unUsuario = User::create([
                 'name'              => $value['name'],
                 'email'             => $value['name'] . '@gmail.com', //transacciones@gmail.com //bgenericocont_ins123
-                'password'          => bcrypt($value['name'].'*123'), //123_cmainspecciones
+                'password'          => bcrypt($value['name'].'*123'), //123_teso
                 'email_verified_at' => date('Y-m-d H:i'),
                 'identificacion' => $value['cc'],
                 'celular' => '123456',
