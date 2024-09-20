@@ -34,6 +34,7 @@ const props = defineProps({
 
     numberPermissions: Number,
     losSelect:Object,//normally used by headlessui
+    thisAtributos:Object,
 })
 
 const data = reactive({
@@ -117,10 +118,10 @@ const titulos = [
                         {{ lang().button.new }}
                     </PrimaryButton>
 
-                    <PrimaryButton class="rounded-none" @click="data.subirOpen = true"
-                        v-if="can(['isSuper'])">
-                        Subir
-                    </PrimaryButton>
+<!--                    <PrimaryButton class="rounded-none" @click="data.subirOpen = true"-->
+<!--                        v-if="can(['isSuper'])">-->
+<!--                        Subir-->
+<!--                    </PrimaryButton>-->
 
                     <Create v-if="can(['create cuenta'])" :numberPermissions="props.numberPermissions"
                         :titulos="titulos" :show="data.createOpen" @close="data.createOpen = false" :title="props.title"
@@ -144,17 +145,22 @@ const titulos = [
                 </div>
             </div>
             <div class="relative bg-white dark:bg-gray-800 shadow sm:rounded-lg">
-                <div class="flex justify-between p-2">
+                <div class="flex justify-between p-2 gap-6">
                     <div class="flex space-x-2">
-                        <SelectInput v-model="data.params.perPage" :dataSet="data.dataSet" />
                         <!-- <DangerButton @click="data.deleteBulkOpen = true"
                             v-show="data.selectedId.length != 0 && can(['delete cuenta'])" class="px-3 py-1.5"
                             v-tooltip="lang().tooltip.delete_selected">
                             <TrashIcon class="w-5 h-5" />
                         </DangerButton> -->
                     </div>
-                    <TextInput v-if="props.numberPermissions > 1" v-model="data.params.search" type="text"
-                        class="block w-4/6 md:w-3/6 lg:w-2/6 rounded-lg" placeholder="Nombre, codigo" />
+                    <TextInput v-model="data.params.search" type="text"
+                        class="block w-4/6 md:w-3/6 lg:w-2/6 rounded-lg" placeholder="Codigo" />
+                    <TextInput v-model="data.params.searchNumCuenta" type="number"
+                        class="block w-4/6 md:w-3/6 lg:w-2/6 rounded-lg" placeholder="Numero de cuenta" />
+                    <TextInput v-model="data.params.searchBanco" type="text"
+                        class="block w-4/6 md:w-3/6 lg:w-2/6 rounded-lg" placeholder="Banco" />
+                    <TextInput v-model="data.params.searchtipo" type="text"
+                        class="block w-4/6 md:w-3/6 lg:w-2/6 rounded-lg" placeholder="Tipo recurso" />
                 </div>
                 <div class="overflow-x-auto scrollbar-table">
                     <table v-if="props.total > 0" class="w-full">
@@ -166,10 +172,10 @@ const titulos = [
                                 <th v-if="numberPermissions > 1" class="px-2 py-4">Accion</th>
 
                                 <th class="px-2 py-4 text-center">#</th>
-                                <th v-for="titulo in titulos" class="px-2 py-4 cursor-pointer"
-                                    v-on:click="order(titulo['order'])">
+                                <th v-for="titulo in props.thisAtributos" class="px-2 py-4 cursor-pointer"
+                                    v-on:click="order(titulo)">
                                     <div class="flex justify-between items-center">
-                                        <span>{{ lang().label[titulo['label']] }}</span>
+                                        <span>{{ lang().label[titulo] }}</span>
                                         <ChevronUpDownIcon class="w-4 h-4" />
                                     </div>
                                 </th>
@@ -178,7 +184,6 @@ const titulos = [
                                         <ChevronUpDownIcon class="w-4 h-4" />
                                     </div>
                                 </th> -->
-
                             </tr>
                         </thead>
                         <tbody>
@@ -194,12 +199,14 @@ const titulos = [
                                 <td v-if="numberPermissions > 1" class="whitespace-nowrap py-4 w-12 px-2 sm:py-3">
                                     <div class="flex justify-center items-center">
                                         <div class="rounded-md overflow-hidden">
-                                            <InfoButton v-show="can(['update cuenta'])" type="button"
+<!--                                            v-show="can(['update cuenta'])"-->
+                                            <InfoButton  type="button"
                                                 @click="(data.editOpen = true), (data.cuentao = claseFromController)"
                                                 class="px-2 py-1.5 rounded-none" v-tooltip="lang().tooltip.edit">
                                                 <PencilIcon class="w-4 h-4" />
                                             </InfoButton>
-                                            <DangerButton v-show="can(['delete cuenta'])" type="button"
+<!--                                            v-show="can(['delete cuenta'])"-->
+                                            <DangerButton  type="button"
                                                 @click="(data.deleteOpen = true), (data.cuentao = claseFromController)"
                                                 class="px-2 py-1.5 rounded-none" v-tooltip="lang().tooltip.delete">
                                                 <TrashIcon class="w-4 h-4" />
@@ -208,25 +215,21 @@ const titulos = [
                                     </div>
                                 </td>
                                 <td class="whitespace-nowrap py-4 px-2 sm:py-3 text-center">{{ ++indexu }}</td>
-                                <td v-for="titulo in titulos" class="whitespace-nowrap py-4 px-2 sm:py-3">
-                                    <span v-if="titulo['type'] === 'text'"> {{ claseFromController[titulo['order']] }} </span>
-                                    <span v-if="titulo['type'] === 'number'"> {{ number_format(claseFromController[titulo['order']], 0, false) }} </span>
-                                    <span v-if="titulo['type'] === 'dinero'"> {{ number_format(claseFromController[titulo['order']], 0, true) }} </span>
-                                    <span v-if="titulo['type'] === 'date'"> {{ formatDate(claseFromController[titulo['order']], false) }} </span>
-                                    <span v-if="titulo['type'] === 'datetime'"> {{ formatDate(claseFromController[titulo['order']], true) }} </span>
-                                    <span v-if="titulo['type'] === 'foreign'"> {{ clasecuentaa[titulo['order']][titulo['nameid']] }} </span>
+<!--                                <td v-for="titulo in titulos" class="whitespace-nowrap py-4 px-2 sm:py-3">-->
+                                <td v-for="titulo in props.thisAtributos" class="whitespace-nowrap py-4 px-2 sm:py-3">
+                                    <span> {{ claseFromController[titulo] }} </span>
                                 </td>
 
                             </tr>
-                            <tr class="border-t border-gray-600">
-                                <td v-if="numberPermissions > 1"
-                                    class="whitespace-nowrap py-4 w-12 px-2 sm:py-3 text-center"> -
-                                </td>
-                                <td class="whitespace-nowrap py-4 px-2 sm:py-3 text-center"> Total: </td>
-                                <td class="whitespace-nowrap py-4 px-2 sm:py-3 text-center">
-                                    {{ props.total }}
-                                </td>
-                            </tr>
+<!--                            <tr class="border-t border-gray-600">-->
+<!--                                <td v-if="numberPermissions > 1"-->
+<!--                                    class="whitespace-nowrap py-4 w-12 px-2 sm:py-3 text-center"> - -->
+<!--                                </td>-->
+<!--                                <td class="whitespace-nowrap py-4 px-2 sm:py-3 text-center"> Total: </td>-->
+<!--                                <td class="whitespace-nowrap py-4 px-2 sm:py-3 text-center">-->
+<!--                                    {{ props.total }}-->
+<!--                                </td>-->
+<!--                            </tr>-->
                         </tbody>
                     </table>
                     <h2 v-else class="text-center text-xl my-8">Sin Registros</h2>
@@ -234,6 +237,9 @@ const titulos = [
                 <div v-if="props.total > 0"
                     class="flex justify-between items-center p-2 border-t border-gray-200 dark:border-gray-700">
                     <Pagination :links="props.fromController" :filters="data.params" />
+                    <div class="ml-8">
+                        Reg/pág <SelectInput v-model="data.params.perPage" :dataSet="data.dataSet" />
+                    </div>
                 </div>
             </div>
         </div>

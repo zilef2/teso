@@ -12,8 +12,9 @@ const props = defineProps({
 const data = reactive({
     params: {
         search: props.filters?.search,
-        searcLider: props.filters?.searcLider,
-        SoloEnviados: props.filters?.SoloEnviados,
+        searchNumCuenta: props.filters?.searchNumCuenta,
+        searchBanco: props.filters?.searchBanco,
+        searchtipo: props.filters?.searchtipo,
         SoloGuardados: props.filters?.SoloGuardados,
         field: props.filters?.field,
         order: props.filters?.order,

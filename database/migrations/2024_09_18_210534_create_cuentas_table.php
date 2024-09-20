@@ -15,10 +15,12 @@ return new class extends Migration
             $table->id();
             $table->softDeletes();
             
-            $table->string('codigo_cuenta_contable')->nullable();
+            $table->string('codigo_cuenta_contable');
             $table->string('numero_cuenta_bancaria')->nullable();
             $table->string('banco')->nullable();
+            $table->string('tipo_de_cuenta')->nullable();
             $table->string('tipo_de_recurso')->nullable();
+            $table->string('convenio')->nullable();
 
             $table->timestamps();
         });

@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Maatwebsite\Excel\Facades\Excel;
 
-class SubiExcel extends Controller
+class SubiExcelController extends Controller
 {
 
     public function subirexceles()

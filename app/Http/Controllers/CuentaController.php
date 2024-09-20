@@ -12,7 +12,10 @@ use Inertia\Inertia;
 
 class CuentaController extends Controller
 {
-    public $thisAtributos,$FromController = 'cuenta';
+    public string $FromController = 'cuenta';
+    public array $arrayBusque;
+    public array $arrayFillableSearch;
+    public array $thisAtributos;
 
 
     //<editor-fold desc="Construc | mapea | filtro and losSelect">
@@ -22,6 +25,19 @@ class CuentaController extends Controller
 //        $this->middleware('permission:update cuenta', ['only' => ['edit', 'update']]);
 //        $this->middleware('permission:delete cuenta', ['only' => ['destroy', 'destroyBulk']]);
         $this->thisAtributos = (new cuenta())->getFillable(); //not using
+        $this->arrayBusque = [
+            'search',
+            'searchNumCuenta',
+            'searchBanco',
+            'searchtipo',
+        ];
+        
+        $this->arrayFillableSearch = [
+            'codigo_cuenta_contable',
+            'numero_cuenta_bancaria',
+            'banco',
+            'tipo_de_recurso',
+        ];
     }
 
 
@@ -31,27 +47,36 @@ class CuentaController extends Controller
         return $cuentas;
 
     }
-    public function Filtros(&$cuentas,$request){
-        if ($request->has('search')) {
-            $cuentas = $cuentas->where(function ($query) use ($request) {
-                $query->where('nombre', 'LIKE', "%" . $request->search . "%")
-                    //                    ->orWhere('codigo', 'LIKE', "%" . $request->search . "%")
-                    //                    ->orWhere('identificacion', 'LIKE', "%" . $request->search . "%")
-                ;
-            });
+    
+    private function BusquedasText($cuentas,$arrayBusquedas,$request){
+        foreach ($arrayBusquedas as $index => $busqueda) {
+            $campo = $this->arrayFillableSearch[$index];
+            if ($request->has($busqueda)) {
+                $cuentas = $cuentas->where(function ($query) use ($request,$busqueda,$campo) {
+                    $query->where($campo, 'LIKE', "%" . $request->{$busqueda} . "%")
+                    ;
+                });
+            }
         }
+        return $cuentas;
+    }
+    public function Filtros(&$cuentas,$request){
+        
+        $cuentas = $this->BusquedasText($cuentas,$this->arrayBusque,$request);
 
         if ($request->has(['field', 'order'])) {
             $cuentas = $cuentas->orderBy($request->field, $request->order);
-        }else
+        }else{
             $cuentas = $cuentas->orderBy('updated_at', 'DESC');
+        }
     }
-    public function losSelect()
-    {
-        $no_nadasSelect = No_nada::all('id','nombre as name')->toArray();
-        array_unshift($no_nadasSelect,["name"=>"Seleccione un no_nada",'id'=>0]);
-        return $no_nadasSelect;
-    }
+    
+//    public function losSelect()
+//    {
+//        $no_nadasSelect = No_nada::all('id','nombre as name')->toArray();
+//        array_unshift($no_nadasSelect,["name"=>"Seleccione un no_nada",'id'=>0]);
+//        return $no_nadasSelect;
+//    }
     //</editor-fold>
 
     public function index(Request $request) {
@@ -59,8 +84,8 @@ class CuentaController extends Controller
         $cuentas = $this->Mapear();
         $this->Filtros($cuentas,$request);
 //        $losSelect = $this->losSelect();
-
-
+        $filters = ['search', 'field', 'order'];
+        $filters = array_merge($this->arrayBusque,$filters);
         $perPage = $request->has('perPage') ? $request->perPage : 10;
         return Inertia::render($this->FromController.'/Index', [
             'fromController'        => $cuentas->paginate($perPage),
@@ -68,9 +93,10 @@ class CuentaController extends Controller
 
             'breadcrumbs'           => [['label' => __('app.label.'.$this->FromController), 'href' => route($this->FromController.'.index')]],
             'title'                 => __('app.label.'.$this->FromController),
-            'filters'               => $request->all(['search', 'field', 'order']),
+            'filters'               => $request->all($filters),
             'perPage'               => (int) $perPage,
             'numberPermissions'     => $numberPermissions,
+            'thisAtributos'         => $this->thisAtributos,
 //            'losSelect'             => $losSelect,
         ]);
     }

@@ -2,23 +2,30 @@
 
     /*
      *
-     * codigo_cuenta_contable
-numero_cuenta_bancaria
-banco
-tipo_de_recurso
-
-    cuenta
-    cuentas
-
-    recuerda los de transaccion
+     *       
+recuerda los de transaccion
      */
 return [
     'side' => [
-        'inspeccion'=> 'Inspeccion',
-        'AreaInspeccion' => 'Areas de Inspección',
-        'Aspecto' => 'Aspectos',
+        'cuenta' => 'Cuenta',
     ],
+    
     'label' => [
+        'codigo_cuenta_contable' => 'codigo_cuenta_contable',
+        'numero_cuenta_bancaria' => 'numero_cuenta_bancaria',
+        'banco' => 'banco',
+        'tipo_de_recurso' => 'tipo_de_recurso',
+        'cuenta' => 'cuenta',
+        'cuentas' => 'cuentas',
+        
+        'codigo_cuenta_contable' => 'codigo cuenta contable', 
+        'numero_cuenta_bancaria' => 'numero cuenta bancaria', 
+        'banco' => 'banco', 
+        'tipo_de_cuenta' => 'tipo de cuenta', 
+        'tipo_de_recurso' => 'tipo de recurso', 
+        'convenio' => 'convenio',
+        
+        
         //registrosmedio
         'registrosmedio' => 'Medios',
         'EvidenciaMedios' => 'Evidencia de Medios',
@@ -29,15 +36,9 @@ return [
         'Aspecto' => 'Aspectos',
         'aspecto' => 'Aspectos',
 
-        //resposnable
-        'Responsable'=> 'Responsable',
+        //firma
         'firma'=> 'Firma',
         'Firma'=> 'Firma',
-        'tipo_responsable'=> 'Tipo responsable',
-        'tipo_user'=> 'Tipo responsable',
-        //inspeccion
-        'inspeccion'=> 'inspeccion',
-        'AreaInspeccion'=> 'Area de Inspeccion',
 
         //idea
         'idea'=> 'idea',

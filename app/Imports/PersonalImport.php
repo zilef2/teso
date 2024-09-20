@@ -7,8 +7,9 @@ use App\helpers\Myhelp;
 use App\Models\cuenta;
 use App\Models\User;
 use Maatwebsite\Excel\Concerns\ToModel;
+use Maatwebsite\Excel\Concerns\WithStartRow;
 
-class PersonalImport implements ToModel
+class PersonalImport implements ToModel,WithStartRow
 {
 
     public int $ContarFilasAbsolutas;
@@ -20,6 +21,7 @@ class PersonalImport implements ToModel
     public int $contarIncongruencias;
     public int $contarUsuariosInexistentes;
 
+    protected $DebenSerNulos;
     public $usuario;
     private array $vectorCategoriaInsensitive;
     private array $vectorMlistaprosInsensitive;
@@ -46,7 +48,16 @@ class PersonalImport implements ToModel
         $this->contarIncongruencias = 0; $this->contarIncongruenciasstring = "";
         $this->contarUsuariosInexistentes = 0; $this->contarUsuariosInexistentesstring = "";
         $this->contarTotalIncongruente = 0; $this->contarTotalIncongruentestring = "";
-
+        $this->DebenSerNulos = [
+            'codigo_cuenta_contable',
+            'codigo cuenta contable',
+            'numero cuenta bancaria',
+            'banco',
+            'tipo de recurso',
+            'numero_cuenta_bancaria',
+            'banco',
+            'tipo_de_recurso',
+        ];
 
         //selecs
 //        $this->Uproceso_que_solicita_presupuesto = HelpExcel::Uproceso_que_solicita_presupuesto();
@@ -64,11 +75,16 @@ class PersonalImport implements ToModel
 //        $this->vectorMlineaInsensitive = array_map('mb_strtolower', $this->Mlineadelplan);
 
     }
+    
+    
+    public function startRow(): int{return 2;}
 
+    
     private function validarNull($row){
         session(['larow' => $row]);
         return (
             !isset($row[0])
+            || mb_strtolower($row[0]) == 'codigo_cuenta_contable'
             || mb_strtolower($row[0]) == 'codigo cuenta contable'
             || mb_strtolower($row[1]) == 'numero cuenta bancaria'
             || mb_strtolower($row[2]) == 'banco'
@@ -85,23 +101,13 @@ class PersonalImport implements ToModel
     {
         try {
             $this->ContarFilasAbsolutas++;
-            //region Description
+            
             if($this->validarNull($row)) return null;
 
             //#: post validaciones
             $row[12] = $row[12] ?? 0;
             $vigAnterior = intval($row[12]);
-
-//            if (!$this->Requeridos($row)) {
-//                ++$this->contarVacios;
-//                $this->contarVaciosstring .= $row[0] . '__' . $row[1] . '___' . $row[2].':: ';
-//                return null;
-//            }
-
-            //# fin validaciones
-
-
-
+            
 
             /*
                 'codigo_cuenta_contable', 1
@@ -154,10 +160,13 @@ class PersonalImport implements ToModel
 
             $this->numero_necesidad++;
             $cuenta = new cuenta([
-                'codigo_cuenta_contable' => $row[0],
-                'numero_cuenta_bancaria' => $row[1],
-                'banco' => $row[2],
-                'tipo_de_recurso' => $row[3],
+                
+                'codigo_cuenta_contable' => trim($row[0]),
+                'numero_cuenta_bancaria' => trim($row[1]),
+                'banco' => trim($row[2]),
+                'tipo_de_cuenta' => trim($row[3]),
+                'tipo_de_recurso' => trim($row[4]),
+                'convenio' => trim($row[5]),
             ]);
             $this->ContarFilas++;
 

@@ -10,7 +10,7 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\CuentaController;
 
 use App\Http\Controllers\ZipController;
-use App\Http\Controllers\SubiExcel;
+use App\Http\Controllers\SubiExcelController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
@@ -36,8 +36,8 @@ Route::middleware(['auth'])->group(callback: function () {
     Route::get('/ejemplo', [EjemploController::class, 'ejemplo'])->name('ejemplo');
 
     Route::post('/user/destroy-bulk', [UserController::class, 'destroyBulk'])->name('user.destroy-bulk');
-     Route::get('/subirexceles', [SubiExcel::class, 'subirexceles'])->name('subirexceles');
-     Route::post('/uploadExcel', [SubiExcel::class, 'uploadExcel'])->name('uploadExcel');
+     Route::get('/subirexceles', [SubiExcelController::class, 'subirexceles'])->name('subirexceles');
+     Route::post('/uploadExcel', [SubiExcelController::class, 'uploadExcel'])->name('uploadExcel');
 
 
     Route::resource('/role', RoleController::class)->except('create', 'show', 'edit');

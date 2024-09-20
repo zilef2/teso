@@ -13,6 +13,9 @@ class cuenta extends Model
         'codigo_cuenta_contable',
         'numero_cuenta_bancaria',
         'banco',
+        'tipo_de_cuenta',
         'tipo_de_recurso',
+        'convenio',
+
     ];
 }
