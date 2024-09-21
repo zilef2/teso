@@ -36,6 +36,11 @@ class transaccion extends Model
         'consecutivo',
         'periodo',
         'plan_cuentas',
-        'transaccions',
+//        'transaccions',
     ];
+    
+    
+//    public function user(){return $this->belongsTo(User::class);}
+//     public function formularios(){return $this->hasMany(Formulario::class);}
+     public function cuenta(){return $this->hasOne(cuenta::class);}
 }

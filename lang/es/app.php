@@ -8,13 +8,12 @@ recuerda los de transaccion
 return [
     'side' => [
         'cuenta' => 'Cuenta',
+        'transacciones' => 'Transacciones',
+        'transaccion' => 'Transaccion',
     ],
     
     'label' => [
-        'codigo_cuenta_contable' => 'codigo_cuenta_contable',
-        'numero_cuenta_bancaria' => 'numero_cuenta_bancaria',
-        'banco' => 'banco',
-        'tipo_de_recurso' => 'tipo_de_recurso',
+        'transaccion' => 'transaccion',
         'cuenta' => 'cuenta',
         'cuentas' => 'cuentas',
         

@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('tipo_de_cuenta')->nullable();
             $table->string('tipo_de_recurso')->nullable();
             $table->string('convenio')->nullable();
+            $table->string('estado')->nullable();
 
             $table->timestamps();
         });

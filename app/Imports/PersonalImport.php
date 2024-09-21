@@ -148,7 +148,6 @@ class PersonalImport implements ToModel,WithStartRow
 
             //transformaciones
             //ucfirst |
-            $procesoSolicita = (trim($row[1]));
 
 //            $laListaproceso3 = $this->laLista3($row);
 //            if($laListaproceso3 != "0" && !$laListaproceso3){

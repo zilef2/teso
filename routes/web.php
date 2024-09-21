@@ -8,6 +8,7 @@ use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\CuentaController;
+use App\Http\Controllers\TransaccionController;
 
 use App\Http\Controllers\ZipController;
 use App\Http\Controllers\SubiExcelController;
@@ -55,14 +56,15 @@ Route::middleware(['auth'])->group(callback: function () {
 //    })->name('downClaro');
 
 
-    Route::get('/Resultado/{id}', [\App\Http\Controllers\ResultadoController::class, 'Resultado'])->name('Resultado');
+//    Route::get('/Resultado/{id}', [\App\Http\Controllers\ResultadoController::class, 'Resultado'])->name('Resultado');
 
     Route::get('/DescompresionDespliegue/{esAmbientePruebas}', [ZipController::class, 'DescompresionDespliegue']);
 
 
     //<editor-fold desc="resources">
-    Route::resource('/cuenta', CuentaController::class);
     Route::resource('/user', UserController::class);
+    Route::resource('/cuenta', CuentaController::class);
+    Route::resource('/transaccion', TransaccionController::class);
     //</editor-fold>
 
 });
