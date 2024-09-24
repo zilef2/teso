@@ -22,8 +22,8 @@ class UserSeederCustomize extends Seeder
 //        $tiposResponsable = DB::table('tipo_users')->pluck('nombre')->toArray();
 
         $nombresGenericos = [
-            ['name' => 'Edwin David Moreno Quintero', 'cc' => '112', 'email' => 'ambiental@colmayor.edu.co', 'sexo' => 'Masculino', 'rol' => 'tesorera'],
-            ['name' => 'Jennyfer Figueroa Cano', 'cc' => '113', 'email' => 'jennyfer.figueroa@colmayor.edu.co', 'sexo' => 'Femenino', 'rol' => 'administrativo'],
+            ['name' => 'Sandra Cristina Bedoya Cardenas', 'cc' => '112', 'email' => 'sandra.bedoya@colmayor.edu.co', 'sexo' => 'Femenino', 'rol' => 'tesorera'],
+//            ['name' => 'Jennyfer Figueroa Cano', 'cc' => '113', 'email' => 'jennyfer.figueroa@colmayor.edu.co', 'sexo' => 'Femenino', 'rol' => 'administrativo'],
         ];
         /* ROLES
             'tesorera',//1

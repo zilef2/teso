@@ -9,7 +9,7 @@ use App\Models\User;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithStartRow;
 
-class PersonalImport implements ToModel,WithStartRow
+class CuentaImport implements ToModel,WithStartRow
 {
 
     public int $ContarFilasAbsolutas;
@@ -166,6 +166,7 @@ class PersonalImport implements ToModel,WithStartRow
                 'tipo_de_cuenta' => trim($row[3]),
                 'tipo_de_recurso' => trim($row[4]),
                 'convenio' => trim($row[5]),
+                'estado' => 'activa',
             ]);
             $this->ContarFilas++;
 

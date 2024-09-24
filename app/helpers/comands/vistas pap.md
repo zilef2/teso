@@ -3,17 +3,14 @@
 
 
 //INICIO DEL PROYECTO
-// 9JULIO2024
+// 18septiembre2024 FLUEF
 php artisan make:crud Inspeccion "codigo:string,campo1:string,campoAprobo:boolean"
 php artisan make:crud AreaInspeccion "nombre:string"
 php artisan make:crud Responsable "nombre:string,cargo:string,firma:text" // BORRADO!!
 php artisan make:crud aspecto "nombre:string,categoria:string"
 
 //myGeneric
-php artisan copy:u Inspeccion
-php artisan copy:u AreaInspeccion
-php artisan copy:u Aspecto
-php artisan copy:u Seguimiento
+php artisan copy:u PorcentajeInteresCuenta
 
 //muchos a muchos
 php artisan make:migration pivot_aspecto_inspeccion_table

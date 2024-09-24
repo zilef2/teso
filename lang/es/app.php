@@ -10,13 +10,22 @@ return [
         'cuenta' => 'Cuenta',
         'transacciones' => 'Transacciones',
         'transaccion' => 'Transaccion',
+        'porcentajeIC' => 'Porcentaje Interes',
     ],
     
     'label' => [
+        //porcentajeIC
+        'porcentajeIC' => 'Porcentaje Interes',
+        'mes' => 'Mes',
+        'valor' => 'Valor',
+        
+        //transaccion
         'transaccion' => 'transaccion',
         'cuenta' => 'cuenta',
         'cuentas' => 'cuentas',
         
+        //cuenta
+        'estado' => 'Estado', 
         'codigo_cuenta_contable' => 'codigo cuenta contable', 
         'numero_cuenta_bancaria' => 'numero cuenta bancaria', 
         'banco' => 'banco', 

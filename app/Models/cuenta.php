@@ -16,7 +16,6 @@ class cuenta extends Model
         'tipo_de_cuenta',
         'tipo_de_recurso',
         'convenio',
-        'estado',
-
+        'estado', //activa, cerrada, cerrada mes actual
     ];
 }

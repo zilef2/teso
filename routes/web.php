@@ -9,6 +9,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\CuentaController;
 use App\Http\Controllers\TransaccionController;
+use App\Http\Controllers\PorcentajeInteresCuentaController;
 
 use App\Http\Controllers\ZipController;
 use App\Http\Controllers\SubiExcelController;
@@ -65,6 +66,7 @@ Route::middleware(['auth'])->group(callback: function () {
     Route::resource('/user', UserController::class);
     Route::resource('/cuenta', CuentaController::class);
     Route::resource('/transaccion', TransaccionController::class);
+    Route::resource('/porcentajeInteresCuenta', PorcentajeInteresCuentaController::class);
     //</editor-fold>
 
 });

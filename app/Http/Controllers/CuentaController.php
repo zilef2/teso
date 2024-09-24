@@ -7,6 +7,7 @@ use App\helpers\MyModels;
 use App\Models\cuenta;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
@@ -24,7 +25,7 @@ class CuentaController extends Controller
 //        $this->middleware('permission:read cuenta', ['only' => ['index', 'show']]);
 //        $this->middleware('permission:update cuenta', ['only' => ['edit', 'update']]);
 //        $this->middleware('permission:delete cuenta', ['only' => ['destroy', 'destroyBulk']]);
-        $this->thisAtributos = (new cuenta())->getFillable(); //not using
+        $this->thisAtributos = (new cuenta())->getFillable(); 
         $this->arrayBusque = [
             'search',
             'searchNumCuenta',
@@ -87,9 +88,18 @@ class CuentaController extends Controller
         $filters = ['search', 'field', 'order'];
         $filters = array_merge($this->arrayBusque,$filters);
         $perPage = $request->has('perPage') ? $request->perPage : 10;
+        $total = $cuentas->count();
+        $page = request('page', 1);
+        $fromController = new LengthAwarePaginator(
+            $cuentas->get()->forPage($page, $perPage),
+            $total,
+            $perPage,
+            $page,
+            ['path' => request()->url()]
+        );
         return Inertia::render($this->FromController.'/Index', [
-            'fromController'        => $cuentas->paginate($perPage),
-            'total'                 => $cuentas->count(),
+            'fromController'        => $fromController,
+            'total'                 => $total,
 
             'breadcrumbs'           => [['label' => __('app.label.'.$this->FromController), 'href' => route($this->FromController.'.index')]],
             'title'                 => __('app.label.'.$this->FromController),

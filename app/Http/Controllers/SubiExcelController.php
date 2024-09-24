@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\helpers\HelpExcel;
 use App\helpers\Myhelp;
-use App\Imports\PersonalImport;
+use App\Imports\CuentaImport;
 use App\Models\cuenta;
 use App\Models\Formulario;
 use Illuminate\Http\Request;
@@ -17,7 +17,7 @@ class SubiExcelController extends Controller
 
     public function subirexceles()
     { //just  a view
-        Myhelp::EscribirEnLog($this, ' se subio un excel');
+        Myhelp::EscribirEnLog($this, ' ingreso a la vista subir excel');
 
         return Inertia::render('Excel/subirExceles', [
             'title' => __('app.label.user'),
@@ -75,7 +75,7 @@ class SubiExcelController extends Controller
                     return back()->with('warning', $mensageWarning);
                 }
 
-                $personalImp = new PersonalImport();
+                $personalImp = new CuentaImport();
                 Excel::import($personalImp, $request->archivo1);
 
                 $countfilas = $personalImp->ContarFilas;
