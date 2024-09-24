@@ -55,6 +55,32 @@ let formatoNecesita =[
     'tipo_de_recurso',
     'convenio',
 ]
+let formatoNecesita2 =[
+    'codigo_cuenta_contable',
+    'nombre_cuenta',
+    'codigo',
+    'documento',
+    'fecha_elaboracion',
+    'descripcion',
+    'comprobante',
+    'valor_debito',
+    'valor_credito',
+    'nit',
+    'nombre',
+    'cod_costos',
+    'desc_costos',
+    'codigo_interno_cuenta',
+    'codigo_tercero',
+    'ccostos',
+    'saldo_inicial',
+    'saldo_final',
+    'nombre_empresa',
+    'nit_empresa',
+    'documento_ref',
+    'consecutivo',
+    'periodo',
+    'plan_cuentas',
+]
 // data.UniversidadSelect = vectorSelect(data.UniversidadSelect,props.UniversidadSelect,'una')
 
 // const downloadExcel = () => { window.open('users/export/' + form.quincena + '/' + (form.fecha_ini.month) + '/' + form.fecha_ini.year, '_blank') }
@@ -82,7 +108,7 @@ let formatoNecesita =[
             <div class="relative bg-white dark:bg-gray-800 shadow sm:rounded-lg">
                 <section class="text-gray-600 body-font">
                     <div class="container px-5 py-24 mx-auto">
-                        
+
 <!--                        v-if="can(['create user'])"-->
                         <div  class="flex flex-wrap -m-4">
                             <!-- user trabajadors -->
@@ -134,8 +160,8 @@ let formatoNecesita =[
                                     </div>
                                 </div>
                             </div>
-                            
-                            
+
+
                             <div class="p-4 md:w-1/2">
                                 <div class="h-full border-2 border-gray-200 border-opacity-60 rounded-lg overflow-hidden">
                                     <TableCellsIcon class=" h-24 lg:h-48 md:h-36 w-full object-cover object-center" />
@@ -164,7 +190,7 @@ let formatoNecesita =[
 
                                         <h2 class="text-xl text-gray-900 dark:text-white mt-12">El formato necesita las siguientes columnas</h2>
                                         <ul class="list-decimal my-6 mx-5">
-                                            <li v-for="campos in formatoNecesita" class="text-lg">
+                                            <li v-for="campos in formatoNecesita2" class="text-lg">
                                                 {{ campos }}
                                             </li>
                                         </ul>
@@ -185,7 +211,7 @@ let formatoNecesita =[
                                 </div>
                             </div>
 
-                            
+
                         </div>
                     </div>
                 </section>
