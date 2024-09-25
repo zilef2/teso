@@ -26,6 +26,7 @@ const toggleContent2 = () => {
 const sidebarButtonsNormal = [ //SAME AS WEB.PHP
     'cuenta',
     'transaccion',
+    'Comprobante',
 ];
 
 function capitalizeFirstLetter(string) {

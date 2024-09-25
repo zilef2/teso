@@ -10,6 +10,7 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\CuentaController;
 use App\Http\Controllers\TransaccionController;
 use App\Http\Controllers\PorcentajeInteresCuentaController;
+use App\Http\Controllers\ComprobanteController;
 
 use App\Http\Controllers\ZipController;
 use App\Http\Controllers\SubiExcelController;
@@ -39,7 +40,9 @@ Route::middleware(['auth'])->group(callback: function () {
 
     Route::post('/user/destroy-bulk', [UserController::class, 'destroyBulk'])->name('user.destroy-bulk');
      Route::get('/subirexceles', [SubiExcelController::class, 'subirexceles'])->name('subirexceles');
-     Route::post('/uploadExcel', [SubiExcelController::class, 'uploadExcel'])->name('uploadExcel');
+     Route::post('/upExCuentas', [SubiExcelController::class, 'upExCuentas'])->name('upExCuentas');
+     Route::post('/upExTransacciones', [SubiExcelController::class, 'upExTransacciones'])->name('upExTransacciones');
+     Route::post('/uploadFileComprobantes', [SubiExcelController::class, 'uploadFileComprobantes'])->name('uploadFileComprobantes');
 
 
     Route::resource('/role', RoleController::class)->except('create', 'show', 'edit');
@@ -67,6 +70,7 @@ Route::middleware(['auth'])->group(callback: function () {
     Route::resource('/cuenta', CuentaController::class);
     Route::resource('/transaccion', TransaccionController::class);
     Route::resource('/porcentajeInteresCuenta', PorcentajeInteresCuentaController::class);
+    Route::resource('/Comprobante', ComprobanteController::class);
     //</editor-fold>
 
 });

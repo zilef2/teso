@@ -29,9 +29,7 @@ composer require intervention/image-laravel
         npm install --save luxon vue-datetime weekstart
 
 
-lio con composer
-
-//configurar global
+//configurar composer global
 composer global config --global
 
 no optimizar para produccion
@@ -46,3 +44,4 @@ composer dump-autoload --profile -vvv
 ..
 
 //sudo systemctl restart nginx
+

@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\helpers\HelpExcel;
 use App\helpers\Myhelp;
+use App\Imports\ComprobanteImport;
 use App\Imports\CuentaImport;
+use App\Imports\TransaccionesImport;
 use App\Models\cuenta;
 use App\Models\Formulario;
 use Illuminate\Http\Request;
@@ -61,7 +63,7 @@ class SubiExcelController extends Controller
         return $mensaje;
     }
 
-    public function uploadExcel(Request $request){
+    public function upExCuentas(Request $request){
         Myhelp::EscribirEnLog($this, get_called_class(), 'importando', false);
         $countfilas = 0;
         try {
@@ -69,7 +71,7 @@ class SubiExcelController extends Controller
             if ($request->archivo1) {
 
                 $helpExcel = new HelpExcel();
-                $mensageWarning = $helpExcel->validarArchivoExcel($request);
+                $mensageWarning = $helpExcel->validarArchivoExcel($request,'archivo1');
                 if ($mensageWarning != ''){
                     DB::rollback();
                     return back()->with('warning', $mensageWarning);
@@ -81,8 +83,111 @@ class SubiExcelController extends Controller
                 $countfilas = $personalImp->ContarFilas;
 
                 $MensajeWarning = $this->MensajeWar($personalImp);
-                if ($MensajeWarning !== '') {
-                    Formulario::where('user_id', $personalImp->usuario->id)->update(['enviado' => 1]);
+                if ($MensajeWarning !== '') { //exito 
+
+                    return back()->with('success', 'Formularios nuevos: ' . $countfilas)
+                        ->with('warning2', $MensajeWarning);
+                }
+
+                Myhelp::EscribirEnLog($this, 'IMPORT:users', ' finalizo con exito', false);
+                DB::commit();
+                if ($countfilas == 0){
+                    return back()->with('success', __('app.label.op_successfully') . ' No hubo cambios');
+                } else{
+//                    cuenta::where('user_id', $personalImp->usuario->id)->update(['enviado' => 1]);
+
+                    return back()->with('success', __('app.label.op_successfully') . ' Se leyeron ' . $countfilas . ' filas con exito');
+                }
+
+            } else {
+                DB::rollback();
+                return back()->with('error', __('app.label.op_not_successfully') . ' Archivo no seleccionado');
+            }
+        } catch (\Throwable $th) {
+            DB::rollback();
+            $lasession = session('larow') ?? 'error de session';
+            $lasession = $lasession[0] ?? 'error de session';
+            $mensajeError = $th->getMessage() . ' L:' . $th->getLine() . ' Ubi: ' . $th->getFile();
+
+            Myhelp::EscribirEnLog($this, 'IMPORT:users', ' Fallo importacion: ' . $mensajeError, false);
+            return back()->with('error', __('app.label.op_not_successfully') . ' Usuario del error: ' . $lasession . ' error en la iteracion ' . $countfilas . ' ' . $th->getMessage() . ' L:' . $th->getLine() . ' Ubi: ' . $th->getFile());
+        }
+    }
+    
+    
+    public function upExTransacciones(Request $request){
+        Myhelp::EscribirEnLog($this, get_called_class(), 'importando', false);
+        $countfilas = 0;
+        try {
+            DB::beginTransaction();
+            if ($request->archivo2) {
+
+                $helpExcel = new HelpExcel();
+                $mensageWarning = $helpExcel->validarArchivoExcel($request,'archivo2');
+                if ($mensageWarning != ''){
+                    DB::rollback();
+                    return back()->with('warning', $mensageWarning);
+                }
+
+                $personalImp = new TransaccionesImport();
+                Excel::import($personalImp, $request->archivo2);
+
+                $countfilas = $personalImp->ContarFilas;
+
+                $MensajeWarning = $this->MensajeWar($personalImp);
+                if ($MensajeWarning !== '') { //exito
+
+                    return back()->with('success', 'Formularios nuevos: ' . $countfilas)
+                        ->with('warning2', $MensajeWarning);
+                }
+
+                Myhelp::EscribirEnLog($this, 'IMPORT:users', ' finalizo con exito', false);
+                DB::commit();
+                if ($countfilas == 0){
+                    return back()->with('success', __('app.label.op_successfully') . ' No hubo cambios');
+                } else{
+//                    cuenta::where('user_id', $personalImp->usuario->id)->update(['enviado' => 1]);
+
+                    return back()->with('success', __('app.label.op_successfully') . ' Se leyeron ' . $countfilas . ' filas con exito');
+                }
+
+            } else {
+                DB::rollback();
+                return back()->with('error', __('app.label.op_not_successfully') . ' Archivo no seleccionado');
+            }
+        } catch (\Throwable $th) {
+            DB::rollback();
+            $lasession = session('larow') ?? 'error de session';
+            $lasession = $lasession[0] ?? 'error de session';
+            $mensajeError = $th->getMessage() . ' L:' . $th->getLine() . ' Ubi: ' . $th->getFile();
+
+            Myhelp::EscribirEnLog($this, 'IMPORT:users', ' Fallo importacion: ' . $mensajeError, false);
+            return back()->with('error', __('app.label.op_not_successfully') . ' Usuario del error: ' . $lasession . ' error en la iteracion ' . $countfilas . ' ' . $th->getMessage() . ' L:' . $th->getLine() . ' Ubi: ' . $th->getFile());
+        }
+    }
+    
+    
+    public function uploadFileComprobantes(Request $request){
+        Myhelp::EscribirEnLog($this, get_called_class(), 'importando', false);
+        $countfilas = 0;
+        try {
+            DB::beginTransaction();
+            if ($request->archivo3) {
+
+                $helpExcel = new HelpExcel();
+                $mensageWarning = $helpExcel->validarArchivoExcel($request,'archivo3');
+                if ($mensageWarning != ''){
+                    DB::rollback();
+                    return back()->with('warning', $mensageWarning);
+                }
+
+                $personalImp = new ComprobanteImport();
+                Excel::import($personalImp, $request->archivo3);
+
+                $countfilas = $personalImp->ContarFilas;
+
+                $MensajeWarning = HelpExcel::MensajeWarComprobante($personalImp);
+                if ($MensajeWarning !== '') { //exito
 
                     return back()->with('success', 'Formularios nuevos: ' . $countfilas)
                         ->with('warning2', $MensajeWarning);

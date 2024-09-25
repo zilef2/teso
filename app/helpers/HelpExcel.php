@@ -6,33 +6,28 @@ use DateTime;
 
 // use Hamcrest\Type\IsInteger;
 
-class HelpExcel{
+class HelpExcel
+{
 
-    public static function getFechaExcel($lafecha,$inDate = false) {
+    public static function getFechaExcel($lafecha, $inDate = false)
+    {
         //the date fix
-        if(is_numeric($lafecha)){ //toproof
+        if (is_numeric($lafecha)) { //toproof
             $unixDate = ($lafecha - 25568) * 86400;
+            $formatoDefinido = 'd/m/Y';
             // $unixDate = ($lafecha - 25569) * 86400;
-            $readableDate = date('Y/m/d', $unixDate);
-            $fechaReturn = DateTime::createFromFormat('Y/m/d', $readableDate);
-
-            if($fechaReturn === false){
-                $fechaReturn = DateTime::createFromFormat('Y/m/d', $lafecha);
-                if ($fechaReturn === false) {
-                    $fechaReturn = DateTime::createFromFormat('d/m/Y', $lafecha);
-                    if ($fechaReturn === false) {
-                        throw new \Exception('Fecha inválida 1');
-                        // throw new \Exception('Fecha inválida '.$lafecha. ' --++--');
-                        return null;
-                    }
-                }
+//            $readableDate = date('Y/m/d', $unixDate);
+            $readableDate = date($formatoDefinido, $unixDate);
+            $fechaReturn = DateTime::createFromFormat($formatoDefinido, $readableDate);
+            if ($fechaReturn === false) {
+                 throw new \Exception('Fecha inválida '.$lafecha. ' --++--');
             }
-        }else{
+        } else {
             $fechaReturn = DateTime::createFromFormat('Y/m/d', $lafecha);
             if ($fechaReturn === false) {
                 $fechaReturn = DateTime::createFromFormat('d/m/Y', $lafecha);
                 if ($fechaReturn === false) {
-                    throw new \Exception('Fecha inválida 2'.$lafecha);
+                    throw new \Exception('Fecha inválida 2' . $lafecha);
                     return null;
                 }
             }
@@ -40,20 +35,51 @@ class HelpExcel{
 
         if ($inDate) {
             return $fechaReturn->format('Y-m-d');
-        }else return $fechaReturn;
+        } else return $fechaReturn;
     }
 
-    public function validarArchivoExcel($request){
-        $exten = $request->archivo1->getClientOriginalExtension();
+    public function validarArchivoExcel($request, $nombreArchivo)
+    {
+//        $exten = $request->archivo1->getClientOriginalExtension();
+        $exten = $request->{$nombreArchivo}->getClientOriginalExtension();
         // Validar que el archivo es de Excel
         if ($exten != 'xlsx' && $exten != 'xls') {
             return 'El archivo debe ser de Excel';
         }
-        $pesoKilobyte = ((int)($request->archivo1->getSize())) / (1024);
-        if ($pesoKilobyte > (12*1024)) { //debe pesar menos de 12MB
+        $pesoKilobyte = ((int)($request->{$nombreArchivo}->getSize())) / (1024);
+        if ($pesoKilobyte > (12 * 1024)) { //debe pesar menos de 12MB
             return 'El archivo debe pesar menos de 12MB';
         }
         return '';
     }
 
+
+    public static function MensajeWarComprobante($personalImp): string
+    {
+        $bandera = false;
+        $contares = [
+            'contarVacios',
+        ];
+        $mensajesWarnings = [
+            '# Filas con celdas vacias: ',
+        ];
+
+
+        foreach ($contares as $key => $value) {
+            $$value = $personalImp->{$value};
+            $bandera = $bandera || $$value > 0;
+        }
+
+        $mensaje = '';
+        if ($bandera) {
+            foreach ($mensajesWarnings as $key => $value) {
+                if (${$contares[$key]} > 0) {
+                    $NombreVariable = $contares[$key] . 'string';
+                    $mensaje .= $value . '<b>' . ${$contares[$key]} . '</b>.<br><br> ' . $personalImp->{$NombreVariable} . '<br> ';
+                }
+            }
+        }
+
+        return $mensaje;
+    }
 }
