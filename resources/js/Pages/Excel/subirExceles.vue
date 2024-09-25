@@ -179,6 +179,7 @@ let formatoNecesita3 = [
                                         <form @submit.prevent="uploadFileCuentas" id="upload">
                                             <input type="file" @input="form.archivo1 = $event.target.files[0]"
                                                    accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"/>
+                                            <br><br>
                                             <progress v-if="form.progress" :value="form.progress.percentage" max="100"
                                                       class="bg-sky-200">
                                                 {{ form.progress.percentage }}%
@@ -229,6 +230,7 @@ let formatoNecesita3 = [
                                             <input type="file" @input="form.archivo2 = $event.target.files[0]"
                                                    accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"/>
                                             <!--                                            <p class="font-bold text-red-600">AUN NO DISPONIBLE</p>-->
+                                            <br><br>
                                             <progress v-if="form.progress" :value="form.progress.percentage" max="100"
                                                       class="bg-sky-200">
                                                 {{ form.progress.percentage }}%
@@ -278,6 +280,7 @@ let formatoNecesita3 = [
                                             <input type="file" @input="form.archivo3 = $event.target.files[0]"
                                                    accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"/>
                                             <!--                                            <p class="font-bold text-red-600">AUN NO DISPONIBLE</p>-->
+                                            <br><br>
                                             <progress v-if="form.progress" :value="form.progress.percentage" max="100"
                                                       class="bg-sky-200">
                                                 {{ form.progress.percentage }}%

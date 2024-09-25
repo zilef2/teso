@@ -102,7 +102,7 @@ class TransaccionController extends Controller
         $this->Mapear($transaccions);
 //        $losSelect = $this->losSelect();
         
-        $perPage = $request->has('perPage') ? $request->perPage : 10000;
+        $perPage = $request->has('perPage') ? $request->perPage : 100;
         $total = $transaccions->count();
         $page = request('page', 1);
         $fromController = new LengthAwarePaginator(
@@ -115,6 +115,7 @@ class TransaccionController extends Controller
         
         $filters = ['search', 'field', 'order'];
         $filters = array_merge($this->arrayBusque,$filters);
+        
         return Inertia::render($this->FromController.'/Index', [
             'fromController'        => $fromController,
             'total'                 => $total,

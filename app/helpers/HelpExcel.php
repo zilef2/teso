@@ -28,7 +28,7 @@ class HelpExcel
                 $fechaReturn = DateTime::createFromFormat('d/m/Y', $lafecha);
                 if ($fechaReturn === false) {
                     throw new \Exception('Fecha inválida 2' . $lafecha);
-                    return null;
+//                    return null;
                 }
             }
         }

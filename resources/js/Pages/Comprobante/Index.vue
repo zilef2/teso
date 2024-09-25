@@ -77,13 +77,8 @@ const selectAll = (event) => {
         })
     }
 }
-const select = () => {
-    if (props.fromController?.data.length == data.selectedId.length) {
-        data.multipleSelect = true
-    } else {
-        data.multipleSelect = false
-    }
-}
+
+const select = () => data.multipleSelect = props.fromController?.data.length === data.selectedId.length;
 // <!--</editor-fold>-->
 
 
@@ -113,9 +108,7 @@ const titulos = [
     { order: 'plan_cuentas', label: 'plan_cuentas', type: 'text' },
   // { order: 'inventario', label: 'inventario', type: 'foreign',nameid:'nombre'},
 ];
-
 </script>
-
 <template>
     <Head :title="props.title" />
 

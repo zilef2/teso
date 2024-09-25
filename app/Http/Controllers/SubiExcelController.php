@@ -82,7 +82,8 @@ class SubiExcelController extends Controller
 
                 $countfilas = $personalImp->ContarFilas;
 
-                $MensajeWarning = $this->MensajeWar($personalImp);
+                $MensajeWarning = HelpExcel::MensajeWarComprobante($personalImp);
+                
                 if ($MensajeWarning !== '') { //exito 
 
                     return back()->with('success', 'Formularios nuevos: ' . $countfilas)
@@ -134,7 +135,8 @@ class SubiExcelController extends Controller
 
                 $countfilas = $personalImp->ContarFilas;
 
-                $MensajeWarning = $this->MensajeWar($personalImp);
+                $MensajeWarning = HelpExcel::MensajeWarComprobante($personalImp);
+                
                 if ($MensajeWarning !== '') { //exito
 
                     return back()->with('success', 'Formularios nuevos: ' . $countfilas)

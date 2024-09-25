@@ -2,6 +2,7 @@
 
 namespace App\Imports;
 
+use App\helpers\HelpExcel;
 use App\helpers\Myhelp;
 use App\Models\transaccion;
 use Exception;
@@ -17,13 +18,7 @@ class TransaccionesImport implements ToModel, WithStartRow
     public int $contarVacios;
     public string $contarVaciosstring;
 
-    protected $DebenSerNulos;
-    private array $vectorCategoriaInsensitive;
-    private array $vectorMlistaprosInsensitive;
-    private array $vectorMplanInsensitive;
-    private array $vectorMlineaInsensitive;
-    private string $contarTotalIncongruentestring;
-    private int $contarTotalIncongruente;
+    protected array $DebenSerNulos;
 
 
     /**
@@ -31,19 +26,17 @@ class TransaccionesImport implements ToModel, WithStartRow
      */
     function __construct()
     {
-//        if ($valor < 0) {
-//            throw new \Exception("El valor no puede ser negativo.");
-//        }
+        //        if ($valor < 0) {
+        //            throw new \Exception("El valor no puede ser negativo.");
+        //        }
 
         //contares
-        $this->ContarFilasAbsolutas = 0;
+        $this->ContarFilasAbsolutas = 1; //startRow = 2, por tanto se tiene que comenzar en 1
         $this->ContarFilas = 0;
 
         //errores
         $this->contarVacios = 0;
         $this->contarVaciosstring = "";
-        $this->contarTotalIncongruente = 0;
-        $this->contarTotalIncongruentestring = "";
         $this->DebenSerNulos = [
             'codigo_cuenta_contable',
             'nombre_cuenta',
@@ -73,8 +66,7 @@ class TransaccionesImport implements ToModel, WithStartRow
     }
 
 
-    public function startRow(): int
-    {
+    public function startRow(): int{
         return 2;
     }
 
@@ -94,13 +86,13 @@ class TransaccionesImport implements ToModel, WithStartRow
      *
      * @return \Illuminate\Database\Eloquent\Model|null
      */
-    public function model(array $row)
-    {
+    public function model(array $row){
+        
+        $this->ContarFilasAbsolutas++;
         try {
-            $this->ContarFilasAbsolutas++;
 
             if ($this->validarNull($row)) return null;
-            $this->Requeridos($row); //this has dd function
+            if($this->Requeridos($row) === -1) return null;
             
             return $this->TheNewObject($row);
         } catch (\Throwable $th) {
@@ -113,23 +105,26 @@ class TransaccionesImport implements ToModel, WithStartRow
     /**
      * @throws \Exception
      */
-    public function Requeridos($theRow)
-    {
-        $this->ContarFilasAbsolutas++;
+    public function Requeridos($theRow){
+//        $this->ContarFilasAbsolutas++;
         $columnasPermitidasVacias = [
-          11,12,13  
+          10,11,12,24
         ];
+        
+        
         foreach ($theRow as $key => $value) {
             if(in_array($key,$columnasPermitidasVacias)){
                 continue;
             }
             if (is_null($value) || $value === ''){
-//                dd($theRow,$value,'VALOR VACIO EN LA FILA '.$this->ContarFilasAbsolutas);
+                //todo: al final, avisar que filas tubieron vacios, pero no frenar el proceso por ello 
+                return -1;
+                dd($theRow,$value,'VALOR VACIO EN LA FILA '.$this->ContarFilasAbsolutas);
                 throw new Exception('VALOR VACIO EN LA FILA '.$this->ContarFilasAbsolutas);
-                
 //                return false;
             }
         }
+        
         if (!is_string(($theRow[0]))){ //intval
             $mensajesito = 'TIPO DE VALOR INCORRECTO (deberia ser un texto) EN LA FILA ';
             dd($theRow,$theRow[0],$mensajesito.$this->ContarFilasAbsolutas);
@@ -144,19 +139,18 @@ class TransaccionesImport implements ToModel, WithStartRow
 //        if (!is_string($theRow[2])){
 //            dd($theRow,$theRow[2],'TIPO DE VALOR INCORRECTO (deberia ser un texto) EN LA FILA '.$this->ContarFilasAbsolutas);
 //        }
-
         return true;
     }
 
-    private function TheNewObject($therow)
-    {
+    private function TheNewObject($therow){
+        
         return new transaccion([
         'codigo_cuenta_contable' => $therow[0], 
         'nombre_cuenta' => $therow[1], 
         'codigo' => $therow[2], 
-        'documento' => $therow[3], 
-        'fecha_elaboracion' => $therow[4], 
-        'descripcion' => $therow[5], 
+        'documento' => intval($therow[3]),
+        'fecha_elaboracion' => HelpExcel::getFechaExcel($therow[4]), 
+        'descripcion' => $therow[5],
         'comprobante' => $therow[6], 
         'valor_debito' => $therow[7], 
         'valor_credito' => $therow[8], 
@@ -174,7 +168,7 @@ class TransaccionesImport implements ToModel, WithStartRow
         'documento_ref' => $therow[20], 
         'consecutivo' => $therow[21], 
         'periodo' => $therow[22], 
-        'plan_cuentas' => $therow[23], 
+        'plan_cuentas' => $therow[23],
         ]);
     }
 }

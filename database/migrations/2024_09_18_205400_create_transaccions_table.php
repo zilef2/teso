@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('transaccions', function (Blueprint $table) {
-            $table->uuid();
+            $table->uuid('id')->primary();
             $table->softDeletes();
             
             $table->string('codigo_cuenta_contable')->nullable();

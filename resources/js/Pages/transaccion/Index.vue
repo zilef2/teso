@@ -212,7 +212,7 @@ const titulos = [
                                 </td>
                                 <td class="whitespace-nowrap py-4 px-2 sm:py-3 text-center">{{ ++indexu }}</td>
 <!--                                <td v-for="titulo in titulos" class="whitespace-nowrap py-4 px-2 sm:py-3">-->
-                                <td v-for="titulo in props.thisAtributos" class="whitespace-nowrap py-4 px-2 sm:py-3">
+                                <td v-for="titulo in props.thisAtributos" class="whitespace-wrap py-4 px-2 sm:py-3">
                                     <span> {{ claseFromController[titulo] }} </span>
                                 </td>
 
