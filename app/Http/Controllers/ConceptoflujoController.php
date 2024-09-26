@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\helpers\Myhelp;
 use App\helpers\MyModels;
+use App\Models\concepto_flujo;
 use App\Models\transaccion;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
@@ -11,7 +12,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
-class TransaccionController extends Controller
+class ConceptoflujoController extends Controller
 {
     public string $FromController = 'transaccion';
     public array $arrayBusque;
@@ -39,7 +40,7 @@ class TransaccionController extends Controller
     }
 
 
-   private function Mapear($clase)
+    private function Mapear($clase)
     {
         $Result = $clase->map(function ($clas) {
             $clas->cuenta = $clas->cuenta();
