@@ -2,7 +2,7 @@
 
     /*
      *
-     *       
+     *
 recuerda los de transaccion
      */
 return [
@@ -13,8 +13,25 @@ return [
         'Comprobante' => 'Comprobante',
         'porcentajeIC' => 'Porcentaje Interes',
     ],
-    
+
     'label' => [
+        //transaccion
+        'documento' => 'Documento',
+//        'descripcion' => 'Descripcion',
+//        'comprobante' => 'Comprobante',
+//        'valor_debito' => 'Valor debito',
+//        'valor_credito' => 'Valor credito',
+        'cod_costos' => 'Cod costos',
+        'desc_costos' => 'Desc costos',
+        'codigo_interno_cuenta' => 'Codigo interno cuenta',
+        'codigo_tercero' => 'Codigo tercero',
+        'saldo_inicial' => 'Saldo inicial',
+        'saldo_final' => 'Saldo final',
+        'nombre_empresa' => 'Nombre empresa',
+        'nit_empresa' => 'Nit empresa',
+        'periodo' => 'Periodo',
+
+
         //Comprobante
         'Comprobante' => 'Comprobante',
         'descripcion' => 'descripcion',
@@ -37,22 +54,22 @@ return [
         'porcentajeIC' => 'Porcentaje Interes',
         'mes' => 'Mes',
         'valor' => 'Valor',
-        
+
         //transaccion
         'transaccion' => 'transaccion',
         'cuenta' => 'cuenta',
         'cuentas' => 'cuentas',
-        
+
         //cuenta
-        'estado' => 'Estado', 
-        'codigo_cuenta_contable' => 'codigo cuenta contable', 
-        'numero_cuenta_bancaria' => 'numero cuenta bancaria', 
-        'banco' => 'banco', 
-        'tipo_de_cuenta' => 'tipo de cuenta', 
-        'tipo_de_recurso' => 'tipo de recurso', 
+        'estado' => 'Estado',
+        'codigo_cuenta_contable' => 'codigo cuenta contable',
+        'numero_cuenta_bancaria' => 'numero cuenta bancaria',
+        'banco' => 'banco',
+        'tipo_de_cuenta' => 'tipo de cuenta',
+        'tipo_de_recurso' => 'tipo de recurso',
         'convenio' => 'convenio',
-        
-        
+
+
         //registrosmedio
         'registrosmedio' => 'Medios',
         'EvidenciaMedios' => 'Evidencia de Medios',

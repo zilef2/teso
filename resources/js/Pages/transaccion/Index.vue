@@ -13,9 +13,9 @@ import pkg from 'lodash';
 import Pagination from '@/Components/Pagination.vue';
 import {ChevronUpDownIcon, PencilIcon, TrashIcon} from '@heroicons/vue/24/solid';
 // import { CursorArrowRippleIcon, ChevronUpDownIcon,QuestionMarkCircleIcon, EyeIcon, PencilIcon, TrashIcon, UserGroupIcon } from '@heroicons/vue/24/solid';
-import Create from '@/Pages/cuenta/Create.vue';
-import Edit from '@/Pages/cuenta/Edit.vue';
-import Delete from '@/Pages/cuenta/Delete.vue';
+import Create from '@/Pages/transaccion/Create.vue';
+import Edit from '@/Pages/transaccion/Edit.vue';
+import Delete from '@/Pages/transaccion/Delete.vue';
 
 import Checkbox from '@/Components/Checkbox.vue';
 import InfoButton from '@/Components/InfoButton.vue';
@@ -44,7 +44,7 @@ const data = reactive({
         order: props.filters.order,
         perPage: props.perPage,
     },
-    cuentao: null,
+    transacciono: null,
     selectedId: [],
     multipleSelect: false,
     createOpen: false,
@@ -63,7 +63,7 @@ const order = (field) => {
 
 watch(() => _.cloneDeep(data.params), debounce(() => {
     let params = pickBy(data.params)
-    router.get(route("cuenta.index"), params, {
+    router.get(route("transaccion.index"), params, {
         replace: true,
         preserveState: true,
         preserveScroll: true,
@@ -74,8 +74,8 @@ const selectAll = (event) => {
     if (event.target.checked === false) {
         data.selectedId = []
     } else {
-        props.fromController?.data.forEach((cuenta) => {
-            data.selectedId.push(cuenta.id)
+        props.fromController?.data.forEach((transaccion) => {
+            data.selectedId.push(transaccion.id)
         })
     }
 }
@@ -111,44 +111,44 @@ const titulos = [
         <Breadcrumb :title="title" :breadcrumbs="breadcrumbs" class="capitalize text-xl font-bold"/>
         <div class="space-y-4">
             <!-- {{ props.fromController.data[2] }} -->
-            <div class="px-4 sm:px-0">
-                <div class="rounded-lg overflow-hidden w-fit">
+            <div class="flex justify-between px-4 sm:px-0">
+                <div class=" rounded-xl overflow-hidden w-fit">
                     <PrimaryButton class="rounded-none" @click="data.createOpen = true"
                         v-if="can(['istesorera'])">
                         {{ lang().button.new }}
                     </PrimaryButton>
+                    <Link v-if="can(['isSuper'])" :href="route('subirexceles')">
+                        <PrimaryButton class="rounded-none">
+                            Subir transacciones
+                        </PrimaryButton>
+                    </Link>
+
 
 <!--                    <PrimaryButton class="rounded-none" @click="data.subirOpen = true"-->
 <!--                        v-if="can(['isSuper'])">-->
 <!--                        Subir-->
 <!--                    </PrimaryButton>-->
 
-                    <Create v-if="can(['create cuenta'])" :numberPermissions="props.numberPermissions"
+                    <Create v-if="can(['create transaccion'])" :numberPermissions="props.numberPermissions"
                         :titulos="titulos" :show="data.createOpen" @close="data.createOpen = false" :title="props.title"
                         :losSelect=props.losSelect />
-                    <Link v-if="can(['isSuper'])" :href="route('subirexceles')">
-                        <PrimaryButton class="rounded-none">
-                            Subir Cuentas
-                        </PrimaryButton>
-                    </Link>
-<!--                    <SubirCuenta v-if="can(['isSuper'])" :numberPermissions="props.numberPermissions"-->
-<!--                        :titulos="titulos" :show="data.subirOpen" @close="data.subirOpen = false" :title="props.title"-->
-<!--                        :losSelect=props.losSelect />-->
 
-                    <Edit v-if="can(['update cuenta'])" :titulos="titulos"
+                    <Edit v-if="can(['update transaccion'])" :titulos="titulos"
                         :numberPermissions="props.numberPermissions" :show="data.editOpen" @close="data.editOpen = false"
-                        :cuentaa="data.cuentao" :title="props.title" :losSelect=props.losSelect />
+                        :transacciona="data.transacciono" :title="props.title" :losSelect=props.losSelect />
 
-                    <Delete v-if="can(['delete cuenta'])" :numberPermissions="props.numberPermissions"
-                        :show="data.deleteOpen" @close="data.deleteOpen = false" :cuentaa="data.cuentao"
+                    <Delete v-if="can(['delete transaccion'])" :numberPermissions="props.numberPermissions"
+                        :show="data.deleteOpen" @close="data.deleteOpen = false" :transacciona="data.transacciono"
                         :title="props.title" />
                 </div>
+                <div class="my-1">Reg/pág <SelectInput v-model="data.params.perPage" :dataSet="data.dataSet" /></div>
+
             </div>
             <div class="relative bg-white dark:bg-gray-800 shadow sm:rounded-lg">
                 <div class="flex justify-between p-2 gap-6">
                     <div class="flex space-x-2">
                         <!-- <DangerButton @click="data.deleteBulkOpen = true"
-                            v-show="data.selectedId.length != 0 && can(['delete cuenta'])" class="px-3 py-1.5"
+                            v-show="data.selectedId.length != 0 && can(['delete transaccion'])" class="px-3 py-1.5"
                             v-tooltip="lang().tooltip.delete_selected">
                             <TrashIcon class="w-5 h-5" />
                         </DangerButton> -->
@@ -195,15 +195,15 @@ const titulos = [
                                 <td v-if="numberPermissions > 1" class="whitespace-nowrap py-4 w-12 px-2 sm:py-3">
                                     <div class="flex justify-center items-center">
                                         <div class="rounded-md overflow-hidden">
-<!--                                            v-show="can(['update cuenta'])"-->
+<!--                                            v-show="can(['update transaccion'])"-->
                                             <InfoButton  type="button"
-                                                @click="(data.editOpen = true), (data.cuentao = claseFromController)"
+                                                @click="(data.editOpen = true), (data.transacciono = claseFromController)"
                                                 class="px-2 py-1.5 rounded-none" v-tooltip="lang().tooltip.edit">
                                                 <PencilIcon class="w-4 h-4" />
                                             </InfoButton>
-<!--                                            v-show="can(['delete cuenta'])"-->
+<!--                                            v-show="can(['delete transaccion'])"-->
                                             <DangerButton  type="button"
-                                                @click="(data.deleteOpen = true), (data.cuentao = claseFromController)"
+                                                @click="(data.deleteOpen = true), (data.transacciono = claseFromController)"
                                                 class="px-2 py-1.5 rounded-none" v-tooltip="lang().tooltip.delete">
                                                 <TrashIcon class="w-4 h-4" />
                                             </DangerButton>
@@ -233,9 +233,7 @@ const titulos = [
                 <div v-if="props.total > 0"
                     class="flex justify-between items-center p-2 border-t border-gray-200 dark:border-gray-700">
                     <Pagination :links="props.fromController" :filters="data.params" />
-                    <div class="ml-8">
-                        Reg/pág <SelectInput v-model="data.params.perPage" :dataSet="data.dataSet" />
-                    </div>
+
                 </div>
             </div>
         </div>
