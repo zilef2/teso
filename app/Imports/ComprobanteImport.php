@@ -14,14 +14,18 @@ class ComprobanteImport implements ToModel
     public int $ContarFilasAbsolutas;
     public int $ContarFilas;
 
-    public int $contarVacios;
-    public string $contarVaciosstring;
+    public int $SoloUnaVez = 0;
 
     protected $DebenSerNulos;
     private array $vectorCategoriaInsensitive;
     private array $vectorMlistaprosInsensitive;
     private array $vectorMplanInsensitive;
     private array $vectorMlineaInsensitive;
+
+    //manejo de errores
+    public int $contarVacios;
+    public string $contarVaciosstring;
+    public string $nombrePropio;
 
 
     /**
@@ -33,6 +37,7 @@ class ComprobanteImport implements ToModel
 //            throw new \Exception("El valor no puede ser negativo.");
 //        }
 
+        $this->nombrePropio = 'comprobante';
         //contares
         $this->ContarFilasAbsolutas = 0;
         $this->ContarFilas = 0;
@@ -89,14 +94,32 @@ class ComprobanteImport implements ToModel
         try {
             $this->ContarFilasAbsolutas++;
 
+
             if ($this->validarNull($row)) return null;
             $this->Requeridos($row); //this has dd function
-            
+
+            if($this->SoloUnaVez === 0){
+                [$cuantaVeces,$mesYanio] = $this->ValidarArchivoHaSidoGuardadoAnteriormente($row);
+                if($cuantaVeces > 0){
+                    throw new \Exception('|Comprobantes ya cargados del mes: '.$mesYanio);
+
+                }
+            }
+
+
             return $this->TheNewObject($row);
-        } catch (\Throwable $th) {
-            $mensajeError = ' Fallo dentro de la importacion: ' . $th->getMessage() . ' L:' . $th->getLine() . ' Ubi: ' . $th->getFile();
-            Myhelp::EscribirEnLog($this, 'IMPORT:cuentas', $mensajeError, false);
-            dd($mensajeError, 'fila ' . $this->ContarFilasAbsolutas);
+        }catch (\Throwable $th) {
+            if(str_starts_with($th->getMessage(),'|')) {
+                throw new \Exception(
+                    $th->getMessage()
+                );
+            }else{
+                $mensajeError = '  ' . $th->getMessage() . '. Informar al desarrollador - L:' . $th->getLine() . ' Ubi: ' . $th->getFile();
+                Myhelp::EscribirEnLog($this, 'IMPORT:comprobante', $mensajeError, false);
+                throw new \Exception(
+                    $mensajeError
+                );
+            }
         }
     }
 
@@ -107,7 +130,7 @@ class ComprobanteImport implements ToModel
     {
         $this->ContarFilasAbsolutas++;
         $columnasPermitidasVacias = [
-          11,12,13 
+          11,12,13
         ];
         foreach ($theRow as $key => $value) {
             if(in_array($key,$columnasPermitidasVacias)){
@@ -116,7 +139,7 @@ class ComprobanteImport implements ToModel
             if (is_null($value) || $value === ''){
 //                dd($theRow,$value,'VALOR VACIO EN LA FILA '.$this->ContarFilasAbsolutas);
                 throw new \Exception('VALOR VACIO EN LA FILA '.$this->ContarFilasAbsolutas);
-                
+
 //                return false;
             }
         }
@@ -131,7 +154,7 @@ class ComprobanteImport implements ToModel
             dd($theRow,$theRow[1],'TIPO DE VALOR INCORRECTO (deberia ser un texto) EN LA FILA '.$this->ContarFilasAbsolutas);
 //            return false;
         }
-        
+
         //validar valor_debito valor_credito
 //        if (!is_string($theRow[2])){
 //            dd($theRow,$theRow[2],'TIPO DE VALOR INCORRECTO (deberia ser un texto) EN LA FILA '.$this->ContarFilasAbsolutas);
@@ -163,6 +186,20 @@ class ComprobanteImport implements ToModel
         'documento_ref' => $therow[17],
         'plan_cuentas' => $therow[18],
         ]);
+    }
+
+    private function ValidarArchivoHaSidoGuardadoAnteriormente($therow)
+    {
+        $laFecha = HelpExcel::getFechaExcel($therow[7]);
+        $mes = $laFecha->format('m'); // Obtiene el mes (en formato numérico)
+        $anio = $laFecha->format('Y'); // Obtiene el año
+
+        $ExisteUnComprobante = Comprobante::WhereYear('fecha_elaboracion',$anio)
+            ->whereMonth('fecha_elaboracion',$mes)->count();
+
+        $mesYanio = $mes . '-'. $anio;
+        $this->SoloUnaVez++;
+        return [$ExisteUnComprobante,$mesYanio];
     }
 }
 

@@ -38,7 +38,7 @@ function capitalizeFirstLetter(string) {
 <template>
     <div class="text-gray-300 pt-5 pb-20">
         <div class="flex justify-center">
-            <div class="rounded-full flex items-center justify-center bg-primary text-gray-300 w-12 h-12 text-4xl uppercase">
+            <div class="rounded-full flex items-center justify-center bg-primary text-gray-300 w-16 h-16 text-4xl uppercase">
                 <!-- imagen del nombre -->
                 {{ $page.props.auth.user.name.match(/(^\S\S?|\b\S)?/g).join("").match(/(^\S|\S$)?/g).join("") }}
             </div>

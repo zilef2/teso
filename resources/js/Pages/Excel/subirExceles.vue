@@ -79,6 +79,7 @@ function uploadFileComprobantes() {
     });
 }
 
+// <!--<editor-fold desc="formatoNecesit">-->
 let formatoNecesita = [
     'codigo_cuenta_contable',
     'numero_cuenta_bancaria',
@@ -133,6 +134,8 @@ let formatoNecesita3 = [
     'documento_ref',
     'plan_cuentas',
 ]
+    // <!--</editor-fold>-->
+
 // data.UniversidadSelect = vectorSelect(data.UniversidadSelect,props.UniversidadSelect,'una')
 
 // const downloadExcel = () => { window.open('users/export/' + form.quincena + '/' + (form.fecha_ini.month) + '/' + form.fecha_ini.year, '_blank') }
@@ -184,9 +187,7 @@ let formatoNecesita3 = [
                                                       class="bg-sky-200">
                                                 {{ form.progress.percentage }}%
                                             </progress>
-
                                             <div class="flex">
-
                                                 <!--                                                can(['create user']) && -->
                                                 <PrimaryButton v-show="form.archivo1 !== null" :disabled="form.archivo1 == null"
                                                                class=" my-4 rounded-md mx-2" :class="{ 'bg-gray-200' : form.archivo1 == null}">
@@ -235,9 +236,7 @@ let formatoNecesita3 = [
                                                       class="bg-sky-200">
                                                 {{ form.progress.percentage }}%
                                             </progress>
-
                                             <div class="flex">
-
                                                 <!--                                                can(['create user']) && -->
                                                 <PrimaryButton v-show="form.archivo2 !== null" :disabled="form.archivo2 == null"
                                                                class=" my-4 rounded-md mx-2" :class="{ 'bg-gray-200' : form.archivo2 == null}">

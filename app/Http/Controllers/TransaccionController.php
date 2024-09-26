@@ -25,7 +25,7 @@ class TransaccionController extends Controller
 //        $this->middleware('permission:read transaccion', ['only' => ['index', 'show']]);
 //        $this->middleware('permission:update transaccion', ['only' => ['edit', 'update']]);
 //        $this->middleware('permission:delete transaccion', ['only' => ['destroy', 'destroyBulk']]);
-        $this->thisAtributos = (new transaccion())->getFillable(); 
+        $this->thisAtributos = (new transaccion())->getFillable();
         $this->thisAtributos = array_diff($this->thisAtributos, ['deleted_at']);
         $this->arrayBusque = [
             'search',
@@ -33,7 +33,7 @@ class TransaccionController extends Controller
             'searchBanco',
             'searchtipo',
         ];
-        
+
         $this->arrayFillableSearch = [
             'codigo_transaccion_contable',
             'numero_transaccion_bancaria',
@@ -61,8 +61,8 @@ class TransaccionController extends Controller
 
         return $Result;
     }
-    
-    private function BusquedasText($transaccions,$arrayBusquedas,$request){
+
+    public function BusquedasText($transaccions,$arrayBusquedas,$request){
         foreach ($arrayBusquedas as $index => $busqueda) {
             $campo = $this->arrayFillableSearch[$index];
             if ($request->has($busqueda)) {
@@ -87,7 +87,7 @@ class TransaccionController extends Controller
         $transaccions = $this->BusquedasText($transaccions,$this->arrayBusque,$request);
         return $transaccions;
     }
-    
+
 //    public function losSelect()
 //    {
 //        $no_nadasSelect = No_nada::all('id','nombre as name')->toArray();
@@ -98,24 +98,23 @@ class TransaccionController extends Controller
 
     public function index(Request $request) {
         $numberPermissions = MyModels::getPermissionToNumber(Myhelp::EscribirEnLog($this, ' transaccions '));
-        $transaccions = $this->Filtros($request);
-        $this->Mapear($transaccions);
+        $laclase = $this->Mapear($this->Filtros($request));
 //        $losSelect = $this->losSelect();
-        
+
         $perPage = $request->has('perPage') ? $request->perPage : 100;
-        $total = $transaccions->count();
+        $total = $laclase->count();
         $page = request('page', 1);
         $fromController = new LengthAwarePaginator(
-            $transaccions->forPage($page, $perPage),
+            $laclase->forPage($page, $perPage),
             $total,
             $perPage,
             $page,
             ['path' => request()->url()]
         );
-        
+
         $filters = ['search', 'field', 'order'];
         $filters = array_merge($this->arrayBusque,$filters);
-        
+
         return Inertia::render($this->FromController.'/Index', [
             'fromController'        => $fromController,
             'total'                 => $total,
@@ -124,7 +123,7 @@ class TransaccionController extends Controller
             'title'                 => __('app.label.'.$this->FromController),
             'filters'               => $request->all($filters),
             'perPage'               => (int) $perPage,
-            
+
             'numberPermissions'     => $numberPermissions,
             'thisAtributos'         => $this->thisAtributos,
 //            'losSelect'             => $losSelect,

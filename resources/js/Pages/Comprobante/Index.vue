@@ -38,7 +38,11 @@ const props = defineProps({
 
 const data = reactive({
     params: {
-        search: props.filters.search,
+        codigo: props.filters.codigo,
+        numero_documento: props.filters.numero_documento,
+        valor_debito: props.filters.valor_debito,
+        valor_credito: props.filters.valor_credito,
+
         field: props.filters.field,
         order: props.filters.order,
         perPage: props.perPage,
@@ -91,7 +95,7 @@ const titulos = [
     { order: 'codigo', label: 'codigo', type: 'text' },
     { order: 'descripcion', label: 'descripcion', type: 'text' },
     { order: 'comprobante', label: 'comprobante', type: 'text' },
-    { order: 'notas', label: 'notas', type: 'text' },
+    { order: 'notas', label: 'notas', type: 'longtext' },
     { order: 'numero_documento', label: 'numero_documento', type: 'text' },
     { order: 'numero_cheque', label: 'numero_cheque', type: 'text' },
     { order: 'fecha_elaboracion', label: 'fecha_elaboracion', type: 'text' },
@@ -138,7 +142,7 @@ const titulos = [
             </div>
             <div class="relative bg-white dark:bg-gray-800 shadow sm:rounded-lg">
                 <div class="flex justify-between p-2">
-                    <div class="flex space-x-2">
+                    <div class="flex space-x-2 gap-4">
                         <SelectInput v-model="data.params.perPage" :dataSet="data.dataSet" />
                         <!-- <DangerButton @click="data.deleteBulkOpen = true"
                             v-show="data.selectedId.length != 0 && can(['delete Comprobante'])" class="px-3 py-1.5"
@@ -146,8 +150,15 @@ const titulos = [
                             <TrashIcon class="w-5 h-5" />
                         </DangerButton> -->
                     </div>
-                    <TextInput v-if="props.numberPermissions > 1" v-model="data.params.search" type="text"
-                        class="block w-4/6 md:w-3/6 lg:w-2/6 rounded-lg" placeholder="Nombre, codigo" />
+<!--                    v-if="props.numberPermissions > 1"-->
+                    <TextInput  v-model="data.params.codigo" type="text"
+                        class="block w-4/6 md:w-3/6 lg:w-2/6 mx-4 rounded-lg" placeholder="codigo" />
+                    <TextInput  v-model="data.params.numero_documento" type="text"
+                        class="block w-4/6 md:w-3/6 lg:w-2/6 mx-4 rounded-lg" placeholder="numero_documento" />
+                    <TextInput  v-model="data.params.valor_debito" type="text"
+                        class="hidden md:block md:w-3/6 lg:w-2/6 mx-4 rounded-lg" placeholder="valor_debito" />
+                    <TextInput  v-model="data.params.valor_credito" type="text"
+                        class="hidden md:block md:w-3/6 lg:w-2/6 mx-4 rounded-lg" placeholder="valor_credito" />
                 </div>
                 <div class="overflow-x-auto scrollbar-table">
                     <table v-if="props.total > 0" class="w-full">
@@ -158,10 +169,10 @@ const titulos = [
                                 </th>
                                 <th v-if="numberPermissions > 1" class="px-2 py-4">Accion</th>
 
-                                <th class="px-2 py-4 text-center">#</th>
+<!--                                <th class="px-2 py-4 text-center">#</th>-->
                                 <th v-for="titulo in titulos" class="px-2 py-4 cursor-pointer"
                                     v-on:click="order(titulo['order'])">
-                                    <div class="flex justify-between items-center">
+                                    <div class="flex justify-between items-center w-fit">
                                         <span>{{ lang().label[titulo['label']] }}</span>
                                         <ChevronUpDownIcon class="w-4 h-4" />
                                     </div>
@@ -200,14 +211,15 @@ const titulos = [
                                         </div>
                                     </div>
                                 </td>
-                                <td class="whitespace-nowrap py-4 px-2 sm:py-3 text-center">{{ ++indexu }}</td>
-                                <td v-for="titulo in titulos" class="whitespace-nowrap py-4 px-2 sm:py-3">
-                                    <span v-if="titulo['type'] === 'text'"> {{ claseFromController[titulo['order']] }} </span>
-                                    <span v-if="titulo['type'] === 'number'"> {{ number_format(claseFromController[titulo['order']], 0, false) }} </span>
-                                    <span v-if="titulo['type'] === 'dinero'"> {{ number_format(claseFromController[titulo['order']], 0, true) }} </span>
-                                    <span v-if="titulo['type'] === 'date'"> {{ formatDate(claseFromController[titulo['order']], false) }} </span>
-                                    <span v-if="titulo['type'] === 'datetime'"> {{ formatDate(claseFromController[titulo['order']], true) }} </span>
-                                    <span v-if="titulo['type'] === 'foreign'"> {{ claseComprobantea[titulo['order']][titulo['nameid']] }} </span>
+<!--                                <td class="py-4 px-2 sm:py-3 text-center">{{ ++indexu }}</td>-->
+                                <td v-for="titulo in titulos" class="py-4 px-2 sm:py-3">
+                                    <span v-if="titulo['type'] === 'text'" class="whitespace-nowrap"> {{ claseFromController[titulo['order']] }} </span>
+                                    <p v-if="titulo['type'] === 'longtext'" class="whitespace-wrap md:w-96"> {{ claseFromController[titulo['order']] }} </p>
+                                    <span v-if="titulo['type'] === 'number'" class="whitespace-nowrap"> {{ number_format(claseFromController[titulo['order']], 0, false) }} </span>
+                                    <span v-if="titulo['type'] === 'dinero'" class="whitespace-nowrap"> {{ number_format(claseFromController[titulo['order']], 0, true) }} </span>
+                                    <span v-if="titulo['type'] === 'date'" class="whitespace-nowrap"> {{ formatDate(claseFromController[titulo['order']], false) }} </span>
+                                    <span v-if="titulo['type'] === 'datetime'" class="whitespace-nowrap"> {{ formatDate(claseFromController[titulo['order']], true) }} </span>
+                                    <span v-if="titulo['type'] === 'foreign'" class="whitespace-nowrap"> {{ claseComprobantea[titulo['order']][titulo['nameid']] }} </span>
                                 </td>
 
                             </tr>

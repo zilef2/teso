@@ -33,12 +33,12 @@
         </div>
     </transition>
     <transition name="slide-fade">
-        <div v-if="flash.warning && isVisible" class="fixed top-24 right-4 w-8/12 md:w-6/12 lg:w-3/12 z-[100]">
+        <div v-if="flash.warning && isVisible" class="fixed top-24 right-4 w-8/12 md:w-6/12 lg:w-4/12 z-[100]">
             <div class="flex p-4 justify-between items-center bg-amber-600 rounded-lg">
                 <div>
                     <ExclamationTriangleIcon class="h-8 w-8 text-white" fill="currentColor" />
                 </div>
-                <div class="mx-3 text-sm font-medium text-white" v-html="flash.warning">
+                <div class="mx-3 text-lg font-medium text-white" v-html="flash.warning">
                 </div>
                 <button @click="toggle" type="button"
                     class="ml-auto bg-white/20 text-white rounded-lg focus:ring-2 focus:ring-white/50 p-1.5 hover:bg-white/30 h-8 w-8">
@@ -88,7 +88,7 @@ export default {
             isVisible: false,
             isErrorVisible: false,
             timeout: null,
-            
+
         }
     },
     methods: {
@@ -103,14 +103,14 @@ export default {
             handler(newVal) {
                 this.isVisible = true;
                 this.isErrorVisible = true;
-                
+
                 if (this.timeout) {
                     clearTimeout(this.timeout);
                 }
 
                 this.timeout = setTimeout(() => {
                     this.isVisible = false;
-                }, 2500);
+                }, 17500);
             },
         },
     },

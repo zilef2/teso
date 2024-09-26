@@ -16,6 +16,12 @@ const data = reactive({
         searchBanco: props.filters?.searchBanco,
         searchtipo: props.filters?.searchtipo,
         SoloGuardados: props.filters?.SoloGuardados,
+
+        codigo: props.filters.codigo,
+        numero_documento: props.filters.numero_documento,
+        valor_debito: props.filters.valor_debito,
+        valor_credito: props.filters.valor_credito,
+
         field: props.filters?.field,
         order: props.filters?.order,
         perPage: props.filters?.perPage,
