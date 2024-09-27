@@ -82,4 +82,32 @@ class HelpExcel
 
         return $mensaje;
     }
+    public static function MensajeWarSoloVacios($personalImp): string
+    {
+        $bandera = false;
+        $contares = [
+            'contarVacios',
+        ];
+        $mensajesWarnings = [
+            '# Filas con celdas vacias: ',
+        ];
+
+
+        foreach ($contares as $key => $value) {
+            $$value = $personalImp->{$value};
+            $bandera = $bandera || $$value > 0;
+        }
+
+        $mensaje = '';
+        if ($bandera) {
+            foreach ($mensajesWarnings as $key => $value) {
+                if (${$contares[$key]} > 0) {
+                    $NombreVariable = $contares[$key] . 'string';
+                    $mensaje .= $value . '<b>' . ${$contares[$key]} . '</b>.<br><br> ' . $personalImp->{$NombreVariable} . '<br> ';
+                }
+            }
+        }
+
+        return $mensaje;
+    }
 }

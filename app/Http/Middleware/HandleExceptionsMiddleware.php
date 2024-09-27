@@ -43,7 +43,6 @@ class HandleExceptionsMiddleware{
 //                // Manejo en ambiente de producción
 //                return response()->json(['error' => 'Ocurrió un error en el servidor.'], 500);
 //            } elseif (app()->environment('testing') || app()->environment('local')) {
-                
 //                return response()->json([
 //                    'error2' => $myhelp->cortarFrase($mensan, 1),
 //                    'error1' => $myhelp->cortarFrase($mensan, 2),
@@ -51,7 +50,6 @@ class HandleExceptionsMiddleware{
 //                    'trace' => $filteredTrace
 //                ], 500);
 //            }
-
 //            return back()->with('error', __('app.label.created_error', ['name' => 'generico ']) . $mensan . $myhelp->cortarFrase($mensan, 21));
 //        }
     }

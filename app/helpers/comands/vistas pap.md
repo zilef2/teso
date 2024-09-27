@@ -30,6 +30,7 @@ para borrar:  php artisan rm:crud post --force
 php artisan make:import CuentaImport --model=cuenta
 php artisan make:import TransaccionesImport --model=transaccion
 php artisan make:import ComprobanteImport --model=Comprobante
+php artisan make:import BancoImport --model=Banco
 
 php artisan make:export TodaBDExport
 

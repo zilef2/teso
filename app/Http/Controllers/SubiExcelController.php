@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\helpers\HelpExcel;
 use App\helpers\Myhelp;
+use App\Imports\BancoImport;
 use App\Imports\ComprobanteImport;
 use App\Imports\CuentaImport;
 use App\Imports\TransaccionesImport;
@@ -178,21 +179,22 @@ class SubiExcelController extends Controller
 
 
     public function uploadFileComprobantes(Request $request){
-        Myhelp::EscribirEnLog($this, get_called_class(), 'importando', false);
+        $archivin = "archivo3";
+        Myhelp::EscribirEnLog($this, get_called_class(), 'importando comprobantes ', false);
         $countfilas = 0;
         try {
             DB::beginTransaction();
-            if ($request->archivo3) {
+            if ($request->{$archivin}) {
 
                 $helpExcel = new HelpExcel();
-                $mensageWarning = $helpExcel->validarArchivoExcel($request,'archivo3');
+                $mensageWarning = $helpExcel->validarArchivoExcel($request,$archivin);
                 if ($mensageWarning != ''){
                     DB::rollback();
                     return back()->with('warning', $mensageWarning);
                 }
 
                 $personalImp = new ComprobanteImport();
-                Excel::import($personalImp, $request->archivo3);
+                Excel::import($personalImp, $request->{$archivin});
 
                 $countfilas = $personalImp->ContarFilas;
 
@@ -240,4 +242,66 @@ class SubiExcelController extends Controller
             }
         }
     }
+    public function uploadFileBancos(Request $request){
+        $archivin = "archivo4";
+        Myhelp::EscribirEnLog($this, get_called_class(), 'importando bancos ', false);
+        $countfilas = 0;
+        try {
+            DB::beginTransaction();
+            if ($request->{$archivin}) {
+
+                $helpExcel = new HelpExcel();
+                $mensageWarning = $helpExcel->validarArchivoExcel($request,$archivin);
+                if ($mensageWarning != ''){
+                    DB::rollback();
+                    return back()->with('warning', $mensageWarning);
+                }
+
+                $elImport = new BancoImport();
+                Excel::import($elImport, $request->{$archivin});
+
+                $countfilas = $elImport->ContarFilas;
+
+                $MensajeWarning = HelpExcel::MensajeWarSoloVacios($elImport);
+                if ($MensajeWarning !== '') { //exito
+                    return back()->with('success', 'Formularios nuevos: ' . $countfilas)
+                        ->with('warning2', $MensajeWarning);
+                }
+
+                Myhelp::EscribirEnLog($this, 'IMPORT:users', ' finalizo con exito', false);
+                DB::commit();
+                if ($countfilas == 0){
+                    return back()->with('success', __('app.label.op_successfully') . ' No hubo cambios');
+                } else{
+//                    cuenta::where('user_id', $personalImp->usuario->id)->update(['enviado' => 1]);
+                    return back()->with('success', __('app.label.op_successfully') . ' Se leyeron ' . $countfilas . ' filas con exito');
+                }
+            } else {
+                DB::rollback();
+                return back()->with('error', __('app.label.op_not_successfully') . ' Archivo no seleccionado');
+            }
+        } catch (\Throwable $th) {
+            DB::rollback();
+            $lasession = session('larow') ?? 'error de session';
+            $lasession = $lasession[0] ?? 'error de session';
+
+            if(str_starts_with($th->getMessage(),'|')){
+                Myhelp::EscribirEnLog($this, 'IMPORT:users', ' Fallo importacion: '
+                    . $th->getMessage(), false);
+                return back()->with('warning',$th->getMessage());
+
+            }else{
+
+                $mensajeError = $th->getMessage() . ' L:' . $th->getLine() . ' Ubi: ' . $th->getFile();
+                Myhelp::EscribirEnLog($this, 'IMPORT:users', ' Fallo importacion: '
+                    . $mensajeError, false);
+                return back()->with(
+                    'error', __('app.label.op_not_successfully')
+                    . ' Comprobante del error: ' . $lasession
+                    . ' error en la iteracion ' . $countfilas . ' ' .$mensajeError
+                );
+            }
+        }
+    }
+    
 }

@@ -78,7 +78,7 @@ class TransaccionController extends Controller
     //</editor-fold>
 
     public function index(Request $request) {
-        $numberPermissions = MyModels::getPermissionToNumber(Myhelp::EscribirEnLog($this, ' transaccions '));
+        $numberPermissions = MyModels::getPermissionToNumber(Myhelp::EscribirEnLog($this, ' index transaccions '));
         $laclase = $this->Mapear($this->Filtros($request));
 //        $losSelect = $this->losSelect();
 
