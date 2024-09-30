@@ -13,6 +13,10 @@ return new class extends Migration
     {
         Schema::create('concepto_flujos', function (Blueprint $table) {
             $table->id();
+            $table->string('cuenta_contable',);
+            $table->string('concepto_flujo',);
+            $table->string('ingresos_o_egresos');
+
             $table->timestamps();
         });
     }

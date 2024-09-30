@@ -9,9 +9,8 @@ class concepto_flujo extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'cuenta',
-        'valor',
-        // todo: estaria mejor a un id?
+        'cuenta_contable',
+        'concepto_flujo',
+        'ingresos_o_egresos'
     ];
-
 }

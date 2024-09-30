@@ -117,9 +117,10 @@ const titulos = [
                         v-if="can(['istesorera'])">
                         {{ lang().button.new }}
                     </PrimaryButton>
-                    <Link v-if="can(['isSuper'])" :href="route('subirexceles')">
+<!--                    v-if="can(['isSuper'])"-->
+                    <Link  :href="route('Buscar_CP')">
                         <PrimaryButton class="rounded-none">
-                            Subir transacciones
+                            Buscar CP
                         </PrimaryButton>
                     </Link>
 

@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\helpers\Myhelp;
 use App\helpers\MyModels;
+use App\Models\Comprobante;
+use App\Models\concepto_flujo;
 use App\Models\transaccion;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
@@ -106,7 +108,10 @@ class TransaccionController extends Controller
             'perPage'               => (int) $perPage,
 
             'numberPermissions'     => $numberPermissions,
-            'thisAtributos'         => $this->thisAtributos,
+            'thisAtributos'         => array_values(array_diff($this->thisAtributos, [
+                'nombre_cuenta',
+                'nit',
+            ])),
 //            'losSelect'             => $losSelect,
         ]);
     }
@@ -164,6 +169,60 @@ class TransaccionController extends Controller
         $transaccion->delete();
         return back()->with('success', __('app.label.deleted_successfully', ['name' => count($request->id) . ' ' . __('app.label.transaccion')]));
     }
+
+    public function Buscar_CP(Request $request){
+
+        $codigo = "CI";
+        $valor_debito_credito =  (strcmp($codigo, "CI") === 0)? "valor_debito" : "valor_credito";
+        $laFecha = new \DateTime();
+
+        $mes = $laFecha->format('m'); // Obtiene el mes (en formato numérico)
+        $mes = 8; // Obtiene el mes (en formato numérico)
+        $anio = $laFecha->format('Y'); // Obtiene el año
+
+        $Transacciones = transaccion::Where('codigo',$codigo)
+            ->WhereYear('fecha_elaboracion',$anio)
+            ->whereMonth('fecha_elaboracion',$mes)->get();
+        //validar que tanto el Comprobante como la transsacion exista
+//        dd($Transacciones[0]);
+
+        foreach ($Transacciones as $index => $transa) {
+            $comprobantes = Comprobante::Where('numero_documento',$transa->documento)
+                ->Where('codigo',$codigo);
+//                ->get();
+//            $princi = clone $comprobantes;
+            $principal = $comprobantes->where($valor_debito_credito,$transa->{$valor_debito_credito})->first();
+            $otros = $comprobantes->where($valor_debito_credito,$transa->{$valor_debito_credito})->get()
+                ->reject(function ($item) use ($principal) {
+                return $item->id === $principal->id;
+            });
+if($comprobantes->get()->count() > 1)
+    dd(
+        $principal,$comprobantes->get(),$comprobantes->count()
+    );
+            $otros1 = $otros->first();
+            if($otros1 && count($otros)){
+                $cuentaCP = $otros1->codigo_cuenta;
+                $transa->update([
+                    'n_contrapartidas' => count($otros),
+                    'contrapartida_CI' => $cuentaCP,
+                    'concepto_flujo_homologación' => $this->hallarConcepto($cuentaCP),
+                ]);
+                dd($transa);
+            }
+
+        }
+
+        return back()->with('success', __('app.label.deleted_successfully', ['name' => __('app.label.transaccion')]));
+    }
     //FIN : STORE - UPDATE - DELETE
+    private function hallarConcepto($cuentaCP)
+    {
+        $cf = concepto_flujo::Where('cuenta_contable',$cuentaCP)->first();
+        if($cf){
+            return $cf->concepto_flujo;
+        }
+        return '';
+    }
 
 }

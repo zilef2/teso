@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('transaccions', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->softDeletes();
-            
+
             $table->string('codigo_cuenta_contable')->nullable();
             $table->string('nombre_cuenta')->nullable();
             $table->string('codigo')->nullable();
@@ -39,6 +39,10 @@ return new class extends Migration
             $table->integer('consecutivo')->nullable();
             $table->string('periodo')->nullable();
             $table->string('plan_cuentas')->nullable();
+
+            $table->string('contrapartida_CI')->nullable();
+            $table->string('concepto_flujo_homologación')->nullable();
+            $table->string('n_contrapartidas')->nullable();
 
 
             $table->timestamps();

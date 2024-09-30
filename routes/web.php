@@ -11,7 +11,6 @@ use App\Http\Controllers\CuentaController;
 use App\Http\Controllers\TransaccionController;
 use App\Http\Controllers\PorcentajeInteresCuentaController;
 use App\Http\Controllers\ComprobanteController;
-use App\Http\Controllers\ConceptoflujoController;
 
 use App\Http\Controllers\ZipController;
 use App\Http\Controllers\SubiExcelController;
@@ -56,6 +55,7 @@ Route::middleware(['auth'])->group(callback: function () {
     Route::resource('/parametro', ParametrosController::class);
 
     Route::get('/DB_info', [UserController::class,'todaBD']);
+    Route::get('/Buscar_CP', [TransaccionController::class,'Buscar_CP'])->name('Buscar_CP');
 //    Route::get('/downloadAnexos', [UserController::class,'downloadAnexos'])->name('downloadAnexos');
 //    Route::get('/downClaro',function(){
 //        return Excel::download(new FormExport, 'BaseDatosInspecciones.xlsx');
@@ -73,12 +73,11 @@ Route::middleware(['auth'])->group(callback: function () {
     Route::resource('/transaccion', TransaccionController::class);
     Route::resource('/porcentajeInteresCuenta', PorcentajeInteresCuentaController::class);
     Route::resource('/Comprobante', ComprobanteController::class);
-    Route::resource('/Conceptoflujo', ConceptoflujoController::class);
+    Route::resource('/concepto_flujo', \App\Http\Controllers\ConceptoflujoController::class);
+	//aquipues
     //</editor-fold>
 
 });
-//aquipue
-//aquipue
 
 
 // <editor-fold desc="Artisan">
