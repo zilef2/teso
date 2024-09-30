@@ -11,18 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('bancos', function (Blueprint $table) {
-            $table->id();
+//        Schema::create('bancos', function (Blueprint $table) {
+//            $table->id();
             
-            $table->integer('codigo_cuenta_contable');
-            $table->integer('numero_cuenta_bancaria');
-            $table->string('banco');
-            $table->string('tipo_de_cuenta');
-            $table->string('tipo_de_recursos');
-            $table->string('convenio');
+//            $table->integer('codigo_cuenta_contable');
+//            $table->integer('numero_cuenta_bancaria');
+//            $table->string('banco');
+//            $table->string('tipo_de_cuenta');
+//            $table->string('tipo_de_recursos');
+//            $table->string('convenio');
             
-            $table->timestamps();
-        });
+//            $table->timestamps();
+//        });
     }
 
     /**
@@ -30,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('bancos');
+//        Schema::dropIfExists('bancos');
     }
 };

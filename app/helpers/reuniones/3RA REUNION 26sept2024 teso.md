@@ -7,7 +7,7 @@ la tabla de bancos es en realidad la de cuentas, pero hya que agregarle el porce
 
 Transacciones => poner cuenta_id y  la columanB del auxiliar se ingonra (deberian coincidir).
 
-solo traer : cuenta bancaria, entidad financiera, tipo recursos
+de la centa, solo traer : cuenta bancaria, entidad financiera, tipo recursos
 
 
 PASOS PARA ASGINAR NOTAS

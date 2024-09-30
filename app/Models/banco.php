@@ -11,8 +11,7 @@ class banco extends Model
     
     protected $fillable = [
         'nombre',
-        'numero_cuenta_bancaria',
-
+//        'numero_cuenta_bancaria',
     ];
 
 }
