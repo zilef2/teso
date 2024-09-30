@@ -128,16 +128,19 @@ class ComprobanteImport implements ToModel
      */
     public function Requeridos($theRow)
     {
-        $this->ContarFilasAbsolutas++;
+//        $this->ContarFilasAbsolutas++;
         $columnasPermitidasVacias = [
-          11,12,13
+            3, //descripcion
+            11, //ccostos
+            12, //nit
+            13 //nombre
         ];
         foreach ($theRow as $key => $value) {
             if(in_array($key,$columnasPermitidasVacias)){
                 continue;
             }
             if (is_null($value) || $value === ''){
-//                dd($theRow,$value,'VALOR VACIO EN LA FILA '.$this->ContarFilasAbsolutas);
+                dd($theRow,$value,'VALOR VACIO EN LA FILA '.$this->ContarFilasAbsolutas);
                 throw new \Exception('VALOR VACIO EN LA FILA '.$this->ContarFilasAbsolutas);
 
 //                return false;
@@ -194,7 +197,8 @@ class ComprobanteImport implements ToModel
         $mes = $laFecha->format('m'); // Obtiene el mes (en formato numérico)
         $anio = $laFecha->format('Y'); // Obtiene el año
 
-        $ExisteUnComprobante = Comprobante::WhereYear('fecha_elaboracion',$anio)
+        $ExisteUnComprobante = Comprobante::Where('codigo',$therow[0])
+            ->WhereYear('fecha_elaboracion',$anio)
             ->whereMonth('fecha_elaboracion',$mes)->count();
 
         $mesYanio = $mes . '-'. $anio;

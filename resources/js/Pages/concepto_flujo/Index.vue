@@ -94,7 +94,9 @@ const select = () => {
 // text // number // dinero // date // datetime // foreign
 const titulos = [
     // { order: 'codigo', label: 'codigo', type: 'text' },
-    { order: 'nombre', label: 'nombre', type: 'text' },
+    { order: 'cuenta_contable', label: 'cuenta_contable', type: 'text' },
+    { order: 'concepto_flujo', label: 'concepto_flujo', type: 'text' },
+    { order: 'ingresos_o_egresos', label: 'ingresos_o_egresos', type: 'text' },
   // { order: 'inventario', label: 'inventario', type: 'foreign',nameid:'nombre'},
 ];
 

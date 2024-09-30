@@ -16,52 +16,47 @@ class CopyUserPages extends Command
     protected $description = 'Copia la carpeta designada a una ubicación específica';
 
     public function handle(){
+        $foldernan = $this->argument('folderName');
+
         $plantillaActual = 'generic';
         $mensajeA = 'La genericacion del componente: ';
         $mensajeExito = ' fue realizada con exito ';
         $mensajeFallo = ' fallo';
-        
-        $foldernan = $this->argument('folderName');
 
         $this->warn("Empezando make:model");
-        Artisan::call('make:model', [
-            'name' => $foldernan,
-            '--all' => true,
-        ]);
+        Artisan::call('make:model', ['name' => $foldernan, '--all' => true]);
         Artisan::call('copy:f');
         $this->warn("Fin model");
-        
-        
+
+
         $RealizoVueConExito = $this->MakeVuePages($plantillaActual);
         $mensaje = $RealizoVueConExito ? $mensajeA.' Vuejs'.$mensajeExito
             : $mensajeA.' Vuejs'.$mensajeFallo;
         $this->info($mensaje);
-        
+
 
         $RealizoControllerConExito = $this->MakeControllerPages($plantillaActual);
         $mensaje = $RealizoControllerConExito ? $mensajeA.'el controlador'.$mensajeExito
             : $mensajeA.' controlador '.$mensajeFallo;
         $this->info($mensaje);
 
-        
+
         if($RealizoControllerConExito || $RealizoVueConExito)
             $this->replaceWordInFiles($plantillaActual,
             [
                 'vue' => $RealizoVueConExito,
                 'controller' => $RealizoControllerConExito
-            ]);
-        
-        
-        
-        
-        
-        
+            ])
+        ;
+
+
+
         $this->DoWebphp($foldernan);
         $this->info("Fin de la operacion. Se limpiará cache\n\n");
-        $this->info('optimize: ');
-        $this->info(Artisan::call('optimize'));
-        $this->info('optimize:clear: ');
-        $this->info(Artisan::call('optimize:clear'));
+//        $this->info('optimize: ');
+//        $this->info(Artisan::call('optimize'));
+//        $this->info('optimize:clear: ');
+//        $this->info(Artisan::call('optimize:clear'));
     }
 
 
@@ -138,7 +133,7 @@ class CopyUserPages extends Command
         $fillable = "\n    protected \$fillable = [\n        'id',\n    ];\n";
 
         foreach ($files as $file) {
-            
+
             $content = file_get_contents($file);
 
             if (strpos($content, 'protected $fillable') === false) {
@@ -157,18 +152,21 @@ class CopyUserPages extends Command
         $directory = 'routes';
         $files = glob($directory . '/*.php');
 
-        $insertable = '\nRoute::resource("/' . $resource . '", ' . ucfirst($resource) . 'Controller::class);';
-        $pattern = '/aquipues/';
+        $insertable = "Route::resource(\"/$resource\", \\App\\Http\\Controllers\\" . ucfirst($resource) . "Controller::class);\n\t//aquipues";
+
+        $pattern = '/\/\/aquipues/';
+
         foreach ($files as $file) {
             $content = file_get_contents($file);
 
             if (strpos($content, $pattern) === false) {
-                $content2 = preg_replace($pattern, "$0$insertable", $content);
+                $content2 = preg_replace($pattern, $insertable, $content);
+//                $content2 = preg_replace($pattern, "$0$insertable", $content);
                 file_put_contents($file, $content2);
                 if($content == $content2)
-                    $this->info("Actualizado: $file\n");
+                    $this->info("Routes Actualizado: $file\n");
                 else
-                    $this->info("Sin cambios: $file\n");
+                    $this->info("Routes sin cambios: $file\n");
             } else {
                 $this->info("No existe aquipues en: $file\n");
             }
@@ -176,5 +174,5 @@ class CopyUserPages extends Command
 
         return true;
     }
-    
+
 }

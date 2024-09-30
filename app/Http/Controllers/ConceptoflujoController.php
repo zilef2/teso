@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\helpers\Myhelp;
 use App\helpers\MyModels;
 use App\Models\concepto_flujo;
-use App\Models\transaccion;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -14,7 +13,7 @@ use Inertia\Inertia;
 
 class ConceptoflujoController extends Controller
 {
-    public string $FromController = 'transaccion';
+    public string $FromController = 'concepto_flujo';
     public array $arrayBusque;
     public array $arrayFillableSearch;
     public array $thisAtributos;
@@ -22,18 +21,18 @@ class ConceptoflujoController extends Controller
 
     //<editor-fold desc="Construc | mapea | filtro and losSelect">
     public function __construct() {
-        $this->thisAtributos = (new transaccion())->getFillable();
+        $this->thisAtributos = (new concepto_flujo())->getFillable();
         $this->thisAtributos = array_diff($this->thisAtributos, ['deleted_at']);
         $this->arrayBusque = [
             'search',
-            'searchNumtransaccion',
+            'searchNumconcepto_flujo',
             'searchBanco',
             'searchtipo',
         ];
 
         $this->arrayFillableSearch = [
-            'codigo_transaccion_contable',
-            'numero_transaccion_bancaria',
+            'codigo_concepto_flujo_contable',
+            'numero_concepto_flujo_bancaria',
             'banco',
             'tipo_de_recurso',
         ];
@@ -43,43 +42,43 @@ class ConceptoflujoController extends Controller
     private function Mapear($clase)
     {
         $Result = $clase->map(function ($clas) {
-            $clas->cuenta = $clas->cuenta();
+//            $clas->cuenta = $clas->cuenta();
             return $clas;
         });
 
         return $Result;
     }
 
-    public function BusquedasText($transaccions,$arrayBusquedas,$request){
+    public function BusquedasText($concepto_flujos,$arrayBusquedas,$request){
         foreach ($arrayBusquedas as $index => $busqueda) {
             $campo = $this->arrayFillableSearch[$index];
             if ($request->has($busqueda)) {
-                $transaccions = $transaccions->where(function ($query) use ($request,$busqueda,$campo) {
+                $concepto_flujos = $concepto_flujos->where(function ($query) use ($request,$busqueda,$campo) {
                     $query->where($campo, 'LIKE', "%" . $request->{$busqueda} . "%")
                     ;
                 });
             }
         }
-        return $transaccions;
+        return $concepto_flujos;
     }
     public function Filtros($request){
-        $transaccions = transaccion::Query();
-//        $transaccions = transaccion::All();
+        $concepto_flujos = concepto_flujo::Query();
+//        $concepto_flujos = concepto_flujo::All();
 
         if ($request->has(['field', 'order'])) {
-            $transaccions = $transaccions->orderBy($request->field, $request->order);
+            $concepto_flujos = $concepto_flujos->orderBy($request->field, $request->order);
         }else{
-            $transaccions = $transaccions->orderBy('updated_at', 'DESC');
+            $concepto_flujos = $concepto_flujos->orderBy('updated_at', 'DESC');
         }
-        $transaccions = $transaccions->get();
-        $transaccions = $this->BusquedasText($transaccions,$this->arrayBusque,$request);
-        return $transaccions;
+        $concepto_flujos = $concepto_flujos->get();
+        $concepto_flujos = $this->BusquedasText($concepto_flujos,$this->arrayBusque,$request);
+        return $concepto_flujos;
     }
 
     //</editor-fold>
 
     public function index(Request $request) {
-        $numberPermissions = MyModels::getPermissionToNumber(Myhelp::EscribirEnLog($this, ' transaccions '));
+        $numberPermissions = MyModels::getPermissionToNumber(Myhelp::EscribirEnLog($this, ' concepto_flujos '));
         $laclase = $this->Mapear($this->Filtros($request));
 //        $losSelect = $this->losSelect();
 
@@ -101,7 +100,8 @@ class ConceptoflujoController extends Controller
             'fromController'        => $fromController,
             'total'                 => $total,
 
-            'breadcrumbs'           => [['label' => __('app.label.'.$this->FromController), 'href' => route($this->FromController.'.index')]],
+            'breadcrumbs'           => [['label' => __('app.label.'.$this->FromController),
+                'href' => route($this->FromController.'.index')]],
             'title'                 => __('app.label.'.$this->FromController),
             'filters'               => $request->all($filters),
             'perPage'               => (int) $perPage,
@@ -118,30 +118,30 @@ class ConceptoflujoController extends Controller
     //! STORE functions
 
     public function store(Request $request){
-        $permissions = Myhelp::EscribirEnLog($this, ' Begin STORE:transaccions');
+        $permissions = Myhelp::EscribirEnLog($this, ' Begin STORE:concepto_flujos');
         DB::beginTransaction();
 //        $no_nada = $request->no_nada['id'];
 //        $request->merge(['no_nada_id' => $request->no_nada['id']]);
-        $transaccion = transaccion::create($request->all());
+        $concepto_flujo = concepto_flujo::create($request->all());
 
         DB::commit();
-        Myhelp::EscribirEnLog($this, 'STORE:transaccions EXITOSO', 'transaccion id:' . $transaccion->id . ' | ' . $transaccion->nombre, false);
-        return back()->with('success', __('app.label.created_successfully', ['name' => $transaccion->nombre]));
+        Myhelp::EscribirEnLog($this, 'STORE:concepto_flujos EXITOSO', 'concepto_flujo id:' . $concepto_flujo->id . ' | ' . $concepto_flujo->nombre, false);
+        return back()->with('success', __('app.label.created_successfully', ['name' => $concepto_flujo->nombre]));
     }
     //fin store functions
 
     public function show($id){}public function edit($id){}
 
     public function update(Request $request, $id){
-        $permissions = Myhelp::EscribirEnLog($this, ' Begin UPDATE:transaccions');
+        $permissions = Myhelp::EscribirEnLog($this, ' Begin UPDATE:concepto_flujos');
         DB::beginTransaction();
-        $transaccion = transaccion::findOrFail($id);
+        $concepto_flujo = concepto_flujo::findOrFail($id);
         $request->merge(['no_nada_id' => $request->no_nada['id']]);
-        $transaccion->update($request->all());
+        $concepto_flujo->update($request->all());
 
         DB::commit();
-        Myhelp::EscribirEnLog($this, 'UPDATE:transaccions EXITOSO', 'transaccion id:' . $transaccion->id . ' | ' . $transaccion->nombre , false);
-        return back()->with('success', __('app.label.updated_successfully2', ['nombre' => $transaccion->nombre]));
+        Myhelp::EscribirEnLog($this, 'UPDATE:concepto_flujos EXITOSO', 'concepto_flujo id:' . $concepto_flujo->id . ' | ' . $concepto_flujo->nombre , false);
+        return back()->with('success', __('app.label.updated_successfully2', ['nombre' => $concepto_flujo->nombre]));
     }
 
     /**
@@ -151,19 +151,19 @@ class ConceptoflujoController extends Controller
      * @return \Illuminate\Http\RedirectResponse
      */
 
-    public function destroy($transaccionid){
-        $permissions = Myhelp::EscribirEnLog($this, 'DELETE:transaccions');
-        $transaccion = transaccion::find($transaccionid);
-        $elnombre = $transaccion->nombre;
-        $transaccion->delete();
-        Myhelp::EscribirEnLog($this, 'DELETE:transaccions', 'transaccion id:' . $transaccion->id . ' | ' . $transaccion->nombre . ' borrado', false);
+    public function destroy($concepto_flujoid){
+        $permissions = Myhelp::EscribirEnLog($this, 'DELETE:concepto_flujos');
+        $concepto_flujo = concepto_flujo::find($concepto_flujoid);
+        $elnombre = $concepto_flujo->nombre;
+        $concepto_flujo->delete();
+        Myhelp::EscribirEnLog($this, 'DELETE:concepto_flujos', 'concepto_flujo id:' . $concepto_flujo->id . ' | ' . $concepto_flujo->nombre . ' borrado', false);
         return back()->with('success', __('app.label.deleted_successfully', ['name' => $elnombre]));
     }
 
     public function destroyBulk(Request $request){
-        $transaccion = transaccion::whereIn('id', $request->id);
-        $transaccion->delete();
-        return back()->with('success', __('app.label.deleted_successfully', ['name' => count($request->id) . ' ' . __('app.label.transaccion')]));
+        $concepto_flujo = concepto_flujo::whereIn('id', $request->id);
+        $concepto_flujo->delete();
+        return back()->with('success', __('app.label.deleted_successfully', ['name' => count($request->id) . ' ' . __('app.label.concepto_flujo')]));
     }
     //FIN : STORE - UPDATE - DELETE
 

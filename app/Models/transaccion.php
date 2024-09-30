@@ -22,6 +22,9 @@ class transaccion extends Model
         'valor_debito',
         'valor_credito',
         'nit',
+        'n_contrapartidas',
+        'contrapartida_CI',
+        'concepto_flujo_homologación',
         'nombre',
         'cod_costos',
         'desc_costos',
@@ -36,10 +39,12 @@ class transaccion extends Model
         'consecutivo',
         'periodo',
         'plan_cuentas',
+
     ];
-    
-    
+
 //    public function user(){return $this->belongsTo(User::class);}
 //     public function formularios(){return $this->hasMany(Formulario::class);}
      public function cuenta(){return $this->hasOne(cuenta::class);}
+
+//     public function contraparte(){return $this->hasMany(contraparte::class);}
 }

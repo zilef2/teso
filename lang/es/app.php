@@ -12,10 +12,19 @@ return [
         'transaccion' => 'Transaccion',
         'Comprobante' => 'Comprobante',
         'porcentajeIC' => 'Porcentaje Interes',
+        'conceptoflujo' => 'Concepto de flujo',
+        'concepto_flujo' => 'Concepto de flujo',
     ],
 
     'label' => [
         //transaccion
+        'n_contrapartidas' => '# de CP',
+        'contrapartida_CI' => 'contrapartida CI',
+        'concepto_flujo_homologación' => 'concepto flujo homologación',
+
+        'cuenta_contable' => 'Cuenta Contable',
+        'concepto_flujo' => 'Concepto de Flujo',
+        'ingresos_o_egresos' => 'Ingresos O Egresos',
         'documento' => 'Documento',
 //        'descripcion' => 'Descripcion',
 //        'comprobante' => 'Comprobante',
