@@ -55,7 +55,7 @@ Route::middleware(['auth'])->group(callback: function () {
     Route::resource('/parametro', ParametrosController::class);
 
     Route::get('/DB_info', [UserController::class,'todaBD']);
-    Route::get('/Buscar_CP', [TransaccionController::class,'Buscar_CP'])->name('Buscar_CP');
+    Route::post('/Buscar_CP', [TransaccionController::class,'Buscar_CP'])->name('Buscar_CP');
 //    Route::get('/downloadAnexos', [UserController::class,'downloadAnexos'])->name('downloadAnexos');
 //    Route::get('/downClaro',function(){
 //        return Excel::download(new FormExport, 'BaseDatosInspecciones.xlsx');

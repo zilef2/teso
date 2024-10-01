@@ -18,6 +18,7 @@ import Delete from '@/Pages/transaccion/Delete.vue';
 
 import Checkbox from '@/Components/Checkbox.vue';
 import InfoButton from '@/Components/InfoButton.vue';
+import {useForm} from '@inertiajs/vue3';
 // import { CursorArrowRippleIcon, ChevronUpDownIcon,QuestionMarkCircleIcon, EyeIcon, PencilIcon, TrashIcon, UserGroupIcon } from '@heroicons/vue/24/solid';
 
 const { _, debounce, pickBy } = pkg
@@ -39,6 +40,7 @@ const data = reactive({
     params: {
         search: props.filters.search,
         searchContrapartida: props.filters.searchContrapartida,
+        searchConcepto: props.filters.searchConcepto,
         field: props.filters.field,
         order: props.filters.order,
         perPage: props.perPage,
@@ -88,7 +90,9 @@ const select = () => {
 // <!--</editor-fold>-->
 
 
-// const form = useForm({ })
+const form = useForm({
+    id: 0,
+})
 // watchEffect(() => { })
 
 
@@ -101,6 +105,11 @@ const titulos = [
     { order: 'tipo_de_recurso', label: 'tipo_de_recurso', type: 'text' },
   // { order: 'inventario', label: 'inventario', type: 'foreign',nameid:'nombre'},
 ];
+const Buscar_CP = () => {
+    form.post(route('Buscar_CP'), {
+        onFinish: () => form.reset(),
+    });
+}
 </script>
 
 <template>
@@ -112,17 +121,19 @@ const titulos = [
             <!-- {{ props.fromController.data[2] }} -->
             <div class="flex justify-between px-4 sm:px-0">
                 <div class=" rounded-xl overflow-hidden w-fit">
-                    <PrimaryButton class="rounded-none" @click="data.createOpen = true"
-                        v-if="can(['istesorera'])">
-                        {{ lang().button.new }}
-                    </PrimaryButton>
+<!--                    <PrimaryButton class="rounded-none" @click="data.createOpen = true"-->
+<!--                        v-if="can(['istesorera'])">-->
+<!--                        {{ lang().button.new }}-->
+<!--                    </PrimaryButton>-->
 <!--                    v-if="can(['isSuper'])"-->
-                    <Link  :href="route('Buscar_CP')">
-                        <PrimaryButton class="rounded-none">
+<!--                    <Link  :href="route('Buscar_CP')">-->
+<!--                        <PrimaryButton class="rounded-none">-->
+<!--                            Buscar CP-->
+<!--                        </PrimaryButton>-->
+<!--                    </Link>-->
+                        <PrimaryButton class="rounded-none" @click="Buscar_CP">
                             Buscar CP
                         </PrimaryButton>
-                    </Link>
-
 
 <!--                    <PrimaryButton class="rounded-none" @click="data.subirOpen = true"-->
 <!--                        v-if="can(['isSuper'])">-->
@@ -144,8 +155,8 @@ const titulos = [
                 <div class="my-1">Reg/pág <SelectInput v-model="data.params.perPage" :dataSet="data.dataSet" /></div>
 
             </div>
-            <div class="relative bg-white dark:bg-gray-800 shadow sm:rounded-lg">
-                <div class="flex justify-between p-2 gap-6">
+            <div class="relative bg-white dark:bg-gray-800 shadow sm:rounded-xl">
+                <div class="flex justify-items-end p-3 gap-6">
                     <div class="flex space-x-2">
                         <!-- <DangerButton @click="data.deleteBulkOpen = true"
                             v-show="data.selectedId.length != 0 && can(['delete transaccion'])" class="px-3 py-1.5"
@@ -154,10 +165,13 @@ const titulos = [
                         </DangerButton> -->
                     </div>
                     <TextInput v-model="data.params.search" type="text"
-                        class="block w-4/6 md:w-3/6 lg:w-2/6 rounded-lg" placeholder="Codigo cuenta contable" />
+                        class="block w-4/6 md:w-3/6 lg:w-1/6 rounded-lg" placeholder="Codigo" />
                     <TextInput v-model="data.params.searchContrapartida" type="text"
-                        class="block w-4/6 md:w-3/6 lg:w-2/6 rounded-lg" placeholder="CP" />
+                        class="block w-4/6 md:w-3/6 lg:w-1/6 rounded-lg" placeholder="CP" />
+                    <TextInput v-model="data.params.searchConcepto" type="text"
+                        class="block w-4/6 md:w-3/6 lg:w-1/6 rounded-lg" placeholder="Concepto de flujo" />
                 </div>
+                
                 <div class="overflow-x-auto scrollbar-table">
                     <table v-if="props.total > 0" class="w-full">
                         <thead class="uppercase text-sm border-t border-gray-200 dark:border-gray-700">

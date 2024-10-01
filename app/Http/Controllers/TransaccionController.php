@@ -22,21 +22,24 @@ class TransaccionController extends Controller
 
 
     //<editor-fold desc="Construc | mapea | filtro and losSelect">
-    public function __construct() {
+    public function __construct()
+    {
         $this->thisAtributos = (new transaccion())->getFillable();
         $this->thisAtributos = array_diff($this->thisAtributos, ['deleted_at']);
         $this->arrayBusque = [
             'search',
             'searchContrapartida',
+            'searchConcepto',
         ];
 
         $this->arrayFillableSearch = [
             'codigo_cuenta_contable',
             'contrapartida_CI',
+            'concepto_flujo_homologación',
         ];
     }
 
-   private function Mapear($clase)
+    private function Mapear($clase)
     {
         $Result = $clase->map(function ($clas) {
             $clas->cuenta = $clas->cuenta();
@@ -46,36 +49,35 @@ class TransaccionController extends Controller
         return $Result;
     }
 
-    public function BusquedasText($transaccions,$request){
+    public function BusquedasText($transaccions, $request)
+    {
         foreach ($this->arrayBusque as $index => $busqueda) {
             $campo = $this->arrayFillableSearch[$index];
             if ($request->has($busqueda)) {
-                $transaccions = $transaccions->where(function ($query) use ($request,$busqueda,$campo) {
-                    $query->where($campo, 'LIKE', "%" . $request->{$busqueda} . "%")
-                    ;
+                $transaccions = $transaccions->where(function ($query) use ($request, $busqueda, $campo) {
+                    $query->where($campo, 'LIKE', "%" . $request->{$busqueda} . "%");
                 });
             }
         }
         return $transaccions->get();
     }
-    
-    public function Filtros($request){
+
+    public function Filtros($request)
+    {
         $transaccions = transaccion::Query();
-//        $transaccions = transaccion::All();
 
         if ($request->has(['field', 'order'])) {
             $transaccions = $transaccions->orderBy($request->field, $request->order);
-        }else{
+        } else {
             $transaccions = $transaccions->orderBy('updated_at', 'DESC');
         }
-//        $transaccions = $transaccions->get();
-//         = $this->BusquedasText($transaccions,$request);
-        return $this->BusquedasText($transaccions,$request);
+        return $this->BusquedasText($transaccions, $request);
     }
 
     //</editor-fold>
 
-    public function index(Request $request) {
+    public function index(Request $request)
+    {
         $numberPermissions = MyModels::getPermissionToNumber(Myhelp::EscribirEnLog($this, ' index transaccions '));
         $laclase = $this->Mapear($this->Filtros($request));
 //        $losSelect = $this->losSelect();
@@ -91,20 +93,20 @@ class TransaccionController extends Controller
             ['path' => request()->url()]
         );
 
-        $filters = ['search', 'field', 'order','searchContrapartida'];
-        $filters = array_merge($this->arrayBusque,$filters);
+        $filters = ['search', 'field', 'order', 'searchContrapartida'];
+        $filters = array_merge($this->arrayBusque, $filters);
 
-        return Inertia::render($this->FromController.'/Index', [
-            'fromController'        => $fromController,
-            'total'                 => $total,
+        return Inertia::render($this->FromController . '/Index', [
+            'fromController' => $fromController,
+            'total' => $total,
 
-            'breadcrumbs'           => [['label' => __('app.label.'.$this->FromController), 'href' => route($this->FromController.'.index')]],
-            'title'                 => __('app.label.'.$this->FromController),
-            'filters'               => $request->all($filters),
-            'perPage'               => (int) $perPage,
+            'breadcrumbs' => [['label' => __('app.label.' . $this->FromController), 'href' => route($this->FromController . '.index')]],
+            'title' => __('app.label.' . $this->FromController),
+            'filters' => $request->all($filters),
+            'perPage' => (int)$perPage,
 
-            'numberPermissions'     => $numberPermissions,
-            'thisAtributos'         => array_values(array_diff($this->thisAtributos, [
+            'numberPermissions' => $numberPermissions,
+            'thisAtributos' => array_values(array_diff($this->thisAtributos, [
                 'nombre_cuenta',
                 'nit',
             ])),
@@ -113,14 +115,16 @@ class TransaccionController extends Controller
     }
 
 
-
     //<editor-fold desc="no index">
-    public function create(){}
+    public function create()
+    {
+    }
 
     //! STORE - UPDATE - DELETE
     //! STORE functions
 
-    public function store(Request $request){
+    public function store(Request $request)
+    {
         $permissions = Myhelp::EscribirEnLog($this, ' Begin STORE:transaccions');
         DB::beginTransaction();
 //        $no_nada = $request->no_nada['id'];
@@ -131,11 +135,19 @@ class TransaccionController extends Controller
         Myhelp::EscribirEnLog($this, 'STORE:transaccions EXITOSO', 'transaccion id:' . $transaccion->id . ' | ' . $transaccion->nombre, false);
         return back()->with('success', __('app.label.created_successfully', ['name' => $transaccion->nombre]));
     }
+
     //fin store functions
 
-    public function show($id){}public function edit($id){}
+    public function show($id)
+    {
+    }
 
-    public function update(Request $request, $id){
+    public function edit($id)
+    {
+    }
+
+    public function update(Request $request, $id)
+    {
         $permissions = Myhelp::EscribirEnLog($this, ' Begin UPDATE:transaccions');
         DB::beginTransaction();
         $transaccion = transaccion::findOrFail($id);
@@ -143,18 +155,19 @@ class TransaccionController extends Controller
         $transaccion->update($request->all());
 
         DB::commit();
-        Myhelp::EscribirEnLog($this, 'UPDATE:transaccions EXITOSO', 'transaccion id:' . $transaccion->id . ' | ' . $transaccion->nombre , false);
+        Myhelp::EscribirEnLog($this, 'UPDATE:transaccions EXITOSO', 'transaccion id:' . $transaccion->id . ' | ' . $transaccion->nombre, false);
         return back()->with('success', __('app.label.updated_successfully2', ['nombre' => $transaccion->nombre]));
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\RedirectResponse
      */
 
-    public function destroy($transaccionid){
+    public function destroy($transaccionid)
+    {
         $permissions = Myhelp::EscribirEnLog($this, 'DELETE:transaccions');
         $transaccion = transaccion::find($transaccionid);
         $elnombre = $transaccion->nombre;
@@ -163,80 +176,86 @@ class TransaccionController extends Controller
         return back()->with('success', __('app.label.deleted_successfully', ['name' => $elnombre]));
     }
 
-    public function destroyBulk(Request $request){
+    public function destroyBulk(Request $request)
+    {
         $transaccion = transaccion::whereIn('id', $request->id);
         $transaccion->delete();
         return back()->with('success', __('app.label.deleted_successfully', ['name' => count($request->id) . ' ' . __('app.label.transaccion')]));
     }
+
     //</editor-fold>
 
-    
-    
-    
-    
-    
-    public function Buscar_CP(Request $request){
-        $codigo = "CI";
-        [$Transacciones,$valor_debito_credito] = $this->Paso1($codigo);
 
-        foreach ($Transacciones as $index => $transa) {
-            $comprobantes = Comprobante::Where('numero_documento',$transa->documento)
-                ->Where('codigo',$codigo);
+    public function Buscar_CP(Request $request)
+    {
+        try {
+            $codigo = "CI";
+            [$Transacciones, $valor_debito_credito] = $this->Paso1($codigo);
+
+            foreach ($Transacciones as $index => $transa) {
+                $comprobantes = Comprobante::Where('numero_documento', $transa->documento)
+                    ->Where('codigo', $codigo);
 //                ->get();
 //            dd($transa->documento, $comprobantes->get());
 //            $princi = clone $comprobantes;
-            $otros = clone $comprobantes;
-            
-            $principal = $comprobantes->where($valor_debito_credito,$transa->{$valor_debito_credito})->first();
+                $otros = clone $comprobantes;
+
+                $principal = $comprobantes->where($valor_debito_credito, $transa->{$valor_debito_credito})->first();
 //            $otross = $otros->where($valor_debito_credito,$transa->{$valor_debito_credito})->get();
-            $otros = $otros->get()->reject(function ($item) use ($principal) {
-                return $item->id === $principal->id;
-            });
-            
-            $otrosComprobantes = clone $otros;
-            $ComprobantesCP = $otros->get();
+                $otros = $otros->get()->reject(function ($item) use ($principal) {
+                    return $item->id === $principal->id;
+                });
 
-            foreach ($ComprobantesCP as $index => $item) {
-                $soloTieneUno = floor(intval($principal->valor_debito)) - floor(intval($item->valor_credito)) == 0;
-                $cuentaCP = $item->codigo_cuenta;
-                
-                //buscamos el concepto
-                $concepto = $this->hallarConcepto($cuentaCP);
-                $transa->update([
-                    'n_contrapartidas' => count($otrosComprobantes),
-                    'contrapartida_CI' => $cuentaCP,
-                    'concepto_flujo_homologación' => $concepto,
-                ]);
+                $otrosComprobantes = clone $otros;
+                $ComprobantesCP = $otros;
+
+                foreach ($ComprobantesCP as $index => $item) {
+                    $soloTieneUno = floor(intval($principal->valor_debito)) - floor(intval($item->valor_credito)) == 0;
+                    $cuentaCP = $item->codigo_cuenta;
+
+                    //buscamos el concepto
+                    $concepto = $this->hallarConcepto($cuentaCP);
+                    $transa->update([
+                        'n_contrapartidas' => count($otrosComprobantes),
+                        'contrapartida_CI' => $cuentaCP,
+                        'concepto_flujo_homologación' => $concepto,
+                    ]);
+                }
             }
-        }
 
-        return back()->with('success', __('app.label.deleted_successfully', ['name' => __('app.label.transaccion')]));
+            return redirect()->route('transaccion.index')->with('success', 'Operación exitosa');
+//        return back()->with('success', __('app.label.deleted_successfully', ['name' => __('app.label.transaccion')]));
+        } catch (\Throwable $th) {
+//            DB::rollback();
+            return back()->with('error', __('app.label.deleted_error', ['name' => 'Operacion fallida']) . $th->getMessage() . ' L:' . $th->getLine() . ' Ubi: ' . $th->getFile());
+        }
     }
+
     //FIN : STORE - UPDATE - DELETE
     private function hallarConcepto($cuentaCP)
     {
-        $cf = concepto_flujo::Where('cuenta_contable',$cuentaCP)->first();
-        if($cf){
+        $cf = concepto_flujo::Where('cuenta_contable', $cuentaCP)->first();
+        if ($cf) {
             return $cf->concepto_flujo;
         }
-        return '';
+        return 'No se encontró un concepto';
     }
 
     private function Paso1($codigo)
     {
-        $valor_debito_credito =  (strcmp($codigo, "CI") === 0)? "valor_debito" : "valor_credito";
+        $valor_debito_credito = (strcmp($codigo, "CI") === 0) ? "valor_debito" : "valor_credito";
         $laFecha = new \DateTime();
 
         $mes = $laFecha->format('m'); // Obtiene el mes (en formato numérico)
         $mes = 8; // Obtiene el mes (en formato numérico)
         $anio = $laFecha->format('Y'); // Obtiene el año
 
-        $Transacciones = transaccion::Where('codigo',$codigo)
-            ->WhereYear('fecha_elaboracion',$anio)
-            ->whereMonth('fecha_elaboracion',$mes)->get();
+        $Transacciones = transaccion::Where('codigo', $codigo)
+            ->WhereYear('fecha_elaboracion', $anio)
+            ->whereMonth('fecha_elaboracion', $mes)->get();
         //validar que tanto el Comprobante como la transsacion exista
 //        dd($Transacciones[0]);
-        return [$Transacciones,$valor_debito_credito];
+        return [$Transacciones, $valor_debito_credito];
     }
 
 }
