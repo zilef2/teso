@@ -63,7 +63,6 @@ class ComprobanteController extends Controller
                 $laclase = $laclase->where(function ($query) use ($request,$busqueda) {
                     $query->where($busqueda, 'LIKE', "%" . $request->{$busqueda} . "%");
                 });
-
             }
         }
         return $laclase->get();

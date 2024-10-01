@@ -12,15 +12,13 @@ import pkg from 'lodash';
 
 import Pagination from '@/Components/Pagination.vue';
 import {ChevronUpDownIcon, PencilIcon, TrashIcon} from '@heroicons/vue/24/solid';
-// import { CursorArrowRippleIcon, ChevronUpDownIcon,QuestionMarkCircleIcon, EyeIcon, PencilIcon, TrashIcon, UserGroupIcon } from '@heroicons/vue/24/solid';
 import Create from '@/Pages/transaccion/Create.vue';
 import Edit from '@/Pages/transaccion/Edit.vue';
 import Delete from '@/Pages/transaccion/Delete.vue';
 
 import Checkbox from '@/Components/Checkbox.vue';
 import InfoButton from '@/Components/InfoButton.vue';
-
-import {formatDate, number_format} from '@/global.ts';
+// import { CursorArrowRippleIcon, ChevronUpDownIcon,QuestionMarkCircleIcon, EyeIcon, PencilIcon, TrashIcon, UserGroupIcon } from '@heroicons/vue/24/solid';
 
 const { _, debounce, pickBy } = pkg
 const props = defineProps({
@@ -40,6 +38,7 @@ const props = defineProps({
 const data = reactive({
     params: {
         search: props.filters.search,
+        searchContrapartida: props.filters.searchContrapartida,
         field: props.filters.field,
         order: props.filters.order,
         perPage: props.perPage,
@@ -155,9 +154,9 @@ const titulos = [
                         </DangerButton> -->
                     </div>
                     <TextInput v-model="data.params.search" type="text"
-                        class="block w-4/6 md:w-3/6 lg:w-2/6 rounded-lg" placeholder="Codigo" />
-                    <TextInput v-model="data.params.searchNumCuenta" type="number"
-                        class="block w-4/6 md:w-3/6 lg:w-2/6 rounded-lg" placeholder="Numero de cuenta" />
+                        class="block w-4/6 md:w-3/6 lg:w-2/6 rounded-lg" placeholder="Codigo cuenta contable" />
+                    <TextInput v-model="data.params.searchContrapartida" type="text"
+                        class="block w-4/6 md:w-3/6 lg:w-2/6 rounded-lg" placeholder="CP" />
                 </div>
                 <div class="overflow-x-auto scrollbar-table">
                     <table v-if="props.total > 0" class="w-full">

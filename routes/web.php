@@ -39,11 +39,11 @@ Route::middleware(['auth'])->group(callback: function () {
     Route::get('/ejemplo', [EjemploController::class, 'ejemplo'])->name('ejemplo');
 
     Route::post('/user/destroy-bulk', [UserController::class, 'destroyBulk'])->name('user.destroy-bulk');
-     Route::get('/subirexceles', [SubiExcelController::class, 'subirexceles'])->name('subirexceles');
-     Route::post('/upExCuentas', [SubiExcelController::class, 'upExCuentas'])->name('upExCuentas');
-     Route::post('/upExTransacciones', [SubiExcelController::class, 'upExTransacciones'])->name('upExTransacciones');
-     Route::post('/uploadFileComprobantes', [SubiExcelController::class, 'uploadFileComprobantes'])->name('uploadFileComprobantes');
-     Route::post('/uploadFileBancos', [SubiExcelController::class, 'uploadFileBancos'])->name('uploadFileBancos');
+    Route::get('/subirexceles', [SubiExcelController::class, 'subirexceles'])->name('subirexceles');
+    Route::post('/upExCuentas', [SubiExcelController::class, 'upExCuentas'])->name('upExCuentas');
+    Route::post('/upExTransacciones', [SubiExcelController::class, 'upExTransacciones'])->name('upExTransacciones');
+    Route::post('/uploadFileComprobantes', [SubiExcelController::class, 'uploadFileComprobantes'])->name('uploadFileComprobantes');
+    Route::post('/uploadFileBancos', [SubiExcelController::class, 'uploadFileBancos'])->name('uploadFileBancos');
 
 
     Route::resource('/role', RoleController::class)->except('create', 'show', 'edit');
