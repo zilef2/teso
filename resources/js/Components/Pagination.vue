@@ -17,6 +17,7 @@ const data = reactive({
         searchtipo: props.filters?.searchtipo,
         SoloGuardados: props.filters?.SoloGuardados,
         searchContrapartida: props.filters?.searchContrapartida,
+        searchConcepto: props.filters?.searchConcepto,
 
         codigo: props.filters.codigo,
         numero_documento: props.filters.numero_documento,

@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Cache;
 
 class transaccion extends Model
 {
@@ -47,4 +48,15 @@ class transaccion extends Model
      public function cuenta(){return $this->hasOne(cuenta::class);}
 
 //     public function contraparte(){return $this->hasMany(contraparte::class);}
+
+    protected static function booted()
+    {
+        static::saved(function () {
+            Cache::forget('transaccions_search_*'); // Puedes crear una lógica para olvidar la clave correcta
+        });
+
+        static::deleted(function () {
+            Cache::forget('transaccions_search_*'); // Mismo principio aquí
+        });
+    }
 }

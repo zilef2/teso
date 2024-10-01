@@ -10,6 +10,7 @@ use App\Models\transaccion;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
@@ -64,14 +65,43 @@ class TransaccionController extends Controller
 
     public function Filtros($request)
     {
-        $transaccions = transaccion::Query();
+        $cacheKey = $this->generateCacheKey($request);
 
-        if ($request->has(['field', 'order'])) {
-            $transaccions = $transaccions->orderBy($request->field, $request->order);
-        } else {
-            $transaccions = $transaccions->orderBy('updated_at', 'DESC');
+        // Cachear la búsqueda usando Cache::remember()
+        return Cache::remember($cacheKey, 60, function () use ($request) {
+            $transaccions = transaccion::Query();
+
+            if ($request->has(['field', 'order'])) {
+                $transaccions = $transaccions->orderBy($request->field, $request->order);
+            } else {
+                $transaccions = $transaccions->orderBy('updated_at', 'DESC');
+            }
+
+            // Realizar las búsquedas con filtros de texto
+            return $this->BusquedasText($transaccions, $request);
+        });
+
+    }
+    private function generateCacheKey($request)
+    {
+        $parts = [];
+
+        if ($request->has('field')) {
+            $parts[] = 'field_' . $request->field;
         }
-        return $this->BusquedasText($transaccions, $request);
+
+        if ($request->has('order')) {
+            $parts[] = 'order_' . $request->order;
+        }
+
+        foreach ($this->arrayBusque as $busqueda) {
+            if ($request->has($busqueda)) {
+                $parts[] = $busqueda . '_' . $request->{$busqueda};
+            }
+        }
+
+        // Unir todas las partes con un delimitador único (puede ser un guión bajo, por ejemplo)
+        return 'transaccions_search_' . implode('_', $parts);
     }
 
     //</editor-fold>
