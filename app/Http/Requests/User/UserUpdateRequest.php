@@ -40,7 +40,7 @@ class UserUpdateRequest extends FormRequest
                 'min:1000',
                 Rule::unique('users')->ignore($id),
             ],
-            
+
             'role' => ['required'],
 
             'sexo' => 'nullable',
@@ -48,7 +48,7 @@ class UserUpdateRequest extends FormRequest
             'celular' => 'nullable',
 
             'cargo' => 'required',
-            'tipo_user' => 'required',
+            'tipo_user' => 'nullable',
             'firma' => 'nullable',
         ];
     }

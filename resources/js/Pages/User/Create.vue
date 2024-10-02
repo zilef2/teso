@@ -20,6 +20,7 @@ const props = defineProps({
     roles: Object,
     titulos: Object, //parametros de la clase principal
     numberPermissions: Object,
+    funcionalidades: Array,
 })
 const emit = defineEmits(["close"]);
 const data = reactive({
@@ -85,10 +86,21 @@ const printForm =[
     // 'firma',
     'tipo_user',
 ];
+const StringsValidarLosVacios =[
+    'name',
+    'email',
+    'role',
+    'identificacion',
+    'sexo',
+    'fecha_nacimiento',
+    'cargo',
+    'area',
+];
 
 function ValidarVacios(){
     let result = true
-    printForm.forEach(element => {
+
+    StringsValidarLosVacios.forEach(element => {
         if(!form[element]){
             data.CampoError = element
             result = false
@@ -202,7 +214,7 @@ const flow = ref(['year', 'month', 'calendar']);
                             </SelectInput>
                             <InputError class="mt-2" :message="form.errors.sexo" />
                         </div>
-                        <div>
+                        <div v-show="props.funcionalidades?.tipo_user">
                           <div class="inline-flex">
                             <InputLabel for="tipo_user" :value="lang().label.tipo_user" />
                             <small class="text-lg ml-1 font-bold">ㅤ</small>
@@ -218,7 +230,7 @@ const flow = ref(['year', 'month', 'calendar']);
                             :obligatorio=false
                         />
 
-                        <div class="my-12 md:col-span-2 2xl:col-span-3">
+                        <div v-show="props.funcionalidades?.firma" class="my-12 md:col-span-2 2xl:col-span-3">
                             <InputLabel for="firma" :value="lang().label.firma" class="text-xl text-center"/>
                             <p class="text-center">Por favor, use un formato de imagen como jpeg, png, gif, webp </p>
                             <div id="firma" class="mt-2 mx-auto text-center">

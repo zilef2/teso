@@ -30,7 +30,9 @@ const props = defineProps({
     perPage: Number,
     numberPermissions: Number,
     losSelect: Object,
+    funcionalidades: Array,
 })
+
 const data = reactive({
     params: {
         search: props.filters.search,
@@ -128,10 +130,10 @@ const capitalizeFirstLetter = (text) => {
                     </PrimaryButton>
                     <Create :show="data.createOpen" @close="data.createOpen = false" :roles="props.roles"
                             v-if="can(['create user'])" :title="props.title" :titulos="titulos"
-                            :numberPermissions="props.numberPermissions"/>
+                            :numberPermissions="props.numberPermissions" :funcionalidades="props.funcionalidades"/>
                     <Edit :show="data.editOpen" @close="data.editOpen = false" :user="data.user" :roles="props.roles"
                           v-if="can(['update user'])" :title="props.title" :titulos="titulos" :losSelect="props.losSelect"
-                          :numberPermissions="props.numberPermissions"/>
+                          :numberPermissions="props.numberPermissions" :funcionalidades="props.funcionalidades"/>
                     <Delete :show="data.deleteOpen" @close="data.deleteOpen = false" :user="data.user"
                             :title="props.title"/>
                     <DeleteBulk :show="data.deleteBulkOpen"
@@ -184,23 +186,23 @@ const capitalizeFirstLetter = (text) => {
                                     <ChevronUpDownIcon class="w-4 h-4"/>
                                 </div>
                             </th>
-                            <th class="px-2 py-4 cursor-pointer" v-on:click="order('sexo')">
-                                <div class="flex justify-between items-center"><span>{{ lang().label.sexo }}</span>
-                                    <ChevronUpDownIcon class="w-4 h-4"/>
-                                </div>
-                            </th>
-                            <th class="px-2 py-4 cursor-pointer" v-on:click="order('celular')">
-                                <div class="flex justify-between items-center"><span>{{ lang().label.celular }}</span>
-                                    <ChevronUpDownIcon class="w-4 h-4"/>
-                                </div>
-                            </th>
+<!--                            <th class="px-2 py-4 cursor-pointer" v-on:click="order('sexo')">-->
+<!--                                <div class="flex justify-between items-center"><span>{{ lang().label.sexo }}</span>-->
+<!--                                    <ChevronUpDownIcon class="w-4 h-4"/>-->
+<!--                                </div>-->
+<!--                            </th>-->
+<!--                            <th class="px-2 py-4 cursor-pointer" v-on:click="order('celular')">-->
+<!--                                <div class="flex justify-between items-center"><span>{{ lang().label.celular }}</span>-->
+<!--                                    <ChevronUpDownIcon class="w-4 h-4"/>-->
+<!--                                </div>-->
+<!--                            </th>-->
 
-                            <th class="px-2 py-4 cursor-pointer" v-on:click="order('tipo_user')">
+                            <th v-show="props.funcionalidades?.tipo_user"  v-on:click="order('tipo_user')" class="px-2 py-4 cursor-pointer">
                                 <div class="flex justify-between items-center"><span>{{ lang().label.tipo_user }}</span>
                                     <ChevronUpDownIcon class="w-4 h-4"/>
                                 </div>
                             </th>
-                            <th v-show="can(['delete user'])" class="px-2 py-4 cursor-pointer">
+                            <th v-show="can(['delete user']) && props.funcionalidades?.firma" class="px-2 py-4 cursor-pointer">
                                 <div class="flex justify-between items-center"><span>{{ lang().label.firma }}</span>
                                     <ChevronUpDownIcon class="w-4 h-4"/>
                                 </div>
@@ -218,7 +220,7 @@ const capitalizeFirstLetter = (text) => {
                             <td class="whitespace-nowrap py-4 px-2 sm:py-3">
                                 <div class="flex justify-center items-center">
                                     <div class="rounded-md overflow-hidden">
-                                        <InfoButton v-show="can(['update user']) && user.id == $page.props.auth.user.id" type="button"
+                                        <InfoButton v-show="can(['update user']) && user.id === $page.props.auth.user.id" type="button"
                                                     @click="(data.editOpen = true), (data.user = user)"
                                                     class="px-2 py-1.5 rounded-none" v-tooltip="lang().tooltip.edit">
                                             <PencilIcon class="w-4 h-4"/>
@@ -237,13 +239,16 @@ const capitalizeFirstLetter = (text) => {
                                     class="ml-[2px] w-4 h-4 text-primary dark:text-white" v-show="user.email_verified_at"/></span>
                                 <span class="flex justify-start items-center text-sm text-gray-600">{{ user.email }}</span>
                             </td>
-                            <td class="whitespace-nowrap py-4 px-2 sm:py-3">{{ user.cargo }}</td>
-                            <td class="whitespace-nowrap py-4 px-2 sm:py-3">{{ user.roles.length == 0 ? 'No Rol' : capitalizeFirstLetter(user.roles[0].name) }}</td>
+                            <td class="whitespace-nowrap py-4 px-2 sm:py-3">{{ user.cargo }} </td>
+                            <td class="whitespace-nowrap py-4 px-2 sm:py-3">
+                                {{ user.roles.length == 0 ? 'No Rol' : capitalizeFirstLetter(user.roles[0].name) }}
+                                {{ user.sexo === "Masculino" ? '🤷‍♂️' : '🤷‍♀️' }}
+                            </td>
                             <td class="whitespace-nowrap py-4 px-2 sm:py-3">{{ user.identificacion }}</td>
-                            <td class="whitespace-nowrap py-4 px-2 sm:py-3">{{ user.sexo }}</td>
-                            <td class="whitespace-nowrap py-4 px-2 sm:py-3">{{ user.celular }}</td>
-                            <td class="whitespace-nowrap py-4 px-2 sm:py-3">{{ user.tipo_user }}</td>
-                            <td v-show="can(['delete user'])" class="whitespace-nowrap py-4 px-2 sm:py-3">
+<!--                            <td class="whitespace-nowrap py-4 px-2 sm:py-3">{{ user.sexo }}</td>-->
+<!--                            <td class="whitespace-nowrap py-4 px-2 sm:py-3">{{ user.celular }}</td>-->
+                            <td class="whitespace-nowrap py-4 px-2 sm:py-3" v-show="props.funcionalidades?.tipo_user">{{ user.tipo_user }}</td>
+                            <td v-show="can(['delete user']) && props.funcionalidades?.firma" class="whitespace-nowrap py-4 px-2 sm:py-3">
                                 <div id="foto" class="mt-2  mx-auto text-center">
                                     <div v-if="user.firma">
                                         <img :src="user.firma" alt=" No firma"

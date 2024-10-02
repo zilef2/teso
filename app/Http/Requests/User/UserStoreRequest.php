@@ -43,9 +43,9 @@ class UserStoreRequest extends FormRequest
             'sexo' => 'nullable',
             'fecha_nacimiento' => 'nullable',
             'celular' => 'nullable',
-            
+
             'cargo' => 'required',
-            'tipo_user' => 'required',
+            'tipo_user' => 'nullable',
             'firma' => 'nullable',
         ];
     }

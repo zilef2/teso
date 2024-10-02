@@ -89,9 +89,10 @@ return [
         'Aspecto' => 'Aspectos',
         'aspecto' => 'Aspectos',
 
-        //firma
+        //funcionalidades user
         'firma'=> 'Firma',
         'Firma'=> 'Firma',
+        'tipo_user'=> 'Tipo',
 
         //idea
         'idea'=> 'idea',

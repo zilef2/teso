@@ -79,53 +79,11 @@ class ComprobanteImport implements ToModel
         session(['larow' => $row]);
         return (
             !isset($row[0])
-            || mb_strtolower($row[0]) == 'codigo'
-            || mb_strtolower($row[0]) == 'descripcion'
+            || strcmp(mb_strtolower($row[0]), 'codigo') === 0
+            || strcmp(mb_strtolower($row[0]), 'descripcion') === 0
         );
-    }
+    }//esta mal
 
-    /**
-     * @param array $row
-     *
-     * @return \Illuminate\Database\Eloquent\Model|null
-     */
-    public function model(array $row)
-    {
-        try {
-            $this->ContarFilasAbsolutas++;
-
-
-            if ($this->validarNull($row)) return null;
-            $this->Requeridos($row); //this has dd function
-
-            if($this->SoloUnaVez === 0){
-                [$cuantaVeces,$mesYanio] = $this->ValidarArchivoHaSidoGuardadoAnteriormente($row);
-                if($cuantaVeces > 0){
-                    throw new \Exception('|Comprobantes ya cargados del mes: '.$mesYanio);
-
-                }
-            }
-
-
-            return $this->TheNewObject($row);
-        }catch (\Throwable $th) {
-            if(str_starts_with($th->getMessage(),'|')) {
-                throw new \Exception(
-                    $th->getMessage()
-                );
-            }else{
-                $mensajeError = '  ' . $th->getMessage() . '. Informar al desarrollador - L:' . $th->getLine() . ' Ubi: ' . $th->getFile();
-                Myhelp::EscribirEnLog($this, 'IMPORT:comprobante', $mensajeError, false);
-                throw new \Exception(
-                    $mensajeError
-                );
-            }
-        }
-    }
-
-    /**
-     * @throws \Exception
-     */
     public function Requeridos($theRow)
     {
 //        $this->ContarFilasAbsolutas++;
@@ -142,20 +100,16 @@ class ComprobanteImport implements ToModel
             if (is_null($value) || $value === ''){
                 dd($theRow,$value,'VALOR VACIO EN LA FILA '.$this->ContarFilasAbsolutas);
                 throw new \Exception('VALOR VACIO EN LA FILA '.$this->ContarFilasAbsolutas);
-
-//                return false;
             }
         }
         if (!is_string(($theRow[0]))){ //intval
             $mensajesito = 'TIPO DE VALOR INCORRECTO (deberia ser un texto) EN LA FILA ';
             dd($theRow,$theRow[0],$mensajesito.$this->ContarFilasAbsolutas);
 //                throw new Exception($mensajesito.$this->ContarFilasAbsolutas);
-//            return false;
         }
 
         if (!is_string($theRow[1])){
             dd($theRow,$theRow[1],'TIPO DE VALOR INCORRECTO (deberia ser un texto) EN LA FILA '.$this->ContarFilasAbsolutas);
-//            return false;
         }
 
         //validar valor_debito valor_credito
@@ -164,6 +118,55 @@ class ComprobanteImport implements ToModel
 //        }
 
         return true;
+    }
+
+    /**
+     * @param array $row
+     *
+     * @return \Illuminate\Database\Eloquent\Model|null
+     */
+    public function model(array $row)
+    {
+        try {
+            $this->ContarFilasAbsolutas++;
+//            if ($this->validarNull($row)) return null;
+            $this->Requeridos($row); //this has dd function
+
+            if($this->SoloUnaVez === 0){
+                [$cuantaVeces,$mesYanio] = $this->HaSidoGuardadoAnteriormente($row);
+                if($cuantaVeces > 0){
+                    throw new \Exception('|Comprobantes ya cargados del mes: '.$mesYanio);
+                }
+            }
+
+            return $this->TheNewObject($row);
+        }catch (\Throwable $th) {
+            if(str_starts_with($th->getMessage(),'|')) {
+                throw new \Exception($th->getMessage());
+            }else{
+                $mensajeError = '  ' . $th->getMessage() . '. Informar al desarrollador - L:' . $th->getLine() . ' Ubi: ' . $th->getFile();
+                Myhelp::EscribirEnLog($this, 'IMPORT:comprobante', $mensajeError, false);
+                throw new \Exception($mensajeError);
+            }
+        }
+    }
+
+    /**
+     * @throws \Exception
+     */
+    private function HaSidoGuardadoAnteriormente($therow)
+    {
+        $laFecha = HelpExcel::getFechaExcel($therow[7]);
+        $mes = $laFecha->format('m'); // Obtiene el mes (en formato numérico)
+        $anio = $laFecha->format('Y'); // Obtiene el año
+
+        $ExisteUnComprobante = Comprobante::Where('codigo',$therow[0])
+            ->WhereYear('fecha_elaboracion',$anio)
+            ->whereMonth('fecha_elaboracion',$mes)->count();
+
+        $mesYanio = $mes . '-'. $anio;
+        $this->SoloUnaVez++;
+        return [$ExisteUnComprobante,$mesYanio];
     }
 
     private function TheNewObject($therow)
@@ -191,19 +194,6 @@ class ComprobanteImport implements ToModel
         ]);
     }
 
-    private function ValidarArchivoHaSidoGuardadoAnteriormente($therow)
-    {
-        $laFecha = HelpExcel::getFechaExcel($therow[7]);
-        $mes = $laFecha->format('m'); // Obtiene el mes (en formato numérico)
-        $anio = $laFecha->format('Y'); // Obtiene el año
 
-        $ExisteUnComprobante = Comprobante::Where('codigo',$therow[0])
-            ->WhereYear('fecha_elaboracion',$anio)
-            ->whereMonth('fecha_elaboracion',$mes)->count();
-
-        $mesYanio = $mes . '-'. $anio;
-        $this->SoloUnaVez++;
-        return [$ExisteUnComprobante,$mesYanio];
-    }
 }
 

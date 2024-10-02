@@ -9,7 +9,6 @@ use App\Imports\ComprobanteImport;
 use App\Imports\CuentaImport;
 use App\Imports\TransaccionesImport;
 use App\Models\cuenta;
-use App\Models\Formulario;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
@@ -81,7 +80,7 @@ class SubiExcelController extends Controller
                 $personalImp = new CuentaImport();
                 Excel::import($personalImp, $request->archivo1);
 
-                $countfilas = $personalImp->ContarFilas;
+                $countfilas = $personalImp->ContarFilasAbsolutas;
 
                 $MensajeWarning = HelpExcel::MensajeWarComprobante($personalImp);
 
@@ -120,6 +119,7 @@ class SubiExcelController extends Controller
     public function upExTransacciones(Request $request){
         Myhelp::EscribirEnLog($this, get_called_class(), 'importando', false);
         $countfilas = 0;
+        $entidad = 'Transaccion';
         try {
             DB::beginTransaction();
             if ($request->archivo2) {
@@ -134,23 +134,21 @@ class SubiExcelController extends Controller
                 $personalImp = new TransaccionesImport();
                 Excel::import($personalImp, $request->archivo2);
 
-                $countfilas = $personalImp->ContarFilas;
+                $countfilas = $personalImp->ContarFilasAbsolutas;
 
                 $MensajeWarning = HelpExcel::MensajeWarComprobante($personalImp);
 
                 if ($MensajeWarning !== '') { //exito
 
-                    return back()->with('success', 'Formularios nuevos: ' . $countfilas)
+                    return back()->with('success', $entidad.'es nuevas: ' . $countfilas)
                         ->with('warning2', $MensajeWarning);
                 }
 
-                Myhelp::EscribirEnLog($this, 'IMPORT:users', ' finalizo con exito', false);
+                Myhelp::EscribirEnLog($this, 'IMPORT:'.$entidad, ' finalizo con exito', false);
                 DB::commit();
                 if ($countfilas == 0){
                     return back()->with('success', __('app.label.op_successfully') . ' No hubo cambios');
                 } else{
-//                    cuenta::where('user_id', $personalImp->usuario->id)->update(['enviado' => 1]);
-
                     return back()->with('success', __('app.label.op_successfully') . ' Se leyeron ' . $countfilas . ' filas con exito');
                 }
 
@@ -196,7 +194,7 @@ class SubiExcelController extends Controller
                 $personalImp = new ComprobanteImport();
                 Excel::import($personalImp, $request->{$archivin});
 
-                $countfilas = $personalImp->ContarFilas;
+                $countfilas = $personalImp->ContarFilasAbsolutas;
 
                 $MensajeWarning = HelpExcel::MensajeWarComprobante($personalImp);
                 if ($MensajeWarning !== '') { //exito
@@ -303,5 +301,5 @@ class SubiExcelController extends Controller
             }
         }
     }
-    
+
 }

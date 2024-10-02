@@ -20,15 +20,20 @@ use ZipArchive;
 
 class UserController extends Controller {
     public $thisAtributos;
+    public $funcionalidades;
 
     public function __construct() {
+        $this->funcionalidades =[
+          'firma' => 0,
+          'tipo_user' => 0,
+        ];
         $this->middleware('permission:create user', ['only' => ['create', 'store']]);
         $this->middleware('permission:read user', ['only' => ['index', 'show']]);
         $this->middleware('permission:update user', ['only' => ['edit', 'update']]);
         $this->middleware('permission:delete user', ['only' => ['destroy', 'destroyBulk']]);
         $this->thisAtributos = (new User())->getFillable(); //not using
     }
-    
+
     public function downloadAnexos()
     {
         $zip = new ZipArchive;
@@ -51,10 +56,10 @@ class UserController extends Controller {
 
         session()->flash('message', ' Archivos descargados.');
                 //        return back()->download($filePath)->deleteFileAfterSend(true);
-        
+
         return response()->download($filePath)->deleteFileAfterSend(true);
     }
-    
+
     public function SelectsMasivos($numberPermissions) {
         $tiposResponsable = DB::table('tipo_users')->pluck('nombre')->toArray();
 
@@ -78,7 +83,7 @@ class UserController extends Controller {
             //            dd($request->field, $request->has(['field', 'order']));
         if ($request->has(['field', 'order'])) {
             $users = $users->orderBy($request->field, $request->order);
-            
+
         } else {
             $users = $users->orderBy('updated_at', 'desc');
         }
@@ -91,7 +96,7 @@ class UserController extends Controller {
             })->where('name', '!=', 'admin')->where('name', '!=', 'Superadmin');
             // $users->where('name', 'LIKE', "%" . $request->search . "%");
         }
-        
+
         $users = $users->get()->map(function ($user) {
             return $user;
         })->filter();
@@ -104,7 +109,7 @@ class UserController extends Controller {
 
         $users = User::query()->with('roles');
         $this->MapearClasePP($users,$numberPermissions,$request,$roles);
-        
+
 
         $perPage = $request->has('perPage') ? $request->perPage : 10;
         $total = $users->count();
@@ -117,6 +122,7 @@ class UserController extends Controller {
             'filters'               => $request->all(['search', 'field', 'order']),
             'perPage'               => (int) $perPage,
             'users'                 => $fromController,
+            'funcionalidades'       => $this->funcionalidades,
             'roles'                 => $roles,
             'numberPermissions'     => $numberPermissions,
             'losSelect'             => $this->SelectsMasivos($numberPermissions),
@@ -143,12 +149,12 @@ class UserController extends Controller {
             'name'      => $request->name,
             'email'     => $request->email,
             'password' => Hash::make($request->identificacion . '+-'),
-            
+
             'identificacion' => $request->identificacion,
             'sexo' => $sexo,
             'fecha_nacimiento' => Myhelp::updatingDate($request->fecha_nacimiento),
             'celular' => $request->celular,
-            
+
             'cargo'     => $request->cargo,
             'tipo_user'     => $request->tipo_user,
             'firma'     => $request->firma,
@@ -163,18 +169,18 @@ class UserController extends Controller {
 
     public function update(UserUpdateRequest $request, $id){
         Myhelp::EscribirEnLog($this, 'UPDATE:users', '', false);
-        
+
         $sexo = is_string($request->sexo) ? $request->sexo : $request->sexo['value'];
         $user = User::findOrFail($id);
         $user->update([
             'name'      => $request->name,
             'email'     => $request->email,
-            
+
             'identificacion' => $request->identificacion,
             'sexo' => $sexo,
             'fecha_nacimiento' => Myhelp::updatingDate($request->fecha_nacimiento),
             'celular' => $request->celular,
-            
+
             'cargo'     => $request->cargo,
             'tipo_user'     => $request->tipo_user,
             'firma'     => $request->firma,

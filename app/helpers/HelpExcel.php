@@ -23,11 +23,12 @@ class HelpExcel
                  throw new \Exception('Fecha inválida '.$lafecha. ' --++--');
             }
         } else {
-            $fechaReturn = DateTime::createFromFormat('Y/m/d', $lafecha);
+            $fechaReturn = DateTime::createFromFormat('d/m/Y h:i:s a', $lafecha);
+//            $fechaReturn = DateTime::createFromFormat('Y/m/d', $lafecha);
             if ($fechaReturn === false) {
                 $fechaReturn = DateTime::createFromFormat('d/m/Y', $lafecha);
                 if ($fechaReturn === false) {
-                    throw new \Exception('Fecha inválida 2' . $lafecha);
+                    throw new \Exception('Fecha inválida opcion B ' . $lafecha);
 //                    return null;
                 }
             }
@@ -40,15 +41,14 @@ class HelpExcel
 
     public function validarArchivoExcel($request, $nombreArchivo)
     {
-//        $exten = $request->archivo1->getClientOriginalExtension();
         $exten = $request->{$nombreArchivo}->getClientOriginalExtension();
-        // Validar que el archivo es de Excel
         if ($exten != 'xlsx' && $exten != 'xls') {
             return 'El archivo debe ser de Excel';
         }
+        $megas = 12;
         $pesoKilobyte = ((int)($request->{$nombreArchivo}->getSize())) / (1024);
-        if ($pesoKilobyte > (12 * 1024)) { //debe pesar menos de 12MB
-            return 'El archivo debe pesar menos de 12MB';
+        if ($pesoKilobyte > ($megas * 1024)) { //debe pesar menos de 12MB
+            return 'El archivo debe pesar menos de '.$megas.'MB';
         }
         return '';
     }

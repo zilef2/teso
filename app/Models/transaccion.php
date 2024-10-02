@@ -52,11 +52,11 @@ class transaccion extends Model
     protected static function booted()
     {
         static::saved(function () {
-            Cache::forget('transaccions_search_*'); // Puedes crear una lógica para olvidar la clave correcta
+            Cache::forget('transaccions_search_*');
         });
 
         static::deleted(function () {
-            Cache::forget('transaccions_search_*'); // Mismo principio aquí
+            Cache::forget('transaccions_search_*');
         });
     }
 }
