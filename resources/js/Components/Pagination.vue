@@ -12,6 +12,7 @@ const props = defineProps({
 const data = reactive({
     params: {
         search: props.filters?.search,
+        search2: props.filters?.search2,
         searchNumCuenta: props.filters?.searchNumCuenta,
         searchBanco: props.filters?.searchBanco,
         searchtipo: props.filters?.searchtipo,

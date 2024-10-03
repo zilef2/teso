@@ -25,16 +25,12 @@ class ConceptoflujoController extends Controller
         $this->thisAtributos = array_diff($this->thisAtributos, ['deleted_at']);
         $this->arrayBusque = [
             'search',
-            'searchNumconcepto_flujo',
-            'searchBanco',
-            'searchtipo',
+            'search2',
         ];
 
         $this->arrayFillableSearch = [
-            'codigo_concepto_flujo_contable',
-            'numero_concepto_flujo_bancaria',
-            'banco',
-            'tipo_de_recurso',
+            'cuenta_contable',
+            'concepto_flujo',
         ];
     }
 
@@ -49,8 +45,8 @@ class ConceptoflujoController extends Controller
         return $Result;
     }
 
-    public function BusquedasText($concepto_flujos,$arrayBusquedas,$request){
-        foreach ($arrayBusquedas as $index => $busqueda) {
+    public function BusquedasText($concepto_flujos,$request){
+        foreach ($this->arrayBusque as $index => $busqueda) {
             $campo = $this->arrayFillableSearch[$index];
             if ($request->has($busqueda)) {
                 $concepto_flujos = $concepto_flujos->where(function ($query) use ($request,$busqueda,$campo) {
@@ -59,7 +55,7 @@ class ConceptoflujoController extends Controller
                 });
             }
         }
-        return $concepto_flujos;
+        return $concepto_flujos->get();
     }
     public function Filtros($request){
         $concepto_flujos = concepto_flujo::Query();
@@ -70,9 +66,7 @@ class ConceptoflujoController extends Controller
         }else{
             $concepto_flujos = $concepto_flujos->orderBy('updated_at', 'DESC');
         }
-        $concepto_flujos = $concepto_flujos->get();
-        $concepto_flujos = $this->BusquedasText($concepto_flujos,$this->arrayBusque,$request);
-        return $concepto_flujos;
+        return $this->BusquedasText($concepto_flujos, $request);
     }
 
     //</editor-fold>

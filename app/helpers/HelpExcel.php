@@ -28,8 +28,7 @@ class HelpExcel
             if ($fechaReturn === false) {
                 $fechaReturn = DateTime::createFromFormat('d/m/Y', $lafecha);
                 if ($fechaReturn === false) {
-                    throw new \Exception('Fecha inválida opcion B ' . $lafecha);
-//                    return null;
+                    throw new \Exception(' Fecha inválida opcion B ' . $lafecha);
                 }
             }
         }

@@ -17,6 +17,9 @@ return [
     ],
 
     'label' => [
+        'ensayou' => 'ensayou',
+	    //aquipues
+        
         //transaccion
         'n_contrapartidas' => '# de CP',
         'contrapartida_CI' => 'contrapartida CI',

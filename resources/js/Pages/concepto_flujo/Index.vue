@@ -39,6 +39,7 @@ const props = defineProps({
 const data = reactive({
     params: {
         search: props.filters.search,
+        search2: props.filters.search2,
         field: props.filters.field,
         order: props.filters.order,
         perPage: props.perPage,
@@ -131,7 +132,7 @@ const titulos = [
             </div>
             <div class="relative bg-white dark:bg-gray-800 shadow sm:rounded-lg">
                 <div class="flex justify-between p-2">
-                    <div class="flex space-x-2">
+                    <div class="flex space-x-1">
                         <SelectInput v-model="data.params.perPage" :dataSet="data.dataSet" />
                         <!-- <DangerButton @click="data.deleteBulkOpen = true"
                             v-show="data.selectedId.length != 0 && can(['delete concepto_flujo'])" class="px-3 py-1.5"
@@ -140,7 +141,9 @@ const titulos = [
                         </DangerButton> -->
                     </div>
                     <TextInput v-if="props.numberPermissions > 1" v-model="data.params.search" type="text"
-                        class="block w-4/6 md:w-3/6 lg:w-2/6 rounded-lg" placeholder="Nombre, codigo" />
+                        class="block -mx-4 w-4/6 md:w-3/6 lg:w-2/6 rounded-lg" placeholder="Cuenta contable" />
+                    <TextInput v-if="props.numberPermissions > 1" v-model="data.params.search2" type="text"
+                        class="block w-4/6 md:w-3/6 lg:w-2/6 rounded-lg" placeholder="Concepto de flujo" />
                 </div>
                 <div class="overflow-x-auto scrollbar-table">
                     <table v-if="props.total > 0" class="w-full">

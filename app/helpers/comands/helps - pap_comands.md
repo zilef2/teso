@@ -63,4 +63,8 @@ npm install vue-select
     mkdir /home/aplicativoswebco/public_html/modulonom/storage/framework/cache/data
 
 
+//! ************************* COMMANDS *************************
+php artisan make:command customcommand
+php artisan make:command LanguageCopyU
+
 //! ************************* PERMISOS *************************

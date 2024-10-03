@@ -28,6 +28,7 @@ const sidebarButtonsNormal = [ //SAME AS WEB.PHP
     'transaccion',
     'Comprobante',
     'concepto_flujo',
+	//aquipuesSide
 ];
 
 function capitalizeFirstLetter(string) {

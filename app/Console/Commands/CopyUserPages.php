@@ -12,11 +12,13 @@ use Illuminate\Support\Facades\File;
  */
 class CopyUserPages extends Command
 {
-    protected $signature = 'copy:u {folderName} {depende?}';
-    protected $description = 'Copia la carpeta designada a una ubicación específica';
+    protected $signature = 'copy:u {folderName : Clase} {limpiar?} {depende? : depende de otra clase}';
+    protected $description = 'Copia de la entidad generica';
 
-    public function handle(){
+    public function handle(): void
+    {
         $foldernan = $this->argument('folderName');
+        $limpiar = $this->argument('limpiar');
 
         $plantillaActual = 'generic';
         $mensajeA = 'La genericacion del componente: ';
@@ -49,14 +51,17 @@ class CopyUserPages extends Command
             ])
         ;
 
-
-
+        
         $this->DoWebphp($foldernan);
-        $this->info("Fin de la operacion. Se limpiará cache\n\n");
-//        $this->info('optimize: ');
-//        $this->info(Artisan::call('optimize'));
-//        $this->info('optimize:clear: ');
-//        $this->info(Artisan::call('optimize:clear'));
+        $this->DoAppLenguaje($foldernan);
+        $this->DoSideBar($foldernan);
+        if($limpiar){
+            $this->info("Fin de la operacion. Se limpiará cache\n\n");
+            $this->info('optimize: ');
+            $this->info(Artisan::call('optimize'));
+            $this->info('optimize:clear: ');
+            $this->info(Artisan::call('optimize:clear'));
+        }
     }
 
 
@@ -147,6 +152,34 @@ class CopyUserPages extends Command
 
         return true;
     }
+    
+    private function DoAppLenguaje($resource)
+    {
+        $directory = 'lang/es/app.php';
+        $files = glob($directory);
+
+        $insertable = "'$resource' => '$resource',\n\t\t//aquipues";
+        $pattern = '/\/\/aquipues/';
+
+        foreach ($files as $file){
+            $content = file_get_contents($file);
+            if (strpos($content, $pattern) === false) {
+                $content2 = preg_replace($pattern, $insertable, $content);
+//                $content2 = preg_replace($pattern, "$0$insertable", $content);
+                file_put_contents($file, $content2);
+                if($content == $content2)
+                    $this->info("Language Actualizado: $file\n");
+                else
+                    $this->info("Language sin cambios: $file\n");
+            } else {
+                $this->error("No existe aquipues en: $file\n");
+            }
+        }
+
+        return true;
+    }
+    
+    
     private function DoWebphp($resource)
     {
         $directory = 'routes';
@@ -168,7 +201,34 @@ class CopyUserPages extends Command
                 else
                     $this->info("Routes sin cambios: $file\n");
             } else {
-                $this->info("No existe aquipues en: $file\n");
+                $this->error("No existe aquipues en: $file\n");
+            }
+        }
+
+        return true;
+    }
+    
+    private function DoSideBar($resource)
+    {
+        $directory = 'resources/js/Components/SideBarMenu.vue';
+        $files = glob($directory);
+        
+        $insertable = "'".$resource."',\n\t//aquipuesSide";
+        $pattern = '/\/\/aquipuesSide/';
+
+        foreach ($files as $file) {
+            $content = file_get_contents($file);
+
+            if (strpos($content, $pattern) === false) {
+                $content2 = preg_replace($pattern, $insertable, $content);
+                //$content2 = preg_replace($pattern, "$0$insertable", $content);
+                file_put_contents($file, $content2);
+                if($content != $content2)
+                    $this->info("SideBarMenu.vue Actualizado: $file\n");
+                else
+                    $this->info("SideBarMenu.vue sin cambios: $file\n"); //todo: revisar si ya existe
+            } else {
+                $this->error("No existe aquipues en: $file\n");
             }
         }
 

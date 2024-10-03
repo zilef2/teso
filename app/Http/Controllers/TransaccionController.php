@@ -80,8 +80,8 @@ class TransaccionController extends Controller
             // Realizar las búsquedas con filtros de texto
             return $this->BusquedasText($transaccions, $request);
         });
-
     }
+    
     private function generateCacheKey($request)
     {
         $parts = [];
@@ -146,9 +146,7 @@ class TransaccionController extends Controller
 
 
     //<editor-fold desc="no index">
-    public function create()
-    {
-    }
+    public function create(){}
 
     //! STORE - UPDATE - DELETE
     //! STORE functions
@@ -168,20 +166,16 @@ class TransaccionController extends Controller
 
     //fin store functions
 
-    public function show($id)
-    {
-    }
+    public function show($id){}
 
-    public function edit($id)
-    {
-    }
+    public function edit($id){}
 
     public function update(Request $request, $id)
     {
-        $permissions = Myhelp::EscribirEnLog($this, ' Begin UPDATE:transaccions');
+        Myhelp::EscribirEnLog($this, ' Begin UPDATE:transaccions');
         DB::beginTransaction();
         $transaccion = transaccion::findOrFail($id);
-        $request->merge(['no_nada_id' => $request->no_nada['id']]);
+//        $request->merge(['no_nada_id' => $request->no_nada['id']]);
         $transaccion->update($request->all());
 
         DB::commit();
@@ -239,8 +233,9 @@ class TransaccionController extends Controller
                 $otrosComprobantes = clone $otros;
                 $ComprobantesCP = $otros;
 
+                //va y busca los demas
                 foreach ($ComprobantesCP as $index => $item) {
-                    $soloTieneUno = floor(intval($principal->valor_debito)) - floor(intval($item->valor_credito)) == 0;
+                    $soloTieneUno = floor(intval($principal->valor_debito)) - floor(intval($item->valor_credito)) == 0; //todo: revisar si tiene mas de 1
                     $cuentaCP = $item->codigo_cuenta;
 
                     //buscamos el concepto
@@ -253,7 +248,9 @@ class TransaccionController extends Controller
                 }
             }
 
-            return redirect()->route('transaccion.index')->with('success', 'Operación exitosa');
+            return redirect()->route('transaccion.index')->with('success', 
+                'Operación exitosa. '.$Transacciones->count().' transacciones '.$codigo.' del mes y año actual fueron revisadas'
+            );
 //        return back()->with('success', __('app.label.deleted_successfully', ['name' => __('app.label.transaccion')]));
         } catch (\Throwable $th) {
 //            DB::rollback();

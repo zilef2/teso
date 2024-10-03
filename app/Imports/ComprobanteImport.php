@@ -6,9 +6,9 @@ use App\helpers\HelpExcel;
 use App\helpers\Myhelp;
 use App\Models\Comprobante;
 use Maatwebsite\Excel\Concerns\ToModel;
-use PHPUnit\TextUI\Help;
+use Maatwebsite\Excel\Concerns\WithStartRow;
 
-class ComprobanteImport implements ToModel
+class ComprobanteImport implements ToModel, WithStartRow
 {
 
     public int $ContarFilasAbsolutas;
@@ -16,11 +16,7 @@ class ComprobanteImport implements ToModel
 
     public int $SoloUnaVez = 0;
 
-    protected $DebenSerNulos;
-    private array $vectorCategoriaInsensitive;
-    private array $vectorMlistaprosInsensitive;
-    private array $vectorMplanInsensitive;
-    private array $vectorMlineaInsensitive;
+    protected array $DebenSerNulos;
 
     //manejo de errores
     public int $contarVacios;
