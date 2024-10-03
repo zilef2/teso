@@ -14,12 +14,12 @@ return [
         'porcentajeIC' => 'Porcentaje Interes',
         'conceptoflujo' => 'Concepto de flujo',
         'concepto_flujo' => 'Concepto de flujo',
+		//aquipues
     ],
 
     'label' => [
-        'ensayou' => 'ensayou',
-	    //aquipues
-        
+		//aquipues
+
         //transaccion
         'n_contrapartidas' => '# de CP',
         'contrapartida_CI' => 'contrapartida CI',

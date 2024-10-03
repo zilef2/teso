@@ -120,21 +120,32 @@ const Buscar_CP = () => {
         <div class="space-y-4">
             <!-- {{ props.fromController.data[2] }} -->
             <div class="flex justify-between px-4 sm:px-0">
-                <div class=" rounded-xl overflow-hidden w-fit">
-                    <PrimaryButton v-if="!form.processing" class="rounded-none" @click="Buscar_CP">
-                        Buscar CP
-                    </PrimaryButton>
-                    <div v-else class="text-sky-600">
-                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                        Procesando la asignacion de concepto...
+                <div class="inline-flex rounded-xl overflow-hidden w-fit">
+                    <div class="mx-2">
+                        <PrimaryButton v-if="!form.processing" class="rounded-lg" @click="Buscar_CP">
+                            Buscar CP de las CI
+                        </PrimaryButton>
+                        <div v-else class="text-sky-600">
+                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                            Procesando la asignacion de concepto...
+                        </div>
                     </div>
 
+                    <div class="mx-2 mb-1">
+                        <Button class="ml-4 bg-gray-200 rounded-lg p-2">
+                            Buscar CP de las CE
+                        </Button>
+                    </div>
+
+
                     <Create v-if="can(['create transaccion'])" :numberPermissions="props.numberPermissions"
-                            :titulos="titulos" :show="data.createOpen" @close="data.createOpen = false" :title="props.title"
+                            :titulos="titulos" :show="data.createOpen" @close="data.createOpen = false"
+                            :title="props.title"
                             :losSelect="props.losSelect"/>
 
                     <Edit v-if="can(['update transaccion'])" :titulos="titulos"
-                          :numberPermissions="props.numberPermissions" :show="data.editOpen" @close="data.editOpen = false"
+                          :numberPermissions="props.numberPermissions" :show="data.editOpen"
+                          @close="data.editOpen = false"
                           :transacciona="data.transacciono" :title="props.title" :losSelect="props.losSelect"/>
 
                     <Delete v-if="can(['delete transaccion'])" :numberPermissions="props.numberPermissions"
@@ -156,9 +167,9 @@ const Buscar_CP = () => {
                         </DangerButton> -->
                     </div>
                     <TextInput v-model="data.params.search" type="text"
-                               class="block w-4/6 md:w-3/6 lg:w-1/6 rounded-lg" placeholder="Codigo"/>
+                               class="block w-4/6 md:w-3/6 lg:w-1/6 rounded-lg" placeholder="Codigo cuenta contable"/>
                     <TextInput v-model="data.params.searchContrapartida" type="text"
-                               class="block w-4/6 md:w-3/6 lg:w-1/6 rounded-lg" placeholder="CP"/>
+                               class="block w-4/6 md:w-3/6 lg:w-1/6 rounded-lg" placeholder="# de CP"/>
                     <TextInput v-model="data.params.searchConcepto" type="text"
                                class="block w-4/6 md:w-3/6 lg:w-1/6 rounded-lg" placeholder="Concepto de flujo"/>
                 </div>
@@ -189,7 +200,10 @@ const Buscar_CP = () => {
                         </thead>
                         <tbody>
                         <tr v-for="(claseFromController, indexu) in props.fromController.data" :key="indexu"
-                            class="border-t border-gray-200 dark:border-gray-700 hover:bg-gray-200/30 hover:dark:bg-gray-900/20">
+                            class="border-t border-gray-200
+                             odd:bg-white even:bg-slate-100
+                             hover:bg-gray-200/30
+                             dark:border-gray-700 hover:dark:bg-gray-900/20">
 
                             <td class="whitespace-nowrap py-4 px-2 sm:py-3 text-center">
                                 <input
@@ -209,7 +223,8 @@ const Buscar_CP = () => {
                                         <!--                                            v-show="can(['delete transaccion'])"-->
                                         <DangerButton type="button"
                                                       @click="(data.deleteOpen = true), (data.transacciono = claseFromController)"
-                                                      class="px-2 py-1.5 rounded-none" v-tooltip="lang().tooltip.delete">
+                                                      class="px-2 py-1.5 rounded-none"
+                                                      v-tooltip="lang().tooltip.delete">
                                             <TrashIcon class="w-4 h-4"/>
                                         </DangerButton>
                                     </div>

@@ -81,7 +81,7 @@ class TransaccionController extends Controller
             return $this->BusquedasText($transaccions, $request);
         });
     }
-    
+
     private function generateCacheKey($request)
     {
         $parts = [];
@@ -213,13 +213,22 @@ class TransaccionController extends Controller
     public function Buscar_CP(Request $request)
     {
         try {
+            DB::beginTransaction();
             $codigo = "CI";
             [$Transacciones, $valor_debito_credito] = $this->Paso1($codigo);
+
+            $NumComprobantes = Comprobante::Where('codigo', $codigo)->count();
+            if($NumComprobantes === 0)
+                return back()->with('error', 'No hay comprobantes');
 
             foreach ($Transacciones as $index => $transa) {
                 $comprobantes = Comprobante::Where('numero_documento', $transa->documento)
                     ->Where('codigo', $codigo);
-//                ->get();
+
+                $HayComprobantes = clone $comprobantes;
+                $HayComprobantes = $HayComprobantes->count();
+                if($HayComprobantes === 0) continue;
+
 //            dd($transa->documento, $comprobantes->get());
 //            $princi = clone $comprobantes;
                 $otros = clone $comprobantes;
@@ -234,7 +243,7 @@ class TransaccionController extends Controller
                 $ComprobantesCP = $otros;
 
                 //va y busca los demas
-                foreach ($ComprobantesCP as $index => $item) {
+                foreach ($ComprobantesCP as $item) {
                     $soloTieneUno = floor(intval($principal->valor_debito)) - floor(intval($item->valor_credito)) == 0; //todo: revisar si tiene mas de 1
                     $cuentaCP = $item->codigo_cuenta;
 
@@ -247,14 +256,15 @@ class TransaccionController extends Controller
                     ]);
                 }
             }
+            DB::commit();
 
-            return redirect()->route('transaccion.index')->with('success', 
+            return redirect()->route('transaccion.index')->with('success',
                 'Operación exitosa. '.$Transacciones->count().' transacciones '.$codigo.' del mes y año actual fueron revisadas'
             );
-//        return back()->with('success', __('app.label.deleted_successfully', ['name' => __('app.label.transaccion')]));
         } catch (\Throwable $th) {
-//            DB::rollback();
-            return back()->with('error', __('app.label.deleted_error', ['name' => 'Operacion fallida']) . $th->getMessage() . ' L:' . $th->getLine() . ' Ubi: ' . $th->getFile());
+            DB::rollback();
+            $mensaj = $th->getMessage() . ' L:' . $th->getLine() . ' Ubi: ' . $th->getFile();
+            return back()->with('error', 'Operacion con errores '.$mensaj);
         }
     }
 

@@ -27,8 +27,11 @@ class CopyUserPages extends Command
 
         $this->warn("Empezando make:model");
         Artisan::call('make:model', ['name' => $foldernan, '--all' => true]);
-        Artisan::call('copy:f');
         $this->warn("Fin model");
+        Artisan::call('copy:f');
+        $this->warn("Fin copies");
+        Artisan::call('lang:u '.$foldernan);
+        $this->warn("Fin Lang");
 
 
         $RealizoVueConExito = $this->MakeVuePages($plantillaActual);
@@ -51,7 +54,7 @@ class CopyUserPages extends Command
             ])
         ;
 
-        
+
         $this->DoWebphp($foldernan);
         $this->DoAppLenguaje($foldernan);
         $this->DoSideBar($foldernan);
@@ -59,7 +62,7 @@ class CopyUserPages extends Command
             $this->info("Fin de la operacion. Se limpiará cache\n\n");
             $this->info('optimize: ');
             $this->info(Artisan::call('optimize'));
-            $this->info('optimize:clear: ');
+            $this->info('optimize_clear: ');
             $this->info(Artisan::call('optimize:clear'));
         }
     }
@@ -152,7 +155,7 @@ class CopyUserPages extends Command
 
         return true;
     }
-    
+
     private function DoAppLenguaje($resource)
     {
         $directory = 'lang/es/app.php';
@@ -178,8 +181,8 @@ class CopyUserPages extends Command
 
         return true;
     }
-    
-    
+
+
     private function DoWebphp($resource)
     {
         $directory = 'routes';
@@ -207,12 +210,12 @@ class CopyUserPages extends Command
 
         return true;
     }
-    
+
     private function DoSideBar($resource)
     {
         $directory = 'resources/js/Components/SideBarMenu.vue';
         $files = glob($directory);
-        
+
         $insertable = "'".$resource."',\n\t//aquipuesSide";
         $pattern = '/\/\/aquipuesSide/';
 
