@@ -17,8 +17,10 @@ class LanguageCopyU extends Command
         $files = glob($directory);
 
         $explotada = explode(' ', $Combinaciones);
-        foreach ($explotada as $index => $letra) {
-            
+        $explot = clone $explotada;
+        foreach ($explotada as $index => $palabra) {
+            $explot[$index] = ucfirst($palabra);
+            $arrayResultados[$index] = implode(' ',$explot);
         }
 
         $insertable = "'$Combinaciones' => '$Combinaciones',\n\t\t//aquipues";
