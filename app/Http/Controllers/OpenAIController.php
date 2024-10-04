@@ -4,23 +4,24 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
+use Inertia\Inertia;
 use JetBrains\PhpStorm\NoReturn;
 
 class OpenAIController extends Controller
 {
     public function askQuestion(Request $request){
         $question = $request->input('question');
-
-        // Valida que haya una pregunta
+        // Validar que haya una pregunta
         if (!$question) {
-            return response()->json(['error' => 'No question provided'], 400);
+            return Inertia::render('aski', [
+                'error' => 'Por favor ingrese una pregunta.'
+            ]);
         }
 
-        // Configura el cliente de Guzzle
+        // Configurar el cliente de Guzzle para llamar a OpenAI
         $client = new Client();
-        $apiKey = env('OPENAI_API_KEY'); // Llave desde .env
+        $apiKey = env('OPENAI_API_KEY');
 
-        // Hace la solicitud a la API de OpenAI
         try {
             $response = $client->post('https://api.openai.com/v1/chat/completions', [
                 'headers' => [
@@ -28,19 +29,28 @@ class OpenAIController extends Controller
                     'Content-Type' => 'application/json',
                 ],
                 'json' => [
-                    'model' => 'gpt-3.5-turbo',  // Cambia a gpt-4 si tienes acceso
+                    'model' => 'gpt-3.5-turbo', // O el modelo que estés usando
                     'messages' => [
-                        ['role' => 'system', 'content' => 'You are a helpful assistant.'], // Contexto del sistema
-                        ['role' => 'user', 'content' => $question] // Pregunta del usuario
+                        ['role' => 'system', 'content' => 'You are a helpful assistant.'],
+                        ['role' => 'user', 'content' => $question],
                     ],
-                    'max_tokens' => 150,  // Ajusta el número de tokens según lo necesites
+                    'max_tokens' => 415,
                 ]
             ]);
 
             $responseBody = json_decode($response->getBody(), true);
-            return response()->json([
-                'answer' => $responseBody['choices'][0]['message']['content'] ?? 'No answer found',
+            $answer = $responseBody['choices'][0]['message']['content'] ?? 'No se encontró una respuesta.';
+dd($answer);
+            return Inertia::render('aski', [
+                'answer' => $answer
             ]);
+//            return back()->with('aski', [
+//                'answer' => $answer
+//            ]);
+
+//            return response()->json([
+//                'answer' => $responseBody['choices'][0]['message']['content'] ?? 'No answer found',
+//            ]);
 //            return back()->with('success', $responseBody['choices'][0]['text'] ?? 'No hay respuesta para eso');
 
         } catch (\Exception $th) {

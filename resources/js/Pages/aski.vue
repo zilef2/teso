@@ -1,168 +1,83 @@
 <template>
-    <Toast :flash="$page.props.flash"/>
-    <div class="form-container">
-        <h1 class="title">Pregunta a OpenAI</h1>
+    <Toast :flash="$page.props.flash" />
 
-        <form @submit.prevent="create" class="form">
-            <label for="expertise">Selecciona un rol:</label>
-            <select v-model="expertise" id="expertise" class="input-select">
-                <option value="finanzas">Experto en Finanzas</option>
-                <option value="programacion">Experto en Programación (Laravel)</option>
-            </select>
+    <div class="m-4 p-6 bg-white shadow-md rounded-lg mx-auto max-w-2xl">
+        <h1 class="text-2xl font-bold mb-4">Pregunta a Fluef I.A.</h1>
 
-            <label for="question">Escribe tu pregunta:</label>
-            <input
-                type="text"
+        <form @submit.prevent="submitForm" class="space-y-4">
+            <label for="question" class="block text-sm font-medium text-gray-700">Escribe tu pregunta:</label>
+            <textarea
+                cols="20" rows="4"
                 v-model="form.question"
                 id="question"
                 placeholder="Escribe tu pregunta"
-                class="input-text"
+                class="block w-full p-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-500"
             />
-            <span v-if="errorMessage" class="error-message">{{ errorMessage }}</span>
+            <span v-if="error" class="text-red-500 text-sm">{{ error }}</span>
 
-            <button type="submit" class="btn-submit">Preguntar</button>
+            <button type="submit" class="w-full py-2 px-4 bg-blue-600 text-white rounded-md hover:bg-blue-700">Preguntar</button>
         </form>
 
-        <div v-if="answer" class="answer-box">
-            <h2>Respuesta de OpenAI:</h2>
-            <!-- Caja para mostrar la respuesta en un bloque de texto formateado -->
-            <pre class="answer-content">{{ formattedAnswer }}</pre>
-        </div>
-
-        <div v-if="error" class="error-box">
-            <p>{{ error }}</p>
+        <div v-if="answer" class="mt-6 p-4 bg-gray-100 border border-gray-300 rounded-md">
+            <h2 class="text-lg font-semibold">Respuesta de OpenAI:</h2>
+            <p class="text-justify mt-2 w-full text-gray-800">{{ answer }}
+            </p>
         </div>
     </div>
 </template>
 
+
 <script>
-import {computed, ref} from 'vue';
-import {useForm} from '@inertiajs/vue3';
+/*
+Algunos de los aspectos importantes que podrías considerar para mostrar en un tablero de Power BI en un reporte de transacciones son:
+
+
+1. Monto total de transacciones: Puedes mostrar el monto total de transacciones realizadas en un período determinado para tener una visión general del volumen d
+2. Distribución por tipo de transacción: Puedes mostrar la cantidad de transacciones realizadas categorizadas por tipo (por ejemplo, ventas, compras, devolucion
+3. Análisis de tendencias: Mostrar la evolución de las transacciones a lo largo del tiempo te permitirá identificar patrones estacionales o tendencias que puede
+4. Análisis de segmentación: Puedes segmentar las transacciones por diferentes criterios como ubicación geográfica, tipo de cliente o producto para identificar
+5. Indicadores de desempeño: Puedes incluir indicadores clave de desempeño (KPIs) relacionados con las transacciones, como porcentaje de cumplimiento de pedidos, tiempo promedio de procesamiento, entre otros.
+ ◀
+ */
+import { useForm } from '@inertiajs/vue3';
+import Toast from "@/Components/Toast.vue";
 
 export default {
-    setup() {
-        // Inicializamos las variables
+    components: {Toast},
+    props: {
+        answer: String,  // Recibe la respuesta de OpenAI
+        error: String,   // Recibe el mensaje de error si lo hay
+    },
+    setup(props) {
         const form = useForm({
-            question: '',  // Utilizamos `form.question` para la pregunta
+            question: '',
         });
 
-        const expertise = ref('finanzas');  // Rol del experto
-        const answer = ref(null);
-        const error = ref(null);
-        const errorMessage = ref('');
-
-        // Función de envío similar al ejemplo que proporcionaste
-        const create = () => {
-            // Limpiar mensajes previos
-            answer.value = null;
-            error.value = null;
-            errorMessage.value = '';
-
-            // Validar la pregunta antes de enviarla
-            if (!form.question.trim()) {
-                errorMessage.value = 'Por favor ingresa una pregunta.';
-                return;
-            }
-
-            // Preparamos el prompt para OpenAI
-            const prompt = `Actúa como ${expertise.value}. ${form.question}`;
-
+        const submitForm = () => {
             form.post(route('openai-question'), {
                 preserveScroll: true,
                 onSuccess: () => {
-                    answer.value = form.data.answer; // Obtener respuesta desde la solicitud
-                    // form.reset(); // Reiniciar formulario tras el éxito
+                    // La respuesta 'answer' ya estará disponible como prop
+                    console.log('Solicitud exitosa.');
+
                 },
                 onError: () => {
-                    error.value = 'Error en la solicitud. Inténtalo de nuevo.';
+                    console.log('Hubo un error en la solicitud');
                 },
-                onFinish: () => {
-                    // Puedes añadir lógica adicional al finalizar
-                },
-            }, {
-                question: prompt, // Datos enviados en la solicitud
+                onFinish: () => null,
             });
         };
 
-        // Formatear la respuesta para mejorar su visualización
-        const formattedAnswer = computed(() => {
-            return answer.value ? answer.value.replace(/\n/g, '<br>') : ''; // Reemplaza saltos de línea
-        });
-
         return {
             form,
-            expertise,
-            answer,
-            error,
-            errorMessage,
-            create,
-            formattedAnswer,
+            submitForm,
+            answer: props.answer,  // Usamos la prop 'answer'
+            error: props.error,    // Usamos la prop 'error'
         };
-    },
+    }
 };
 </script>
 
 <style scoped>
-.form-container {
-    max-width: 600px;
-    margin: 20px auto;
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    background-color: #f9f9f9;
-}
-
-.title {
-    text-align: center;
-    font-size: 24px;
-    margin-bottom: 20px;
-}
-
-.form {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-.input-text, .input-select {
-    padding: 10px;
-    border-radius: 4px;
-    border: 1px solid #ddd;
-    font-size: 16px;
-}
-
-.btn-submit {
-    background-color: #4CAF50;
-    color: white;
-    padding: 10px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-.btn-submit:hover {
-    background-color: #45a049;
-}
-
-.answer-box, .error-box {
-    margin-top: 20px;
-    padding: 15px;
-    border-radius: 4px;
-}
-
-.answer-box {
-    background-color: #e7f3fe;
-    border: 1px solid #b3d4fc;
-}
-
-.error-box {
-    background-color: #f8d7da;
-    color: #721c24;
-    border: 1px solid #f5c6cb;
-}
-
-.error-message {
-    color: red;
-    font-size: 14px;
-}
+/* Estilos similares al ejemplo anterior */
 </style>
