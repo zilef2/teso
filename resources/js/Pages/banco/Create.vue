@@ -17,7 +17,7 @@ const props = defineProps({
     title: String,
     roles: Object,
     titulos: Object, //parametros de la clase principal
-    losSelect:Object,
+    losSelect: Object,
     numberPermissions: Number,
 })
 const emit = defineEmits(["close"]);
@@ -29,13 +29,13 @@ const data = reactive({
 })
 
 //very usefull
-const justNames = props.titulos.map(names => names['order'] )
-const form = useForm({ ...Object.fromEntries(justNames.map(field => [field, ''])) });
+const justNames = props.titulos.map(names => names['order'])
+const form = useForm({...Object.fromEntries(justNames.map(field => [field, '']))});
 onMounted(() => {
-    if(props.numberPermissions > 9){
+    if (props.numberPermissions > 9) {
 
         const valueRAn = Math.floor(Math.random() * (9) + 1)
-        form.nombre = 'nombre de prueba inspeccion '+ (valueRAn);
+        form.nombre = 'nombre de prueba inspeccion ' + (valueRAn);
         form.codigo = (valueRAn);
         // form.hora_inicial = '0'+valueRAn+':00'//temp
         // form.fecha = '2023-06-01'
@@ -43,18 +43,18 @@ onMounted(() => {
     }
 });
 
-const printForm =[];
+const printForm = [];
 props.titulos.forEach(names =>
-    printForm.push ({
+    printForm.push({
         idd: names['order'], label: names['label'], type: names['type']
         //, value: form[names['order']]
     })
 );
 
-function ValidarVacios(){
+function ValidarVacios() {
     let result = true
     printForm.forEach(element => {
-        if(!form[element.idd]){
+        if (!form[element.idd]) {
             result = false
             return result
         }
@@ -63,7 +63,7 @@ function ValidarVacios(){
 }
 
 const create = () => {
-    if(ValidarVacios()){
+    if (ValidarVacios()) {
         // console.log("🧈 debu pieza_id:", form.pieza_id);
         form.post(route('AreaInspeccion.store'), {
             preserveScroll: true,
@@ -74,10 +74,11 @@ const create = () => {
             onError: () => null,
             onFinish: () => null,
         })
-    }else{
+    } else {
         console.log('Hay campos vacios')
     }
 }
+
 
 watchEffect(() => {
     if (props.show) {
@@ -87,7 +88,7 @@ watchEffect(() => {
 
 
 //very usefull
-const sexos = [{ label: 'Masculino', value: 0 }, { label: 'Femenino', value: 1 }];
+const sexos = [{label: 'Masculino', value: 0}, {label: 'Femenino', value: 1}];
 </script>
 
 <template>
@@ -104,29 +105,29 @@ const sexos = [{ label: 'Masculino', value: 0 }, { label: 'Femenino', value: 1 }
                         <div v-if="atributosform.type === 'id'" id="SelectVue">
                             <label name="labelSelectVue"> {{ atributosform.label }} </label>
                             <v-select :options="data[atributosform.idd]" label="title"
-                                v-model="form[atributosform.idd]"></v-select>
-                            <InputError class="mt-2" :message="form.errors[atributosform.idd]" />
+                                      v-model="form[atributosform.idd]"></v-select>
+                            <InputError class="mt-2" :message="form.errors[atributosform.idd]"/>
 
                         </div>
 
 
                         <!-- tiempo -->
                         <div v-else-if="atributosform.type === 'time'" id="SelectVue">
-                            <InputLabel :for="atributosform.label" :value="lang().label[atributosform.label]" />
+                            <InputLabel :for="atributosform.label" :value="lang().label[atributosform.label]"/>
                             <TextInput :id="atributosform.idd" :type="atributosform.type" class="mt-1 block w-full"
-                                v-model="form[atributosform.idd]" required :placeholder="atributosform.label"
-                                :error="form.errors[atributosform.idd]" step="3600" />
-                            <InputError class="mt-2" :message="form.errors[atributosform.idd]" />
+                                       v-model="form[atributosform.idd]" required :placeholder="atributosform.label"
+                                       :error="form.errors[atributosform.idd]" step="3600"/>
+                            <InputError class="mt-2" :message="form.errors[atributosform.idd]"/>
                         </div>
 
 
                         <!-- normal -->
                         <div v-else class="">
-                            <InputLabel :for="atributosform.label" :value="lang().label[atributosform.label]" />
+                            <InputLabel :for="atributosform.label" :value="lang().label[atributosform.label]"/>
                             <TextInput :id="atributosform.idd" :type="atributosform.type" class="mt-1 block w-full"
-                                v-model="form[atributosform.idd]" required :placeholder="atributosform.label"
-                                :error="form.errors[atributosform.idd]" />
-                            <InputError class="mt-2" :message="form.errors[atributosform.idd]" />
+                                       v-model="form[atributosform.idd]" required :placeholder="atributosform.label"
+                                       :error="form.errors[atributosform.idd]"/>
+                            <InputError class="mt-2" :message="form.errors[atributosform.idd]"/>
                         </div>
                     </div>
                 </div>
@@ -134,7 +135,7 @@ const sexos = [{ label: 'Masculino', value: 0 }, { label: 'Femenino', value: 1 }
                     <SecondaryButton :disabled="form.processing" @click="emit('close')"> {{ lang().button.close }}
                     </SecondaryButton>
                     <PrimaryButton class="ml-3" :class="{ 'opacity-25': form.processing }" :disabled="form.processing"
-                        @click="create">
+                                   @click="create">
                         {{ lang().button.add }} {{ form.processing ? '...' : '' }}
                     </PrimaryButton>
                 </div>

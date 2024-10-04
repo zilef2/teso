@@ -20,6 +20,17 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
 use Maatwebsite\Excel\Facades\Excel;
 
+
+use App\Http\Controllers\OpenAIController;
+use Inertia\Inertia;
+
+Route::post('/openai-question', [OpenAIController::class, 'askQuestion'])->name('openai-question');
+Route::get('/ask-ai', function () {
+    return Inertia::render('aski');
+});
+
+
+
 //Route::get('/', [FormularioController::class, 'welcome'])->name('welcome');
 Route::get('/', function () { return redirect('/login'); });
 //Route::get('/dashboard', [dashboardController::class, 'Dashboard'])->middleware(['auth', 'verified'])->name('dashboard');

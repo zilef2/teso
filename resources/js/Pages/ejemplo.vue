@@ -152,5 +152,7 @@ const downloadAnexos = () => {
                 </div>
             </div>
         </div>
+
+
     </AuthenticatedLayout>
 </template>
