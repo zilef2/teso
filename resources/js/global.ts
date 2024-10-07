@@ -8,7 +8,7 @@
  formatToVue
  formatDate
  formatDateSimply
- monthName
+ monthNameFunctin
  TransformTdate
  * Calcular edad
 
@@ -146,7 +146,7 @@
         // console.log("🧈 debu validDate:", validDate);
         const day = validDate.getDate().toString().padStart(2, "0");
         // getMonthName(1)); // January
-        const month = monthName((validDate.getMonth() + 1).toString().padStart(2, "0"));
+        const month = monthNameFunctin((validDate.getMonth() + 1).toString().padStart(2, "0"));
         let year = validDate.getFullYear();
         let anioActual = new Date().getFullYear();
         if(isDateTime == 'conLaHora'){
@@ -176,14 +176,25 @@
         let validDate = new Date(date)
         validDate = new Date(validDate.getTime() + (5 * 60 * 60 * 1000)) //correccion con GTM -5
         const day = validDate.getDate().toString().padStart(2, "0");
-        const month : string = monthName((validDate.getMonth() + 1).toString().padStart(2, "0"));
+        const month : string = monthNameFunctin((validDate.getMonth() + 1).toString().padStart(2, "0"));
         let year = validDate.getFullYear();
         let anioActual = new Date().getFullYear();
         let Stringyear = year.toString().slice(-2);
-        
+
         if(SinYear)
             return `${day}-${month}`;
         return `${day}-${month}-${Stringyear}`;
+    }
+    export function OnlyMonthAndYear(date) :string {
+        let validDate = new Date(date)
+        validDate = new Date(validDate.getTime() + (5 * 60 * 60 * 1000)) //correccion con GTM -5
+        const day = validDate.getDate().toString().padStart(2, "0");
+        const month : string = monthNameFunctin((validDate.getMonth() + 1).toString().padStart(2, "0"));
+        let year = validDate.getFullYear();
+        let anioActual = new Date().getFullYear();
+        let Stringyear = year.toString();
+
+        return `${month} ${Stringyear}`;
     }
 
 
@@ -215,7 +226,7 @@
     }
 
 
-    export function monthName(monthNumber){
+    export function monthNameFunctin(monthNumber){
         if(monthNumber == 1) return 'Enero';
         if(monthNumber == 2) return 'Febrero';
         if(monthNumber == 3) return 'Marzo';

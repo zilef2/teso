@@ -1,8 +1,7 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import {Head, Link, router, usePage} from '@inertiajs/vue3';
+import {Head, router, useForm, usePage} from '@inertiajs/vue3';
 import Breadcrumb from '@/Components/Breadcrumb.vue';
-import TextInput from '@/Components/TextInput.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SelectInput from '@/Components/SelectInput.vue';
 import {reactive, watch} from 'vue';
@@ -18,7 +17,9 @@ import Delete from '@/Pages/transaccion/Delete.vue';
 
 import Checkbox from '@/Components/Checkbox.vue';
 import InfoButton from '@/Components/InfoButton.vue';
-import {useForm} from '@inertiajs/vue3';
+import Filtros from "@/Pages/transaccion/Filtros.vue";
+import {formatDate, OnlyMonthAndYear} from "../../global";
+import TextInput from "@/Components/TextInput.vue";
 // import { CursorArrowRippleIcon, ChevronUpDownIcon,QuestionMarkCircleIcon, EyeIcon, PencilIcon, TrashIcon, UserGroupIcon } from '@heroicons/vue/24/solid';
 
 const {_, debounce, pickBy} = pkg
@@ -41,6 +42,8 @@ const data = reactive({
         search: props.filters.search,
         searchContrapartida: props.filters.searchContrapartida,
         searchConcepto: props.filters.searchConcepto,
+        OnlyCP: props.filters.OnlyCP,
+        OnlyEmptyCP: props.filters.OnlyEmptyCP,
         field: props.filters.field,
         order: props.filters.order,
         perPage: props.perPage,
@@ -81,11 +84,7 @@ const selectAll = (event) => {
     }
 }
 const select = () => {
-    if (props.fromController?.data.length === data.selectedId.length) {
-        data.multipleSelect = true
-    } else {
-        data.multipleSelect = false
-    }
+    data.multipleSelect = props.fromController?.data.length === data.selectedId.length;
 }
 // <!--</editor-fold>-->
 
@@ -105,8 +104,8 @@ const titulos = [
     {order: 'tipo_de_recurso', label: 'tipo_de_recurso', type: 'text'},
     // { order: 'inventario', label: 'inventario', type: 'foreign',nameid:'nombre'},
 ];
-const Buscar_CP = () => {
-    form.post(route('Buscar_CP'), {
+const Buscar_CP_CI = () => {
+    form.post(route('Buscar_CP_CI'), {
         onFinish: () => form.reset(),
     });
 }
@@ -122,18 +121,18 @@ const Buscar_CP = () => {
             <div class="flex justify-between px-4 sm:px-0">
                 <div class="inline-flex rounded-xl overflow-hidden w-fit">
                     <div class="mx-2">
-                        <PrimaryButton v-if="!form.processing" class="rounded-lg" @click="Buscar_CP">
-                            Buscar CP de las CI
+                        <PrimaryButton v-if="!form.processing" class="rounded-lg" @click="Buscar_CP_CI">
+                            Contrapartidas CI de {{OnlyMonthAndYear(Date.now())}}
                         </PrimaryButton>
                         <div v-else class="text-sky-600">
                             <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                            Procesando la asignacion de concepto...
+                            Procesando la asignacion de concepto (CI)...
                         </div>
                     </div>
 
                     <div class="mx-2 mb-1">
                         <Button class="ml-4 bg-gray-200 rounded-lg p-2">
-                            Buscar CP de las CE
+                            Contrapartidas CE de {{OnlyMonthAndYear(Date.now())}}
                         </Button>
                     </div>
 
@@ -154,6 +153,7 @@ const Buscar_CP = () => {
                 </div>
                 <div class="my-1">Reg/pág
                     <SelectInput v-model="data.params.perPage" :dataSet="data.dataSet"/>
+                    - {{ props.fromController.total }}
                 </div>
 
             </div>
@@ -169,9 +169,13 @@ const Buscar_CP = () => {
                     <TextInput v-model="data.params.search" type="text"
                                class="block w-4/6 md:w-3/6 lg:w-1/6 rounded-lg" placeholder="Codigo cuenta contable"/>
                     <TextInput v-model="data.params.searchContrapartida" type="text"
-                               class="block w-4/6 md:w-3/6 lg:w-1/6 rounded-lg" placeholder="# de CP"/>
+                               class="block w-4/6 md:w-3/6 lg:w-1/6 rounded-lg" placeholder="CP"/>
                     <TextInput v-model="data.params.searchConcepto" type="text"
                                class="block w-4/6 md:w-3/6 lg:w-1/6 rounded-lg" placeholder="Concepto de flujo"/>
+                    <div class="my-2">
+                        <input v-model="data.params.OnlyCP" value=false type="checkbox" id="cbox1" />Solo CP
+                        <input v-model="data.params.OnlyEmptyCP" value=false type="checkbox" id="cbox1" />Sin CP
+                    </div>
                 </div>
 
                 <div class="overflow-x-auto scrollbar-table">

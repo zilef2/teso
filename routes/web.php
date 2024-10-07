@@ -24,10 +24,10 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Controllers\OpenAIController;
 use Inertia\Inertia;
 
-Route::post('/openai-question', [OpenAIController::class, 'askQuestion'])->name('openai-question');
-Route::get('/ask-ai', function () {
-    return Inertia::render('aski');
-});
+Route::match(['get', 'post'],'/openai-question', [OpenAIController::class, 'askQuestion'])->name('openai-question');
+//Route::get('/ask-ai', function () {
+//    return Inertia::render('aski');
+//});
 
 
 
@@ -44,6 +44,9 @@ Route::get('/setLang/{locale}', function ($locale) {
 //,'handleErrorZilef'
 //, 'verified'
 Route::middleware(['auth'])->group(callback: function () {
+    //<editor-fold desc="ParaTodoProyecto">
+    Route::get('/DescompresionDespliegue/{esAmbientePruebas}', [ZipController::class, 'DescompresionDespliegue']);
+    Route::get('/DB_info', [UserController::class,'todaBD']);
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
@@ -51,11 +54,6 @@ Route::middleware(['auth'])->group(callback: function () {
 
     Route::post('/user/destroy-bulk', [UserController::class, 'destroyBulk'])->name('user.destroy-bulk');
     Route::get('/subirexceles', [SubiExcelController::class, 'subirexceles'])->name('subirexceles');
-    Route::post('/upExCuentas', [SubiExcelController::class, 'upExCuentas'])->name('upExCuentas');
-    Route::post('/upExTransacciones', [SubiExcelController::class, 'upExTransacciones'])->name('upExTransacciones');
-    Route::post('/uploadFileComprobantes', [SubiExcelController::class, 'uploadFileComprobantes'])->name('uploadFileComprobantes');
-    Route::post('/uploadFileBancos', [SubiExcelController::class, 'uploadFileBancos'])->name('uploadFileBancos');
-
 
     Route::resource('/role', RoleController::class)->except('create', 'show', 'edit');
     Route::post('/role/destroy-bulk', [RoleController::class, 'destroyBulk'])->name('role.destroy-bulk');
@@ -65,17 +63,25 @@ Route::middleware(['auth'])->group(callback: function () {
 
     Route::resource('/parametro', ParametrosController::class);
 
-    Route::get('/DB_info', [UserController::class,'todaBD']);
-    Route::post('/Buscar_CP', [TransaccionController::class,'Buscar_CP'])->name('Buscar_CP');
+    //</editor-fold>
+
+    Route::post('/upExCuentas', [SubiExcelController::class, 'upExCuentas'])->name('upExCuentas');
+    Route::post('/upExTransacciones', [SubiExcelController::class, 'upExTransacciones'])->name('upExTransacciones');
+    Route::post('/uploadFileComprobantes', [SubiExcelController::class, 'uploadFileComprobantes'])->name('uploadFileComprobantes');
+    Route::post('/uploadFileBancos', [SubiExcelController::class, 'uploadFileBancos'])->name('uploadFileBancos');
+
+    Route::post('/Buscar_CP_CI', [TransaccionController::class, 'Buscar_CP_CI'])->name('Buscar_CP_CI');
+    Route::post('/Buscar_CP_CE', [TransaccionController::class, 'Buscar_CP_CE'])->name('Buscar_CP_CE');
 //    Route::get('/downloadAnexos', [UserController::class,'downloadAnexos'])->name('downloadAnexos');
 //    Route::get('/downClaro',function(){
 //        return Excel::download(new FormExport, 'BaseDatosInspecciones.xlsx');
 //    })->name('downClaro');
 
 
-//    Route::get('/Resultado/{id}', [\App\Http\Controllers\ResultadoController::class, 'Resultado'])->name('Resultado');
+    //<editor-fold desc="porsilas">
+        //    Route::get('/Resultado/{id}', [\App\Http\Controllers\ResultadoController::class, 'Resultado'])->name('Resultado');
+    //</editor-fold>
 
-    Route::get('/DescompresionDespliegue/{esAmbientePruebas}', [ZipController::class, 'DescompresionDespliegue']);
 
 
     //<editor-fold desc="resources">

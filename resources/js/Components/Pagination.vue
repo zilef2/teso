@@ -16,9 +16,10 @@ const data = reactive({
         searchNumCuenta: props.filters?.searchNumCuenta,
         searchBanco: props.filters?.searchBanco,
         searchtipo: props.filters?.searchtipo,
-        SoloGuardados: props.filters?.SoloGuardados,
+
         searchContrapartida: props.filters?.searchContrapartida,
         searchConcepto: props.filters?.searchConcepto,
+        OnlyCP: props.filters?.OnlyCP,
 
         codigo: props.filters.codigo,
         numero_documento: props.filters.numero_documento,
@@ -47,7 +48,7 @@ watchEffect(() => {
     data.params.order = props.filters?.order
     data.params.perPage = props.filters?.perPage
     data.params.SoloEnviados = props.filters?.SoloEnviados
-    data.params.SoloGuardados = props.filters?.SoloGuardados
+    data.params.OnlyCP = props.filters?.OnlyCP
 })
 
 </script>
