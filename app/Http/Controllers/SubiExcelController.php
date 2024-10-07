@@ -8,7 +8,9 @@ use App\Imports\BancoImport;
 use App\Imports\ComprobanteImport;
 use App\Imports\CuentaImport;
 use App\Imports\TransaccionesImport;
+use App\Models\Comprobante;
 use App\Models\cuenta;
+use App\Models\transaccion;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
@@ -23,7 +25,9 @@ class SubiExcelController extends Controller
 
         return Inertia::render('Excel/subirExceles', [
             'title' => __('app.label.user'),
-            'numUsuarios' => (cuenta::Where('id','>',0)->count()),
+            'nComprobante' => (Comprobante::count()),
+            'ntransaccion' => (transaccion::count()),
+            'ncuenta' => (cuenta::Where('id','>',0)->count()),
         ]);
     }
 
