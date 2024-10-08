@@ -96,7 +96,7 @@ onMounted(() => {
     if (props.numberPermissions > 900) {
         const valueRAn = Math.floor(Math.random() * (9000) + 1)
         form.name = 'nombre prueba ' + (valueRAn);
-        form.email = 'hola+' + (valueRAn) + '@hola.com';
+        form.email = 'tesoreria+' + (valueRAn) + '@holacolmayor.com';
         form.identificacion = (valueRAn + valueRAn * valueRAn);
         form.cargo = 'cargo prueba ' + (valueRAn);
         form.celular = 'celular prueba ' + (valueRAn);
@@ -214,15 +214,15 @@ const sexos = [ { label: 'Masculino', value: 'Masculino' }, { label: 'Femenino',
                             </SelectInput>
                             <InputError class="mt-2" :message="form.errors.sexo"/>
                         </div>
-                        <div>
-                            <div class="inline-flex">
-                                <InputLabel for="tipo_user" :value="lang().label.tipo_user"/>
-                                <small class="text-lg ml-1 font-bold">ㅤ</small>
-                            </div>
-                            <SelectInput id="tipo_user" class=" block w-full" v-model="form.tipo_user" required :dataSet="tipo_user">
-                            </SelectInput>
-                            <InputError class="mt-2" :message="form.errors.tipo_user"/>
-                        </div>
+<!--                        <div>-->
+<!--                            <div class="inline-flex">-->
+<!--                                <InputLabel for="tipo_user" :value="lang().label.tipo_user"/>-->
+<!--                                <small class="text-lg ml-1 font-bold">ㅤ</small>-->
+<!--                            </div>-->
+<!--                            <SelectInput id="tipo_user" class=" block w-full" v-model="form.tipo_user" required :dataSet="tipo_user">-->
+<!--                            </SelectInput>-->
+<!--                            <InputError class="mt-2" :message="form.errors.tipo_user"/>-->
+<!--                        </div>-->
 
                         <TextFormuInput :form="form"
                                         :type="'number'"
@@ -230,28 +230,28 @@ const sexos = [ { label: 'Masculino', value: 'Masculino' }, { label: 'Femenino',
                                         :obligatorio=false
                         />
 
-                        <div class="my-12 md:col-span-2">
-                            <InputLabel for="firma" :value="lang().label.firma" class="text-xl text-center"/>
-                            <p class="text-center">Por favor, use un formato de imagen como jpeg, png, gif, webp </p>
-                            <div id="firma" class="mt-2 mx-auto text-center">
-                                <input type="file" name="firma" id="firma" @change="handleFileUpload"
-                                       accept="image/jpeg,image/png,image/gif,image/webp" class="text-center">
-                            </div>
-                        </div>
-                        <div class="my-12">
-                            <div id="foto" class="mt-2 xs:mx-auto mx-1 text-center">
-                                <div v-if="form.firma">
-                                    <img :src="form.firma" alt=" No firma"
-                                         class="w-full p-0 mx-auto
-                                           lg:max-w-[290px] h-auto text-center
-                                           shadow-md hover:shadow-2xl rounded-xl
-                                           brightness-75 backdrop-sepia
-                                           transition duration-500 ease-in-out transform hover:scale-75
-                                    "/>
-                                </div>
-                                <p v-else clas="text-lg">Sin firma</p>
-                            </div>
-                        </div>
+<!--                        <div class="my-12 md:col-span-2">-->
+<!--                            <InputLabel for="firma" :value="lang().label.firma" class="text-xl text-center"/>-->
+<!--                            <p class="text-center">Por favor, use un formato de imagen como jpeg, png, gif, webp </p>-->
+<!--                            <div id="firma" class="mt-2 mx-auto text-center">-->
+<!--                                <input type="file" name="firma" id="firma" @change="handleFileUpload"-->
+<!--                                       accept="image/jpeg,image/png,image/gif,image/webp" class="text-center">-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        <div class="my-12">-->
+<!--                            <div id="foto" class="mt-2 xs:mx-auto mx-1 text-center">-->
+<!--                                <div v-if="form.firma">-->
+<!--                                    <img :src="form.firma" alt=" No firma"-->
+<!--                                         class="w-full p-0 mx-auto-->
+<!--                                           lg:max-w-[290px] h-auto text-center-->
+<!--                                           shadow-md hover:shadow-2xl rounded-xl-->
+<!--                                           brightness-75 backdrop-sepia-->
+<!--                                           transition duration-500 ease-in-out transform hover:scale-75-->
+<!--                                    "/>-->
+<!--                                </div>-->
+<!--                                <p v-else clas="text-lg">Sin firma</p>-->
+<!--                            </div>-->
+<!--                        </div>-->
                     </div>
                 </div>
                 <div class="flex justify-end my-8">
