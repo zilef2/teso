@@ -9,6 +9,7 @@ import {ArrowUpCircleIcon, TableCellsIcon} from '@heroicons/vue/24/solid';
 import '@vuepic/vue-datepicker/dist/main.css'
 
 
+
 const {_, debounce, pickBy} = pkg
 const props = defineProps({
     title: String,
@@ -196,7 +197,6 @@ const Abecedario  = Array.from({length: 26}, (_, i) => String.fromCharCode(97 + 
                             <div class="p-4 md:w-1/3">
                                 <div class="h-full border-2 border-gray-200 border-opacity-60 rounded-lg overflow-hidden">
                                     <TableCellsIcon class=" h-24 lg:h-48 md:h-36 w-full object-cover object-center"/>
-
                                     <div class="p-6">
                                         <h3 class="title-font text-lg font-medium text-gray-900 mb-3">Subir Transferencias (Auxiliar)</h3>
                                         <p class="leading-relaxed mb-3"> El excel debe contar con el formato aprobado</p>
@@ -206,7 +206,7 @@ const Abecedario  = Array.from({length: 26}, (_, i) => String.fromCharCode(97 + 
                                                    accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, .csv,application/vnd.ms-excel"/>
                                             <!--                                            <p class="font-bold text-red-600">AUN NO DISPONIBLE</p>-->
                                             <br><br>
-                                            <progress v-if="form.progress" :value="form.progress.percentage" max="100"
+                                            <progress v-if="form.progress" :value="form.progress.percentage - 20" max="100"
                                                       class="bg-sky-200">
                                                 {{ form.progress.percentage }}%
                                             </progress>
@@ -254,7 +254,7 @@ const Abecedario  = Array.from({length: 26}, (_, i) => String.fromCharCode(97 + 
                                                    accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"/>
                                             <!--                                            <p class="font-bold text-red-600">AUN NO DISPONIBLE</p>-->
                                             <br><br>
-                                            <progress v-if="form.progress" :value="form.progress.percentage" max="100"
+                                            <progress v-if="form.progress" :value="form.progress.percentage - 20" max="100"
                                                       class="bg-sky-200">
                                                 {{ form.progress.percentage }}%
                                             </progress>
@@ -303,9 +303,9 @@ const Abecedario  = Array.from({length: 26}, (_, i) => String.fromCharCode(97 + 
 <!--                                                   accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"/>-->
 <!--                                            &lt;!&ndash;                                            <p class="font-bold text-red-600">AUN NO DISPONIBLE</p>&ndash;&gt;-->
 <!--                                            <br><br>-->
-<!--                                            <progress v-if="form.progress" :value="form.progress.percentage" max="100"-->
+<!--                                            <progress v-if="form.progress" :value="form.progress.percentage - 20" max="100"-->
 <!--                                                      class="bg-sky-200">-->
-<!--                                                {{ form.progress.percentage }} %-->
+<!--                                                {{ form.progress.percentage - 20 }} %-->
 <!--                                            </progress>-->
 
 <!--                                            <div class="flex">-->
