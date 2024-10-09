@@ -30,13 +30,17 @@ class TransaccionController extends Controller
         $this->arrayBusque = [
             'search',
             'searchContrapartida',
+            'searchDocumento',
             'searchConcepto',
+            'searchDocRef',
         ];
 
         $this->arrayFillableSearch = [
             'codigo_cuenta_contable',
             'contrapartida_CI',
+            'documento',
             'concepto_flujo_homologación',
+            'documento_ref',
         ];
     }
 

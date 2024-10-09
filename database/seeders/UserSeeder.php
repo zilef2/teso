@@ -20,7 +20,6 @@ class UserSeeder extends Seeder
         $nombreAdmin = 'Admin';
         $App = env('APP_NAME');
         $genero = 'Masculino';
-
         $superadmin = User::create([
             'name'              => 'Superadmin',
             'email'             => 'ajelof2+11@gmail.com',

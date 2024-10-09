@@ -41,7 +41,9 @@ const data = reactive({
     params: {
         search: props.filters.search,
         searchContrapartida: props.filters.searchContrapartida,
+        searchDocumento: props.filters.searchDocumento,
         searchConcepto: props.filters.searchConcepto,
+        searchDocRef: props.filters.searchDocRef,
         OnlyCP: props.filters.OnlyCP,
         OnlyEmptyCP: props.filters.OnlyEmptyCP,
         field: props.filters.field,
@@ -167,11 +169,15 @@ const Buscar_CP_CI = () => {
                         </DangerButton> -->
                     </div>
                     <TextInput v-model="data.params.search" type="text"
-                               class="block w-4/6 md:w-3/6 lg:w-1/6 rounded-lg" placeholder="Codigo cuenta contable"/>
+                               class="block w-1/6 xl:w-1/12 rounded-lg" placeholder="Codigo cuenta contable"/>
+                    <TextInput v-model="data.params.searchDocumento" type="text"
+                               class="block w-1/6 xl:w-1/12 rounded-lg" placeholder="Documento"/>
                     <TextInput v-model="data.params.searchContrapartida" type="text"
-                               class="block w-4/6 md:w-3/6 lg:w-1/6 rounded-lg" placeholder="CP"/>
+                               class="block w-1/6 xl:w-1/12 rounded-lg" placeholder="CP"/>
                     <TextInput v-model="data.params.searchConcepto" type="text"
-                               class="block w-4/6 md:w-3/6 lg:w-1/6 rounded-lg" placeholder="Concepto de flujo"/>
+                               class="block w-1/6 xl:w-1/12 rounded-lg" placeholder="Concepto de flujo"/>
+                    <TextInput v-model="data.params.searchDocRef" type="number"
+                               class="block w-4/6 md:w-3/6 xl:w-1/12 rounded-lg" placeholder="Doc Ref"/>
                     <div class="my-2">
                         <input v-model="data.params.OnlyCP" value=false type="checkbox" id="cbox1" />Solo CP
                         <input v-model="data.params.OnlyEmptyCP" value=false type="checkbox" id="cbox1" />Sin CP
