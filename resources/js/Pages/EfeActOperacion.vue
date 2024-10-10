@@ -1,252 +1,163 @@
 <script setup>
-import InputError from '@/Components/InputError.vue';
-import InputLabel from '@/Components/InputLabel.vue';
 import Modal from '@/Components/Modal.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
-import SelectInput from '@/Components/SelectInput.vue';
-import TextInput from '@/Components/TextInput.vue';
-import {useForm} from '@inertiajs/vue3';
-import {onMounted, reactive, ref, watchEffect} from 'vue';
-import VueDatePicker from '@vuepic/vue-datepicker';
+import {onMounted, reactive, ref, watchEffect, nextTick} from 'vue';
 import '@vuepic/vue-datepicker/dist/main.css'
-import {calcularEdad} from "@/global";
-
-import TextFormuInput from "@/Pages/User/TextFormuInput.vue";
+import {Chart} from 'chart.js';
 
 const props = defineProps({
     show: Boolean,
-    title: String,
-    roles: Object,
-    titulos: Object, //parametros de la clase principal
-    numberPermissions: Object,
-    funcionalidades: Array,
+    chartCanvasHijaEntrada: Boolean,
+    ctxEntrada: Boolean,
 })
 const emit = defineEmits(["close"]);
 const data = reactive({
     params: {
         pregunta: ''
     },
-    CampoError:'',
-})
-
-// VueDatePicker
-const formatToVue = (date) => {
-  const day = date.getDate();
-  const month = date.getMonth() + 1;
-  const year = date.getFullYear();
-
-  return `${day}/${month}/${year}`;
-}
-// VueDatePicker
-
-
-const form = useForm({
-    role: 'responsable_inspeccion',
-
-    name: '',
-    email: '',
-
-    identificacion:'',
-    sexo:'Masculino',
-    fecha_nacimiento:'2000-01-02',
-    celular: '',
-
-    cargo: '',
-    tipo_user:'',
-    firma:'',
-})
-
-onMounted(() => {
-    if(props.numberPermissions > 900){
-        const valueRAn = Math.floor(Math.random() * (9000) + 1)
-        form.name = 'nombre prueba '+ (valueRAn);
-        form.email = 'hola+'+ (valueRAn)+'@hola.com';
-        form.identificacion = (valueRAn + valueRAn * valueRAn);
-        form.cargo = 'cargo prueba '+ (valueRAn);
-        form.celular = 'celular prueba '+ (valueRAn);
-        form.area = 'area prueba '+ (valueRAn);
-        // form.hora_inicial = '0'+valueRAn+':00'//temp
-        // form.fecha = '2023-06-01'
-
-    }
 });
 
-const printForm =[
-    'name',
-    'email',
-    'role',
-    'identificacion',
-    'sexo',
-    'fecha_nacimiento',
-    'cargo',
-    // 'celular',
-    'area',
 
-    // 'firma',
-    'tipo_user',
-];
-const StringsValidarLosVacios =[
-    'name',
-    'email',
-    'role',
-    'identificacion',
-    'sexo',
-    'fecha_nacimiento',
-    'cargo',
-    'area',
-];
+onMounted(async () => {});
+const chartCanvasHijaEntrada = ref(null);
 
-function ValidarVacios(){
-    let result = true
+const MontarGrafica = async () => {
+    await nextTick();
+    const ctx4 = chartCanvasHijaEntrada.value.getContext('2d');
+    new Chart(ctx4, {
+        type: 'bar',
+        data: {
+            labels: ['2023', '2024'],
 
-    StringsValidarLosVacios.forEach(element => {
-        if(!form[element]){
-            data.CampoError = element
-            result = false
-            return result
+            datasets: [
+                {
+                    label: 'Total',
+                    data: [12903980072, 9468610942],
+                    borderWidth: 1,
+                    borderColor: 'rgb(243,244,244)',
+                    backgroundColor: 'rgba(11,241,178,0.98)',
+                    yAxisID: 'y',
+                },
+                {
+                    label: 'Ingreso para ejecución de convenios', //1
+                    data: [9993901734, 4593745432],
+                    borderWidth: 2,
+                    borderColor: 'rgb(255, 99, 132)',
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    yAxisID: 'y',
+                },
+                {
+                    label: 'Transferencias inversión', //2
+                    data: [0, 1770615434],
+                    borderWidth: 2,
+                    borderColor: 'rgb(54, 162, 235)',
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                },
+                {
+                    label: 'Transferencias funcionamiento', //3
+                    data: [797038599, 680458218],
+                    borderWidth: 2,
+                    borderColor: 'rgba(91,245,11,0.63)',
+                    backgroundColor: 'rgba(95,244,52,0.73)',
+                },
+                {
+                    label: 'Matrículas académicas', //4
+                    data: [257653708, 1505885670],
+                    borderWidth: 2,
+                    borderColor: 'rgba(255,0,46,0.78)',
+                    backgroundColor: 'rgba(255, 162, 235, 0.2)',
+                },
+                {
+                    label: 'Rendimientos financieros', //5
+                    data: [784383978, 629782338],
+                    borderWidth: 2,
+                    borderColor: 'rgba(255,0,46,0.78)',
+                    backgroundColor: 'rgba(11,88,228,0.51)',
+                },
+                {
+                    label: 'Otras entradas', //6
+                    data: [1071002053, 288123850],
+                    borderWidth: 2,
+                    borderColor: 'rgba(3,142,205,0.98)',
+                    backgroundColor: 'rgba(255, 162, 235, 0.2)',
+                },
+            ],
+        },
+        options: {
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+                title: {
+                    display: true,
+                    text: 'AGOSTO'
+                }
+            },
+            scales: {
+                y: {
+                    type: 'linear',
+                    display: true,
+                    position: 'left',
+                    beginAtZero: true,  // Eje Y para Dataset 1
+                },
+                // y1: {
+                //     type: 'linear',
+                //     display: true,
+                //     position: 'right',
+                //     beginAtZero: true,  // Eje Y para Dataset 2
+                //     grid: {
+                //         drawOnChartArea: false,  // Esto evita que el grid de y1 se superponga con el de y
+                //     },
+                // }
+            },
+            responsive: true,
         }
     });
-    return result
-}
-
-const create = () => {
-    if(ValidarVacios()) {
-        form.post(route('user.store'), {
-            preserveScroll: true,
-            onSuccess: () => {
-                emit("close")
-                form.reset()
-            },
-            onError: () => alert(JSON.stringify(form.errors, null, 4)),
-            onFinish: () => null,
-        })
-    }else{
-        console.log('Hay campos vacios')
-        // alert('Hay campos vacios')
-        alert('Campo faltante:' + data.CampoError)
-    }
 }
 
 watchEffect(() => {
-        if (props.show) {
-            form.errors = {}
-        }
+    if (props.show) {
+        MontarGrafica()
+    }
 })
-//TOSTUDY
-const roles = props.roles?.map(role => ({
-    label: role.name.replace(/_/g," "),
-    value: (role.name)
-}))
-
-const handleFileUpload = (event) => {
-  const file = event.target.files[0];
-  const reader = new FileReader();
-  reader.readAsDataURL(file);
-  reader.onload = () => {
-    form.firma = reader.result;
-  };
-}
-//very usefull
-const sexos = [ { label: 'Masculino', value: 'Masculino' }, { label: 'Femenino', value: 'Femenino' } ];
-const tipo_user = [ { label: 'SST', value: 'SST' }, { label: 'SGA', value: 'SGA' } ];
-const daynames = ['Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab', 'Dom'];
-const flow = ref(['year', 'month', 'calendar']);
 </script>
 
 <template>
     <section class="space-y-6">
-        <Modal :show="props.show" @close="emit('close')" max-width="xl5">
-            <form  @submit.prevent="create" class="px-6 pt-6 pb-12">
-                <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ lang().label.add }} {{ props.title }}</h2>
-                <h3 class="font-medium text-gray-900 dark:text-gray-100 mb-2">
-                  {{ lang().label.RequiredFields }}
+        <Modal :show="props.show" @close="emit('close')" max-width="xl7">
+            <div class="px-6 pt-6 pb-12">
+                <h3 class="text-xl font-medium text-gray-900 dark:text-gray-100">ANÁLISIS ENTRADAS DE EFECTIVO
+                    AGOSTO 2023 - 2024
                 </h3>
-                <div class="mt-6 mb-20 space-y-4">
-                    <div class="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-4">
-                        <TextFormuInput :form="form" :type="'text'"
-                            :elmodelo="'name'"
-                            :obligatorio=true
-                        />
-                        <div>
-                          <div class="flex justify-between ">
-                            <InputLabel for="fecha_nacimiento" :value="lang().label.fecha_nacimiento" />
-                            <div v-if="form.fecha_nacimiento" class="text-sm  text-right">
-                                <p class="text-right">Edad:ㅤ{{ calcularEdad(form.fecha_nacimiento) }}</p>
-                            </div>
-                          </div>
-                          <VueDatePicker :is-24="false" :day-names="daynames" :format="formatToVue" :flow="flow"
-                                         auto-apply :enable-time-picker="false" id="fecha_nacimiento"
-                                         v-model="form.fecha_nacimiento" required :placeholder="lang().placeholder.fecha_nacimiento"
-                                         :error="form.errors.fecha_nacimiento"  class="mt-4 w-full z-100 absolute"/>
-                          <InputError class="mt-2" :message="form.errors.fecha_nacimiento" />
-                        </div>
-
-                        <TextFormuInput :form="form" :type="'email'"
-                            :elmodelo="'email'"
-                            :obligatorio=true
-                        />
-                        <TextFormuInput :form="form" :type="'number'"
-                            :elmodelo="'identificacion'"
-                            :obligatorio=true
-                        />
-                        <TextFormuInput :form="form" :type="'text'"
-                            :elmodelo="'cargo'"
-                            :obligatorio=true
-                        />
-
-                        <div>
-                          <div class="inline-flex">
-                            <InputLabel for="role" :value="lang().label.role" />
-                            <small class="text-lg ml-1 font-bold"> * </small>
-                          </div>
-                          <SelectInput id="role" class="mt-1 block w-full" v-model="form.role" required :dataSet="roles">
-                          </SelectInput>
-                          <InputError class="mt-2" :message="form.errors.role" />
-                        </div>
-
-                        <div>
-                          <div class="inline-flex">
-                            <InputLabel for="sexo" :value="lang().label.sexo" />
-                            <small class="text-lg ml-1 font-bold">ㅤ</small>
-                          </div>
-                            <SelectInput id="sexo" class=" block w-full" v-model="form.sexo" required :dataSet="sexos">
-                            </SelectInput>
-                            <InputError class="mt-2" :message="form.errors.sexo" />
-                        </div>
-                        <div v-show="props.funcionalidades?.tipo_user">
-                          <div class="inline-flex">
-                            <InputLabel for="tipo_user" :value="lang().label.tipo_user" />
-                            <small class="text-lg ml-1 font-bold">ㅤ</small>
-                          </div>
-                            <SelectInput id="tipo_user" class=" block w-full" v-model="form.tipo_user" required :dataSet="tipo_user">
-                            </SelectInput>
-                            <InputError class="mt-2" :message="form.errors.tipo_user" />
-                        </div>
-
-                        <TextFormuInput :form="form"
-                            :type="'number'"
-                            :elmodelo="'celular'"
-                            :obligatorio=false
-                        />
-
-                        <div v-show="props.funcionalidades?.firma" class="my-12 md:col-span-2 2xl:col-span-3">
-                            <InputLabel for="firma" :value="lang().label.firma" class="text-xl text-center"/>
-                            <p class="text-center">Por favor, use un formato de imagen como jpeg, png, gif, webp </p>
-                            <div id="firma" class="mt-2 mx-auto text-center">
-                                <input type="file" name="firma" id="firma" @change="handleFileUpload" accept="image/jpeg,image/png,image/gif,image/webp">
-                            </div>
+                <div class="mt-6 mb-20">
+                    <div class="grid grid-cols-1 gap-4">
+                        <div class="mb-2 w-full">
+                            <canvas ref="chartCanvasHijaEntrada"></canvas>
                         </div>
                     </div>
                 </div>
+
+                <p class="my-2 text-lg">Aspectos significativos</p>
+                <p class="my-2 text-lg">1. Reducción significativa en el total de entradas de efectivo</p>
+                <p class="my-2 text-lg">2. Caída drástica en el ingreso para la ejecución de convenios</p>
+                <p class="my-2 text-lg">3. Incremento importante en las matrículas académicas</p>
+                <p class="my-2 text-lg">4. Introducción de transferencias para inversión</p>
+                <p class="my-2 text-lg">5. Caída en otras fuentes de ingresos clave</p>
+
+                <p class="my-4 text-xl font-bold">Conclusiones</p>
+                <p class="my-2 text-lg">Disminución general en los ingresos, impulsada principalmente por la caída en convenios y otras entradas no recurrentes.</p>
+                <p class="my-2 text-lg">Crecimiento notable en matrículas académicas, lo que puede ser un signo positivo de expansión en ese sector.</p>
+                <p class="my-2 text-lg">Nuevas transferencias para inversión, lo que podría fortalecer la capacidad de crecimiento en el largo plazo.</p>
+                <p class="my-2 text-lg">Es necesario profundizar en la estrategia de convenios para revertir las caídas en los ingresos por ejecución de convenios y buscar alternativas para estabilizar las entradas totales.</p>
+
+
                 <div class="flex justify-end">
-                    <SecondaryButton :disabled="form.processing" @click="emit('close')"> {{ lang().button.close }}</SecondaryButton>
-                    <PrimaryButton class="ml-3" :class="{ 'opacity-25': form.processing }" :disabled="form.processing"
-                        @click="create">
-                        {{ form.processing ? lang().button.add + '...' : lang().button.add }}
-                    </PrimaryButton>
+                    <SecondaryButton @click="emit('close')"> {{
+                            lang().button.close
+                        }}
+                    </SecondaryButton>
                 </div>
-            </form>
+            </div>
         </Modal>
     </section>
 </template>

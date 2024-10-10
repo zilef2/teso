@@ -2,10 +2,11 @@
 import Breadcrumb from '@/Components/Breadcrumb.vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import {ChevronRightIcon, KeyIcon, ShieldCheckIcon, UserIcon} from '@heroicons/vue/24/solid';
-import {Head, Link} from '@inertiajs/vue3';
-import ApplicationLogo from "@/Components/ApplicationLogo.vue";
+import {Head} from '@inertiajs/vue3';
 import Chart from 'chart.js/auto';
-import {ref, onMounted, watchEffect} from 'vue';
+import {ref, onMounted, watchEffect, reactive} from 'vue';
+import EfeActOperacion from "@/Pages/EfeActOperacion.vue";
+import PrimaryButton from "@/Components/PrimaryButton.vue";
 
 // <!--<editor-fold desc=" lo demas">-->
 // roles: Number,
@@ -16,38 +17,23 @@ const props = defineProps({
     numberPermissions: Number,
 })
 
-const dashLinks = [
-    // 'Informes',
-    // 'roles',
-];
-const colores = [
-    'bg-gray-400',
-    // 'bg-gray-500',
-    // 'bg-gray-600',
-];
-const descripcion = [
-    'Descripcion',
-    // 'Descripcion',
-    // 'descripcion',
-];
-const laImg = [
-    'KeyIcon',
-    // 'KeyIcon',
-    // 'KeyIcon',
-    // 'KeyIcon',
-];
-const downloadAnexos = () => {
-    window.open('downloadAnexos', '_blank')
-}
+const data = reactive({
+    IngresosOpen: false,
+    editOpen: false,
+    deleteOpen: false,
+    ArchivoNombre: '',
+})
 // <!--</editor-fold>-->
 
 
 const chartCanvas = ref(null);
 const chartCanvas2 = ref(null);
+const chartCanvasEfec = ref(null);
 
 onMounted(() => {
 
     const ctx = chartCanvas.value.getContext('2d');
+
     new Chart(ctx, {
         type: 'bar',
         data: {
@@ -104,7 +90,7 @@ onMounted(() => {
 
 
     const ctx2 = chartCanvas2.value.getContext('2d');
-    const mixedChart = new Chart(ctx2, {
+    new Chart(ctx2, {
         data: {
             datasets: [{
                 type: 'bar',
@@ -115,23 +101,26 @@ onMounted(() => {
                     14777044642,
                     11770888208,
                     523875033,
-                ]
+                ],
+                yAxisID: 'y',
+
             }, {
                 type: 'line',
                 label: 'Participacion',
-                data: [51.13, 19.07, 16.26, 12.96,0.58],
+                data: [51.13, 19.07, 16.26, 12.96, 0.58],
+                yAxisID: 'y1',
             }],
             labels: [
                 'Recursos Propios',
                 'Inversión',
-                'Convenios y Contratos Interadministrativos*', 
+                'Convenios y Contratos Interadministrativos*',
                 'Nación',
                 'Fundación Secretos Para Contar'
-            ]
+            ],
         },
         options: {
             scales: {
-                 y: {
+                y: {
                     type: 'linear',
                     display: true,
                     position: 'left',
@@ -161,19 +150,111 @@ onMounted(() => {
     });
 
 
+    const ctx3 = chartCanvasEfec.value.getContext('2d');
+    new Chart(ctx3, {
+        type: 'bar',
+        data: {
+            labels: ['2023', '2024'],
+
+            datasets: [
+                {
+                    label: 'saldo_inicial_de_la_vigencia',
+                    data: [93358379599, 92351501438],
+                    borderWidth: 1,
+                    borderColor: 'rgb(243,244,244)',
+                    backgroundColor: 'rgba(11,241,178,0.98)',
+                    yAxisID: 'y',
+                },
+                {
+                    label: 'Entradas',
+                    data: [12903980072, 9468610942],
+                    borderWidth: 2,
+                    borderColor: 'rgb(255, 99, 132)',
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    yAxisID: 'y',
+                },
+                {
+                    label: 'Salidas',
+                    data: [16180065448, 10961269262],
+                    borderWidth: 2,
+                    borderColor: 'rgb(54, 162, 235)',
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                },
+                {
+                    label: 'Disminucion Del Efectivo Agosto',
+                    data: [3276085376, 1492658320],
+                    borderWidth: 2,
+                    borderColor: 'rgba(91,245,11,0.63)',
+                    backgroundColor: 'rgba(95,244,52,0.73)',
+                },
+                {
+                    label: 'Disminucion del efectivo agosto',
+                    data: [90082294223, 90858843118],
+                    borderWidth: 2,
+                    borderColor: 'rgba(255,0,46,0.78)',
+                    backgroundColor: 'rgba(255, 162, 235, 0.2)',
+                },
+            ],
+        },
+        options: {
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+                title: {
+                    display: true,
+                    text: 'Efectivo en actividades de operación'
+                }
+            },
+            scales: {
+                y: {
+                    type: 'linear',
+                    display: true,
+                    position: 'left',
+                    beginAtZero: true,  // Eje Y para Dataset 1
+                },
+                // y1: {
+                //     type: 'linear',
+                //     display: true,
+                //     position: 'right',
+                //     beginAtZero: true,  // Eje Y para Dataset 2
+                //     grid: {
+                //         drawOnChartArea: false,  // Esto evita que el grid de y1 se superponga con el de y
+                //     },
+                // }
+            },
+            responsive: true,
+        }
+    });
+
+
 });
 </script>
 
 <template>
-
     <Head title="Dashboard"/>
     <AuthenticatedLayout>
         <Breadcrumb :title="'Resumen'" :breadcrumbs="[]"/>
-        <div class="my-20 h-[420px] xl:h-[720px] 4xl:h-[1040px]">
-            <canvas ref="chartCanvas"></canvas>
-        </div>
-        <div class="my-20 h-[420px] xl:h-[720px] 4xl:h-[1040px]">
-            <canvas ref="chartCanvas2"></canvas>
-        </div>
+        <EfeActOperacion :show="data.IngresosOpen" @close="data.IngresosOpen = false"
+                         :Chart="Chart"
+                         :chartCanvasHijaEntrada="chartCanvasHijaEntrada"
+                         :ctxEntrada="ctxEntrada"
+        />
+        <PrimaryButton class="rounded-lg" @click="data.IngresosOpen = true">
+            Entradas
+        </PrimaryButton>
+
+            <div class="grid grid-cols-1 4xl:grid-cols-2">
+                <div class="mb-20 w-full md:w-5/6">
+                    <canvas ref="chartCanvasEfec"></canvas>
+                </div>
+                <div class="my-20 w-full md:w-5/6">
+                    <canvas ref="chartCanvas"></canvas>
+                </div>
+                <div class="my-20 w-full md:w-5/6">
+                    <canvas ref="chartCanvas2"></canvas>
+                </div>
+            </div>
+
     </AuthenticatedLayout>
 </template>
