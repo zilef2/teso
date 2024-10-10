@@ -33,6 +33,7 @@ class TransaccionController extends Controller
             'searchDocumento',
             'searchConcepto',
             'searchDocRef',
+            'searchCodigo',
         ];
 
         $this->arrayFillableSearch = [
@@ -41,6 +42,7 @@ class TransaccionController extends Controller
             'documento',
             'concepto_flujo_homologación',
             'documento_ref',
+            'codigo',
         ];
     }
 

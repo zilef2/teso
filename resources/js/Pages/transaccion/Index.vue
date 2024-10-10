@@ -42,6 +42,7 @@ const data = reactive({
         search: props.filters.search,
         searchContrapartida: props.filters.searchContrapartida,
         searchDocumento: props.filters.searchDocumento,
+        searchCodigo: props.filters.searchCodigo,
         searchConcepto: props.filters.searchConcepto,
         searchDocRef: props.filters.searchDocRef,
         OnlyCP: props.filters.OnlyCP,
@@ -183,11 +184,15 @@ const Buscar_AJ_AN_CI = () => {
                         </DangerButton> -->
                     </div>
                     <TextInput v-model="data.params.search" type="text"
-                               class="block w-1/6 xl:w-1/12 rounded-lg" placeholder="Codigo cuenta contable"/>
+                               class="block w-1/6 xl:w-1/12 rounded-lg" placeholder="Código cuenta contable"/>
+                    <TextInput v-model="data.params.searchCodigo" type="text"
+                               class="block w-1/6 xl:w-1/12 rounded-lg" placeholder="Código"/>
+                    
                     <TextInput v-model="data.params.searchDocumento" type="text"
                                class="block w-1/6 xl:w-1/12 rounded-lg" placeholder="Documento"/>
                     <TextInput v-model="data.params.searchContrapartida" type="text"
                                class="block w-1/6 xl:w-1/12 rounded-lg" placeholder="CP"/>
+                    
                     <TextInput v-model="data.params.searchConcepto" type="text"
                                class="block w-1/6 xl:w-1/12 rounded-lg" placeholder="Concepto de flujo"/>
                     <TextInput v-model="data.params.searchDocRef" type="number"

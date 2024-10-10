@@ -20,6 +20,7 @@ const data = reactive({
         searchContrapartida: props.filters?.searchContrapartida,
         searchConcepto: props.filters?.searchConcepto,
         OnlyCP: props.filters?.OnlyCP,
+        searchCodigo: props.filters?.searchCodigo,
 
         codigo: props.filters.codigo,
         numero_documento: props.filters.numero_documento,
