@@ -27,7 +27,7 @@ class Comprobante extends Model
         'valor_credito',
         'codigo_asiento',
         'documento_ref',
-        'plan_cuentas',
+        'plan_cuentas', //todo: no se toma en cuenta en el eexcel por el momento
     ];
 
 }

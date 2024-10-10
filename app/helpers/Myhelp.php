@@ -2,6 +2,7 @@
 
 namespace App\helpers;
 
+use App\Models\transaccion;
 use Carbon\Carbon;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
@@ -16,6 +17,25 @@ use Inertia\Inertia;
 
 class Myhelp {
 
+    // JUST THIS PROJECT
+    public static function TransaccionesCI_AJ_AN($codigo,$StringValidacionCodigo)
+    {
+        $valor_debito_credito = (strcmp($codigo, "AJ") === 0) ? "valor_debito" : "valor_credito";
+        $laFecha = new \DateTime();
+
+        $mes = $laFecha->format('m'); // Obtiene el mes (en formato numérico)
+        $mes = 8; // Obtiene el mes (en formato numérico)
+//        $anio = $laFecha->format('Y'); // Obtiene el año
+
+        $Transacciones = transaccion::Where('codigo', $codigo)
+            ->WhereNull('concepto_flujo_homologación')
+//            ->WhereYear('fecha_elaboracion', $anio)
+            ->whereMonth('fecha_elaboracion', $mes)->get();
+        return [$Transacciones, $valor_debito_credito];
+    }
+    // end JUST THIS PROJECT
+    
+    // ALL projects
     public static function AuthU(): \Illuminate\Http\RedirectResponse|\Illuminate\Contracts\Auth\Authenticatable
     {
         $TheUser = Auth::user();
