@@ -4,6 +4,7 @@ import SecondaryButton from '@/Components/SecondaryButton.vue';
 import {onMounted, reactive, ref, watchEffect, nextTick} from 'vue';
 import '@vuepic/vue-datepicker/dist/main.css'
 import {Chart} from 'chart.js';
+import {number_format} from "@/global";
 
 const props = defineProps({
     show: Boolean,
@@ -15,10 +16,22 @@ const data = reactive({
     params: {
         pregunta: ''
     },
+    GrafNumbers: [
+        [12903980072, 9468610942],
+        [9993901734, 4593745432],
+        [0, 1770615434],
+        [797038599, 680458218],
+        [257653708, 1505885670],
+        [784383978, 629782338],
+        [1071002053, 288123850],
+    ],
+    difTotal: [0, 0, 0, 0, 0, 0, 0],
 });
 
 
-onMounted(async () => {});
+onMounted(async () => {
+    TrazarLinea()
+});
 const chartCanvasHijaEntrada = ref(null);
 
 const MontarGrafica = async () => {
@@ -27,61 +40,69 @@ const MontarGrafica = async () => {
     new Chart(ctx4, {
         type: 'bar',
         data: {
-            labels: ['2023', '2024'],
-
             datasets: [
                 {
                     label: 'Total',
-                    data: [12903980072, 9468610942],
+                    data: data.GrafNumbers[0],
                     borderWidth: 1,
-                    borderColor: 'rgb(243,244,244)',
-                    backgroundColor: 'rgba(11,241,178,0.98)',
+                    borderColor: 'rgba(22,106,0,1)',
+                    backgroundColor: 'rgba(22,106,0,1)',
                     yAxisID: 'y',
                 },
                 {
                     label: 'Ingreso para ejecución de convenios', //1
-                    data: [9993901734, 4593745432],
+                    data: data.GrafNumbers[1],
                     borderWidth: 2,
-                    borderColor: 'rgb(255, 99, 132)',
-                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    borderColor: 'rgba(246,106,0,1)',
+                    backgroundColor: 'rgba(246,106,0,1)',
                     yAxisID: 'y',
                 },
                 {
                     label: 'Transferencias inversión', //2
-                    data: [0, 1770615434],
+                    data: data.GrafNumbers[2],
                     borderWidth: 2,
-                    borderColor: 'rgb(54, 162, 235)',
-                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    borderColor: 'rgba(246,167,0,1)',
+                    backgroundColor: 'rgba(246,167,0,1)',
                 },
                 {
                     label: 'Transferencias funcionamiento', //3
-                    data: [797038599, 680458218],
+                    data: data.GrafNumbers[3],
                     borderWidth: 2,
-                    borderColor: 'rgba(91,245,11,0.63)',
-                    backgroundColor: 'rgba(95,244,52,0.73)',
+                    borderColor: 'rgb(0,5,5)',
+                    backgroundColor: 'rgb(248,251,251)',
                 },
                 {
                     label: 'Matrículas académicas', //4
-                    data: [257653708, 1505885670],
+                    data: data.GrafNumbers[4],
                     borderWidth: 2,
-                    borderColor: 'rgba(255,0,46,0.78)',
-                    backgroundColor: 'rgba(255, 162, 235, 0.2)',
+                    borderColor: 'rgb(248,251,251)',
+                    backgroundColor: 'rgb(0,5,5)',
                 },
                 {
                     label: 'Rendimientos financieros', //5
-                    data: [784383978, 629782338],
+                    data: data.GrafNumbers[5],
                     borderWidth: 2,
-                    borderColor: 'rgba(255,0,46,0.78)',
-                    backgroundColor: 'rgba(11,88,228,0.51)',
+                    borderColor: 'rgba(4,12,0,0.63)',
+                    backgroundColor: 'rgb(135,118,4)',
                 },
                 {
                     label: 'Otras entradas', //6
-                    data: [1071002053, 288123850],
+                    data: data.GrafNumbers[6],
                     borderWidth: 2,
-                    borderColor: 'rgba(3,142,205,0.98)',
-                    backgroundColor: 'rgba(255, 162, 235, 0.2)',
+                    borderColor: 'rgb(135,118,4)',
+                    backgroundColor: 'rgb(11,48,1)',
                 },
+                {
+                    type: 'line',
+                    label: 'Diferencias',
+                    data: data.difTotal,
+                    borderColor: 'rgba(22,106,0,1)',
+                    yAxisID: 'y1',
+                    xAxisID: 'x1',
+                }
             ],
+            labels: ['2023', '2024'],
+    // { x: '2024-01-01', y: 10 },
         },
         options: {
             plugins: {
@@ -94,21 +115,29 @@ const MontarGrafica = async () => {
                 }
             },
             scales: {
+                x1:{
+                    type: 'linear',
+                    display: true,
+                    position: 'bottom',
+                    ticks: {
+                        color: 'rgba(22,106,0,1)',
+                    }
+                },
                 y: {
                     type: 'linear',
                     display: true,
                     position: 'left',
                     beginAtZero: true,  // Eje Y para Dataset 1
                 },
-                // y1: {
-                //     type: 'linear',
-                //     display: true,
-                //     position: 'right',
-                //     beginAtZero: true,  // Eje Y para Dataset 2
-                //     grid: {
-                //         drawOnChartArea: false,  // Esto evita que el grid de y1 se superponga con el de y
-                //     },
-                // }
+                y1: {
+                    type: 'linear',
+                    display: true,
+                    position: 'right',
+                    beginAtZero: false,  // Eje Y para Dataset 2
+                    grid: {
+                        drawOnChartArea: false,  // Esto evita que el grid de y1 se superponga con el de y
+                    },
+                }
             },
             responsive: true,
         }
@@ -120,6 +149,12 @@ watchEffect(() => {
         MontarGrafica()
     }
 })
+
+const TrazarLinea = () => {
+
+    data.GrafNumbers.forEach((arrNumber,inde) => data.difTotal[inde] = arrNumber[0] - arrNumber[1])
+    console.log("=>(EfeActOperacion.vue:147) data.difTotal", data.difTotal);
+}
 </script>
 
 <template>
@@ -136,19 +171,31 @@ watchEffect(() => {
                         </div>
                     </div>
                 </div>
+                <div class="my-2 grid grid-cols-2 gap-4">
+                    <div @click="TrazarLinea" class=" cursor-pointer ">
+                        <div class="mb-2 w-full">
+                            Diferencia total: {{ number_format(data.difTotal[0], 0, 1) }}
+                        </div>
+                        <div class="mb-2 w-full">
+                            Diferencia ingresos para ejecucion de convienios: {{ number_format(data.difTotal[1], 0, 1) }}
+                        </div>
+                        <div class="mb-2 w-full">
+                            Diferencia ingresos para ejecucion de convienios: {{ number_format(data.difTotal[2], 0, 1) }}
+                        </div>
+                    </div>
+                </div>
 
-                <p class="my-2 text-lg">Aspectos significativos</p>
-                <p class="my-2 text-lg">1. Reducción significativa en el total de entradas de efectivo</p>
-                <p class="my-2 text-lg">2. Caída drástica en el ingreso para la ejecución de convenios</p>
-                <p class="my-2 text-lg">3. Incremento importante en las matrículas académicas</p>
-                <p class="my-2 text-lg">4. Introducción de transferencias para inversión</p>
-                <p class="my-2 text-lg">5. Caída en otras fuentes de ingresos clave</p>
+                <p class="my-4 text-xl font-bold">Aspectos significativos</p>
+                <p class="my-2 text-lg">1. Caída drástica en el ingreso para la ejecución de convenios</p>
+                <p class="my-2 text-lg">2. Introducción de transferencias para inversión</p>
+                <p class="my-2 text-lg">3. Caída en otras fuentes de ingresos clave</p>
 
                 <p class="my-4 text-xl font-bold">Conclusiones</p>
-                <p class="my-2 text-lg">Disminución general en los ingresos, impulsada principalmente por la caída en convenios y otras entradas no recurrentes.</p>
-                <p class="my-2 text-lg">Crecimiento notable en matrículas académicas, lo que puede ser un signo positivo de expansión en ese sector.</p>
-                <p class="my-2 text-lg">Nuevas transferencias para inversión, lo que podría fortalecer la capacidad de crecimiento en el largo plazo.</p>
-                <p class="my-2 text-lg">Es necesario profundizar en la estrategia de convenios para revertir las caídas en los ingresos por ejecución de convenios y buscar alternativas para estabilizar las entradas totales.</p>
+                <p class="my-2 text-lg">1. Nuevas transferencias para inversión, lo que podría fortalecer la capacidad
+                    de crecimiento en el largo plazo.</p>
+                <p class="my-2 text-lg">2. Es necesario profundizar en la estrategia de convenios para revertir las
+                    caídas en los ingresos por ejecución de convenios y buscar alternativas para estabilizar las
+                    entradas totales.</p>
 
 
                 <div class="flex justify-end">
