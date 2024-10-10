@@ -111,6 +111,11 @@ const Buscar_CP_CI = () => {
         onFinish: () => form.reset(),
     });
 }
+const Buscar_AJ_AN_CI = () => {
+    form.post(route('Buscar_AJ_AN_CI'), {
+        onFinish: () => form.reset(),
+    });
+}
 </script>
 
 <template>
@@ -125,6 +130,15 @@ const Buscar_CP_CI = () => {
                     <div class="mx-2">
                         <PrimaryButton v-if="!form.processing" class="rounded-lg" @click="Buscar_CP_CI">
                             Contrapartidas CI de {{OnlyMonthAndYear(Date.now())}}
+                        </PrimaryButton>
+                        <div v-else class="text-sky-600">
+                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                            Procesando la asignacion de concepto (CI)...
+                        </div>
+                    </div>
+                    <div class="mx-2">
+                        <PrimaryButton v-if="!form.processing" class="rounded-lg" @click="Buscar_AJ_AN_CI">
+                            Ajustes y Anulaciones de CI de {{OnlyMonthAndYear(Date.now())}}
                         </PrimaryButton>
                         <div v-else class="text-sky-600">
                             <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
@@ -178,9 +192,15 @@ const Buscar_CP_CI = () => {
                                class="block w-1/6 xl:w-1/12 rounded-lg" placeholder="Concepto de flujo"/>
                     <TextInput v-model="data.params.searchDocRef" type="number"
                                class="block w-4/6 md:w-3/6 xl:w-1/12 rounded-lg" placeholder="Doc Ref"/>
-                    <div class="my-2">
-                        <input v-model="data.params.OnlyCP" value=false type="checkbox" id="cbox1" />Solo CP
-                        <input v-model="data.params.OnlyEmptyCP" value=false type="checkbox" id="cbox1" />Sin CP
+                    <div class="my-2 flex gap-2">
+                        <input v-model="data.params.OnlyCP" value="onlycp" type="radio" id="rbutton1"  class="my-2"/>
+                        <label class="mt-1">Con CP</label>
+                        <input v-model="data.params.OnlyCP" value="onlyemptycp" type="radio" id="rbutton2"  class="my-2"/>
+                        <label class="mt-1">Sin CP</label>
+                        <input v-model="data.params.OnlyCP" value="noSeEncontro" type="radio" id="rbutton2"  class="my-2"/>
+                        <label class="mt-1">No se encontro</label>
+                        <input v-model="data.params.OnlyCP" value="allcp" type="radio" id="rbutton3"  class="my-2"/>
+                        <label class="mt-1">Todas</label>
                     </div>
                 </div>
 

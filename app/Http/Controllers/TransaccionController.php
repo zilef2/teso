@@ -78,15 +78,18 @@ class TransaccionController extends Controller
             $transaccions = $transaccions->orderBy('updated_at', 'DESC');
         }
 
-        if($request->has('OnlyCP')){
-            $transaccions = $transaccions->whereNotNull('contrapartida_CI');
-        }
-        if($request->has('OnlyEmptyCP')){
-            $transaccions = $transaccions->whereNull('contrapartida_CI');
+        if ($request->has('OnlyCP')) {
+            if($request->OnlyCP == 'onlycp')
+                $transaccions = $transaccions->whereNotNull('contrapartida_CI');
+            if($request->OnlyCP == 'onlyemptycp')
+                $transaccions = $transaccions->whereNull('contrapartida_CI');
+            if($request->OnlyCP == 'noSeEncontro')
+                $transaccions = $transaccions->where('contrapartida_CI','LIKE', "%No se encontro%");
+//            if($request->OnlyCP == 'allcp')
         }
         // Cachear la búsqueda usando Cache::remember()
 //        return Cache::remember($cacheKey, 60, function () use ($request,$transaccions) {
-            return $this->BusquedasText($transaccions, $request);
+        return $this->BusquedasText($transaccions, $request);
 //        });
     }
 
@@ -131,7 +134,7 @@ class TransaccionController extends Controller
             ['path' => request()->url()]
         );
 
-        $filters = ['search', 'field', 'order','OnlyCP','OnlyEmptyCP'];
+        $filters = ['search', 'field', 'order', 'OnlyCP', 'OnlyEmptyCP'];
         $filters = array_merge($this->arrayBusque, $filters);
 
         return Inertia::render($this->FromController . '/Index', [
@@ -154,7 +157,9 @@ class TransaccionController extends Controller
 
 
     //<editor-fold desc="no index">
-    public function create(){}
+    public function create()
+    {
+    }
 
     //! STORE - UPDATE - DELETE
     //! STORE functions
@@ -174,9 +179,13 @@ class TransaccionController extends Controller
 
     //fin store functions
 
-    public function show($id){}
+    public function show($id)
+    {
+    }
 
-    public function edit($id){}
+    public function edit($id)
+    {
+    }
 
     public function update(Request $request, $id)
     {
@@ -218,16 +227,19 @@ class TransaccionController extends Controller
     //</editor-fold>
 
 
-    public function Buscar_CP_CE(Request $request){}
+    public function Buscar_CP_CE(Request $request)
+    {
+    }
+
     public function Buscar_CP_CI(Request $request)
     {
         try {
             $codigo = "CI";
-            if(Comprobante::Where('codigo', $codigo)->count() === 0)
-                return back()->with('error', 'No hay comprobantes con código: '.$codigo);
+            if (Comprobante::Where('codigo', $codigo)->count() === 0)
+                return back()->with('error', 'No se encontro ningun comprobante con código: ' . $codigo);
 
             DB::beginTransaction();
-            [$Transacciones, $valor_debito_credito] = $this->TransaccionesCodigoActuales($codigo);
+            [$Transacciones, $valor_debito_credito] = $this->TransaccionesCI($codigo);
 
 
             foreach ($Transacciones as $index => $transa) {
@@ -236,37 +248,30 @@ class TransaccionController extends Controller
 
                 $HayComprobantes = clone $comprobantes;
                 $HayComprobantes = $HayComprobantes->count();
-                if($HayComprobantes === 0){
+                if ($HayComprobantes === 0) {
                     $transa->update([
-                        'contrapartida_CI' => 'No hay comprobantes para el documento '.$transa->documento,
-                        'concepto_flujo_homologación' => 'No hay comprobantes para el documento '.$transa->documento,
+                        'contrapartida_CI' => 'No se encontro ningun comprobante para el documento ' . $transa->documento,
+                        'concepto_flujo_homologación' => 'No se encontro ningun comprobante para el documento ' . $transa->documento,
                     ]);
                     continue;
                 }
 
-                //dd($transa->documento, $comprobantes->get());
-                //$princi = clone $comprobantes;
                 $lasContrapartidas = clone $comprobantes;
 
 //                $principales = $comprobantes->where($valor_debito_credito, $transa->{$valor_debito_credito})->get();//todo: no es asi, debe ser mayor a cero
-                $principales = $comprobantes->where($valor_debito_credito, '>',0)->get();//todo: no es asi, debe ser mayor a cero
-                $lasContrapartidas = $lasContrapartidas->where("valor_credito", '>',0)->get();
-//                if($lasContrapartidas[0]->numero_documento == 108479){
-//                    dd(
-//                        $principales,
-//$lasContrapartidas
-//                    );
-//                }
+                $principales = $comprobantes->where($valor_debito_credito, '>', 0)->get();//todo: no es asi, debe ser mayor a cero
+                $lasContrapartidas = $lasContrapartidas->where("valor_credito", '>', 0)->get();
 
 
                 //validacion de credito - debito
                 $sumprincipales = $principales->sum('valor_debito'); //todo: hacer mas dinamica
                 $sumlasContrapartidas = $lasContrapartidas->sum('valor_credito'); //todo: hacer mas dinamica
 
-                if($sumprincipales !== $sumlasContrapartidas){
-                dd($principales,
-$lasContrapartidas,
-                    $sumprincipales , $sumlasContrapartidas);
+                if ($sumprincipales !== $sumlasContrapartidas) {
+                    dd('Error fatal, La suma de la contrapartida no concuerda',
+                        $principales,
+                        $lasContrapartidas,
+                        $sumprincipales, $sumlasContrapartidas);
                     $transa->update([
                         'contrapartida_CI' => "debitos y creditos distintos ($sumprincipales | $sumlasContrapartidas)",
                         'concepto_flujo_homologación' => "debitos y creditos distintos ($sumprincipales | $sumlasContrapartidas)",
@@ -294,18 +299,17 @@ $lasContrapartidas,
             DB::commit();
 
             return redirect()->route('transaccion.index')->with('success',
-                'Operación exitosa. '.$Transacciones->count().' transacciones '.$codigo.' del mes y año actual fueron revisadas'
+                'Operación exitosa. ' . $Transacciones->count() . ' transacciones ' . $codigo . ' del mes y año actual fueron revisadas'
             );
         } catch (\Throwable $th) {
             DB::rollback();
             $mensaj = $th->getMessage() . ' L:' . $th->getLine() . ' Ubi: ' . $th->getFile();
-            return back()->with('error', 'Operacion con errores '.$mensaj);
+            return back()->with('error', 'Operacion con errores ' . $mensaj);
         }
     }
 
     //FIN : STORE - UPDATE - DELETE
-    private function hallarConcepto($cuentaCP)
-    {
+    private function hallarConcepto($cuentaCP){
         $cf = concepto_flujo::Where('cuenta_contable', $cuentaCP)->first();
         if ($cf) {
             return $cf->concepto_flujo;
@@ -313,7 +317,7 @@ $lasContrapartidas,
         return 'Buscar en AJ o AN';
     }
 
-    private function TransaccionesCodigoActuales($codigo)
+    private function TransaccionesCI($codigo)
     {
         $valor_debito_credito = (strcmp($codigo, "CI") === 0) ? "valor_debito" : "valor_credito";
         $laFecha = new \DateTime();
