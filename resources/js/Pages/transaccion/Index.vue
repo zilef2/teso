@@ -60,6 +60,9 @@ const data = reactive({
     deleteOpen: false,
     // deleteBulkOpen: false,
     dataSet: usePage().props.app.perpage,
+    procensandoCPCI:false,
+    procensandAJCI:false,
+    procensandANCI:false,
 })
 
 // <!--<editor-fold desc="order, watchclone, select">-->
@@ -108,13 +111,21 @@ const titulos = [
     // { order: 'inventario', label: 'inventario', type: 'foreign',nameid:'nombre'},
 ];
 const Buscar_CP_CI = () => {
+    data.procensandoCPCI = true
     form.post(route('Buscar_CP_CI'), {
-        onFinish: () => form.reset(),
+        onFinish: () => data.procensandoCPCI = false,
     });
 }
-const Buscar_AJ_AN_CI = () => {
-    form.post(route('Buscar_AJ_AN_CI'), {
-        onFinish: () => form.reset(),
+const Buscar_AJ_CI = () => {
+    data.procensandAJCI = true
+    form.post(route('Buscar_AJ_CI'), {
+        onFinish: () => data.procensandAJCI = false,
+    });
+}
+const Buscar_AN_CI = () => {
+    data.procensandANCI = true
+    form.post(route('Buscar_AN_CI'), {
+        onFinish: () => data.procensandANCI = false,
     });
 }
 </script>
@@ -129,7 +140,7 @@ const Buscar_AJ_AN_CI = () => {
             <div class="flex justify-between px-4 sm:px-0">
                 <div class="inline-flex rounded-xl overflow-hidden w-fit">
                     <div class="mx-2">
-                        <PrimaryButton v-if="!form.processing" class="rounded-lg" @click="Buscar_CP_CI">
+                        <PrimaryButton v-if="!form.processing || !data.procensandoCPCI" class="rounded-lg" @click="Buscar_CP_CI">
                             Contrapartidas CI de {{OnlyMonthAndYear(Date.now())}}
                         </PrimaryButton>
                         <div v-else class="text-sky-600">
@@ -138,12 +149,21 @@ const Buscar_AJ_AN_CI = () => {
                         </div>
                     </div>
                     <div class="mx-2">
-                        <PrimaryButton v-if="!form.processing" class="rounded-lg" @click="Buscar_AJ_AN_CI">
-                            Ajustes y Anulaciones de CI de {{OnlyMonthAndYear(Date.now())}}
+                        <PrimaryButton v-if="!form.processing || !data.procensandAJCI" class="rounded-lg" @click="Buscar_AJ_CI">
+                            Ajustes de CI de {{OnlyMonthAndYear(Date.now())}}
                         </PrimaryButton>
                         <div v-else class="text-sky-600">
                             <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                            Procesando la asignacion de concepto (CI)...
+                            Procesando la asignacion de concepto (AJ)...
+                        </div>
+                    </div>
+                    <div class="mx-2">
+                        <PrimaryButton v-if="!form.processing || !data.procensandANCI" class="rounded-lg" @click="Buscar_AN_CI">
+                            Anulaciones de CI {{OnlyMonthAndYear(Date.now())}}
+                        </PrimaryButton>
+                        <div v-else class="text-sky-600">
+                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                            Procesando la asignacion de concepto (AN)...
                         </div>
                     </div>
 

@@ -72,7 +72,8 @@ Route::middleware(['auth'])->group(callback: function () {
 
     Route::post('/Buscar_CP_CI', [TransaccionController::class, 'Buscar_CP_CI'])->name('Buscar_CP_CI');
     Route::post('/Buscar_CP_CE', [TransaccionController::class, 'Buscar_CP_CE'])->name('Buscar_CP_CE');
-    Route::post('/Buscar_AJ_AN_CI', [\App\Http\Controllers\ContrapartidasCICEController::class, 'Buscar_AJ_AN_CI'])->name('Buscar_AJ_AN_CI');
+    Route::post('/Buscar_AJ_CI', [\App\Http\Controllers\ContrapartidasCICEController::class, 'Buscar_AJ_CI'])->name('Buscar_AJ_CI');
+    Route::post('/Buscar_AN_CI', [\App\Http\Controllers\ContrapartidasCICEController::class, 'Buscar_AN_CI'])->name('Buscar_AN_CI');
 //    Route::get('/downloadAnexos', [UserController::class,'downloadAnexos'])->name('downloadAnexos');
 //    Route::get('/downClaro',function(){
 //        return Excel::download(new FormExport, 'BaseDatosInspecciones.xlsx');

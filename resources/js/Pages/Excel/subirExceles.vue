@@ -247,7 +247,9 @@ const Abecedario  = Array.from({length: 26}, (_, i) => String.fromCharCode(97 + 
 
                                     <div class="p-6">
                                         <h3 class="title-font text-lg font-medium text-gray-900 mb-3">Subir Comprobantes (CI o CE)</h3>
-                                        <p class="leading-relaxed mb-3"> El excel debe contar con el formato aprobado</p>
+                                        <p class="leading-relaxed mb-3"> Recuerde que en la columna de codigos, tiene que leerse: CI, CE, AJ o AN. </p>
+                                        <p class="leading-relaxed mb-3">Otros codigos no son usados actualmente.</p>
+<!--                                        <p class="leading-relaxed mb-3"> El excel debe contar con el formato aprobado</p>-->
 
                                         <form @submit.prevent="uploadFileComprobantes" id="upload">
                                             <input type="file" @input="form.archivo3 = $event.target.files[0]"

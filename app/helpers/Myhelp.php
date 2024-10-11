@@ -18,20 +18,18 @@ use Inertia\Inertia;
 class Myhelp {
 
     // JUST THIS PROJECT
-    public static function TransaccionesCI_AJ_AN($codigo,$StringValidacionCodigo)
+    public static function TransaccionesCI_AJ_AN($codigo)
     {
-        $valor_debito_credito = (strcmp($codigo, "AJ") === 0) ? "valor_debito" : "valor_credito";
         $laFecha = new \DateTime();
 
         $mes = $laFecha->format('m'); // Obtiene el mes (en formato numérico)
         $mes = 8; // Obtiene el mes (en formato numérico)
-//        $anio = $laFecha->format('Y'); // Obtiene el año
+//      $anio = $laFecha->format('Y'); // Obtiene el año
 
-        $Transacciones = transaccion::Where('codigo', $codigo)
+        return transaccion::Where('codigo', $codigo)
             ->WhereNull('concepto_flujo_homologación')
 //            ->WhereYear('fecha_elaboracion', $anio)
             ->whereMonth('fecha_elaboracion', $mes)->get();
-        return [$Transacciones, $valor_debito_credito];
     }
     // end JUST THIS PROJECT
     
@@ -173,14 +171,12 @@ class Myhelp {
                     $ElMensaje = $mensaje != '' ? ' Mensaje: ' . $mensaje : '';
                     Log::channel('soloadmin')->info('Vista:' . $nombreC . ' Padre: ' . $nombreP . '|  U:' . Auth::user()->name . $ElMensaje);
                 } else {
-                    Log::info('Vista: ' . $nombreC . ' Padre: ' . $nombreP .' | '. $clase . '| ' . ' Mensaje: ' . $mensaje);
+                    Log::info('Vista: ' . $nombreC . ' Padre: ' . $nombreP . '||  U:' . Auth::user()->name ?? 'us desconocido'.' | '. $clase . '| ' . $mensaje);
                 }
             } else {
-//                Log::critical('Vista: ' . $nombreC . 'U:' . $clase . '|| ' . ' Mensaje: ' . $mensaje);
-                Log::critical('Vista: ' . $nombreC . 'U:' . Auth::user()->name . ' ||' . $clase . '|| ' . ' Mensaje: ' . $mensaje);
+                Log::critical('Vista: ' . $nombreC . ' ||| U:' . Auth::user()->name . ' ||' . $clase . '|| ' . $mensaje);
             }
             return $permissions;
-
         }
         
         public static function WriteAuthLog($thiis, $clase = '', $mensaje = '', $returnPermission = true, $critico = false) {

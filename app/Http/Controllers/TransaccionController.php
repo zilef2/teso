@@ -52,7 +52,6 @@ class TransaccionController extends Controller
             $clas->cuenta = $clas->cuenta();
             return $clas;
         });
-
         return $Result;
     }
 

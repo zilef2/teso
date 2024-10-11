@@ -9,7 +9,7 @@ class Comprobante extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'codigo',
+        'codigo', //string
         'descripcion',
         'comprobante',
         'descripcion2',
