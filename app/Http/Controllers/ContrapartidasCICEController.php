@@ -40,13 +40,17 @@ class ContrapartidasCICEController extends Controller
                 }
 
                 $lasContrapartidas = clone $comprobantes;
+                $lasContrapartidasForeach = clone $comprobantes;
 
                 //core
                 $principales = $comprobantes->where('codigo_cuenta', $transa->codigo_cuenta_contable)->get();
-                $lasContrapartidas = $lasContrapartidas->WhereNotIn("id", $principales->id)
-                    ->Where('documento_ref', $principales->documento_ref)->get();
+
+                $lasContrapartidas = $lasContrapartidas->WhereNotIn('id', $principales->pluck('id'))
+                    ->WhereIn('documento_ref', $principales->pluck('documento_ref'))
+                    ->get();
                 // $lasContrapartidas  =  should be one
 
+                //AJUSTES
                 if ($this->LaContraPartidaNoSumaCero($lasContrapartidas, $transa, $principales)){
                     $transa->update([
                         'n_contrapartidas' => 0,
@@ -60,7 +64,7 @@ class ContrapartidasCICEController extends Controller
                 foreach ($principales as $principal) {
                     //validacion adicional: el doc_ref debe ser igual para el original y la CP
                     $principalRef = $principal->documento_ref;
-                    $Col_ContrapartidaRef = $lasContrapartidas->Where('documento_ref', $principalRef)
+                    $Col_ContrapartidaRef = $lasContrapartidasForeach->Where('documento_ref', $principalRef)
                         ->Where('id', '!=', $principal->id)
                         ->get();
 
@@ -85,7 +89,7 @@ class ContrapartidasCICEController extends Controller
 
 
             return redirect()->route('transaccion.index')->with('success',
-                'Operación exitosa. ' . $Transacciones->count() . ' transacciones ' . $codigo . ' del mes y año actual fueron revisadas'
+                'Operación exitosa. ' . $Transacciones->count() . ' transacciones ' . $codigo . ' de agosto fueron revisadas'
             );
         } catch (\Throwable $th) {
             DB::rollback();
@@ -109,25 +113,53 @@ class ContrapartidasCICEController extends Controller
                 $comprobantes = Comprobante::Where('numero_documento', $transa->documento)
                     ->Where('codigo', $codigo);
 
-                if ($this->NoHayComprobantes($comprobantes, $transa)) continue; // todo: actualizar la transaccion
+
+                if ($this->NoHayComprobantes($comprobantes, $transa)){
+                     $mensaje_t_Error = "No se encontro ningun comprobante para el documento " . $transa->documento_ref;
+                $transa->update([
+                    'n_contrapartidas' => 0,
+                    'contrapartida_CI' => $mensaje_t_Error,
+                    'concepto_flujo_homologación' => $mensaje_t_Error,
+                ]);
+                    continue;
+                }
 
                 $lasContrapartidas = clone $comprobantes;
+                $lasContrapartidasForeach = clone $comprobantes;
 
                 $principales = $comprobantes->where('codigo_cuenta', $transa->codigo_cuenta_contable)->get();
 
-                if ($this->ComprobantesSinCodigoCuentaContable($principales)) continue; // todo: actualizar la transaccion
+                if ($this->ComprobantesSinCodigoCuentaContable($principales)){
+                    $mensaje_t_Error = "No se encontro ningun comprobante para el codigo_cuenta " . $transa->codigo_cuenta_contable;
+                $transa->update([
+                    'n_contrapartidas' => 0,
+                    'contrapartida_CI' => $mensaje_t_Error,
+                    'concepto_flujo_homologación' => $mensaje_t_Error,
+                ]);
+                    continue;
+                }
 
                 $lasContrapartidas = $lasContrapartidas->WhereNotIn("id", $principales->pluck('id'))
-                    ->Where('documento_ref', $principales[0]->documento_ref);
+                    ->WhereIn('documento_ref', $principales->pluck('documento_ref'))
+                    ->get();
                 // $lasContrapartidas  =  should be one
 
-                if ($this->LaContraPartidaNoSumaCero($lasContrapartidas, $transa, $principales)) continue;
+                //ANULACIONES
+                if ($this->LaContraPartidaNoSumaCero($lasContrapartidas, $transa, $principales)){
+                     $mensaje_t_Error = "La contrapartida y la transaccion no suman cero.";
+                $transa->update([
+                    'n_contrapartidas' => 0,
+                    'contrapartida_CI' => $mensaje_t_Error,
+                    'concepto_flujo_homologación' => $mensaje_t_Error,
+                ]);
+                    continue;
+                }
 
                 //va y busca los demas
                 foreach ($principales as $principal) {
                     //validacion adicional: el doc_ref debe ser igual para el original y la CP
                     $principalRef = $principal->documento_ref;
-                    $Col_ContrapartidaRef = $lasContrapartidas->Where('documento_ref', $principalRef)
+                    $Col_ContrapartidaRef = $lasContrapartidasForeach->Where('documento_ref', $principalRef)
                         ->Where('id', '!=', $principal->id)
                         ->get();
 
@@ -151,7 +183,7 @@ class ContrapartidasCICEController extends Controller
             DB::commit();
 
             return redirect()->route('transaccion.index')->with('success',
-                'Operación exitosa. ' . $Transacciones->count() . ' transacciones ' . $codigo . ' del mes y año actual fueron revisadas'
+                'Operación exitosa. ' . $Transacciones->count() . ' transacciones ' . $codigo . ' de agosto fueron revisadas'
             );
         } catch (\Throwable $th) {
             DB::rollback();
@@ -170,7 +202,6 @@ class ContrapartidasCICEController extends Controller
 
     private function LaContraPartidaNoSumaCero($lasContrapartidas, $transa, $principales): bool
     {
-        $lasContrapartidas = $lasContrapartidas->get();
         $sumprincipales = $principales->sum('valor_debito');
         $sumlasContrapartidas = $lasContrapartidas->sum('valor_credito');
         $elCero = abs($sumprincipales) !== abs($sumlasContrapartidas);

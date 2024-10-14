@@ -137,7 +137,12 @@ class TransaccionController extends Controller
 
         $filters = ['search', 'field', 'order', 'OnlyCP', 'OnlyEmptyCP'];
         $filters = array_merge($this->arrayBusque, $filters);
-
+        $Indicadores = [
+            'Transacciones' => transaccion::count(),
+            'NoSeEncontro' => transaccion::Where('contrapartida_CI','LIKE', "%No se encontro%")->count(),
+            'AJCount' => transaccion::Where('codigo', "AJ")->count(),
+            'ANCount' => transaccion::Where('codigo', "AN")->count(),
+        ];
         return Inertia::render($this->FromController . '/Index', [
             'fromController' => $fromController,
             'total' => $total,
@@ -148,6 +153,7 @@ class TransaccionController extends Controller
             'perPage' => (int)$perPage,
 
             'numberPermissions' => $numberPermissions,
+            'Indicadores' => $Indicadores,
             'thisAtributos' => array_values(array_diff($this->thisAtributos, [
                 'nombre_cuenta',
                 'nit',
@@ -300,7 +306,7 @@ class TransaccionController extends Controller
             DB::commit();
 
             return redirect()->route('transaccion.index')->with('success',
-                'Operación exitosa. ' . $Transacciones->count() . ' transacciones ' . $codigo . ' del mes y año actual fueron revisadas'
+                'Operación exitosa. ' . $Transacciones->count() . ' transacciones ' . $codigo . ' de agosto fueron revisadas'
             );
         } catch (\Throwable $th) {
             DB::rollback();

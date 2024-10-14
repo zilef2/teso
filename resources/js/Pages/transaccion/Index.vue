@@ -17,9 +17,8 @@ import Delete from '@/Pages/transaccion/Delete.vue';
 
 import Checkbox from '@/Components/Checkbox.vue';
 import InfoButton from '@/Components/InfoButton.vue';
-import Filtros from "@/Pages/transaccion/Filtros.vue";
-import {formatDate, OnlyMonthAndYear} from "../../global";
 import TextInput from "@/Components/TextInput.vue";
+import Indicadores from "@/Pages/transaccion/Indicadores.vue";
 // import { CursorArrowRippleIcon, ChevronUpDownIcon,QuestionMarkCircleIcon, EyeIcon, PencilIcon, TrashIcon, UserGroupIcon } from '@heroicons/vue/24/solid';
 
 const {_, debounce, pickBy} = pkg
@@ -35,6 +34,7 @@ const props = defineProps({
     numberPermissions: Number,
     losSelect: Object,//normally used by headlessui
     thisAtributos: Object,
+    Indicadores: Object,
 })
 
 const data = reactive({
@@ -60,9 +60,9 @@ const data = reactive({
     deleteOpen: false,
     // deleteBulkOpen: false,
     dataSet: usePage().props.app.perpage,
-    procensandoCPCI:false,
-    procensandAJCI:false,
-    procensandANCI:false,
+    procensandoCPCI: false,
+    procensandAJCI: false,
+    procensandANCI: false,
 })
 
 // <!--<editor-fold desc="order, watchclone, select">-->
@@ -140,9 +140,10 @@ const Buscar_AN_CI = () => {
             <div class="flex justify-between px-4 sm:px-0">
                 <div class="inline-flex rounded-xl overflow-hidden w-fit">
                     <div class="mx-2">
-                        <PrimaryButton v-if="!form.processing || !data.procensandoCPCI" class="rounded-lg" @click="Buscar_CP_CI">
+                        <PrimaryButton v-if="!form.processing || !data.procensandoCPCI" class="rounded-lg"
+                                       @click="Buscar_CP_CI">
                             Contrapartidas CI
-<!--                            de {{OnlyMonthAndYear(Date.now())}}-->
+                            <!--                            de {{OnlyMonthAndYear(Date.now())}}-->
                         </PrimaryButton>
                         <div v-else class="text-sky-600">
                             <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
@@ -150,10 +151,11 @@ const Buscar_AN_CI = () => {
                         </div>
                     </div>
                     <div class="mx-2">
-                        <PrimaryButton v-if="!form.processing || !data.procensandAJCI" class="rounded-lg" @click="Buscar_AJ_CI">
+                        <PrimaryButton v-if="!form.processing || !data.procensandAJCI" class="rounded-lg"
+                                       @click="Buscar_AJ_CI">
                             Ajustes de CI
-<!--                            de {{OnlyMonthAndYear(Date.now())}}-->
-<!--                            de {{OnlyMonthAndYear(Date.now().getFullYear)}}-->
+                            <!--                            de {{OnlyMonthAndYear(Date.now())}}-->
+                            <!--                            de {{OnlyMonthAndYear(Date.now().getFullYear)}}-->
                         </PrimaryButton>
                         <div v-else class="text-sky-600">
                             <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
@@ -161,9 +163,10 @@ const Buscar_AN_CI = () => {
                         </div>
                     </div>
                     <div class="mx-2">
-                        <PrimaryButton v-if="!form.processing || !data.procensandANCI" class="rounded-lg" @click="Buscar_AN_CI">
+                        <PrimaryButton v-if="!form.processing || !data.procensandANCI" class="rounded-lg"
+                                       @click="Buscar_AN_CI">
                             Anulaciones de CI
-<!--                            {{OnlyMonthAndYear(Date.now())}}-->
+                            <!--                            {{OnlyMonthAndYear(Date.now())}}-->
                         </PrimaryButton>
                         <div v-else class="text-sky-600">
                             <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
@@ -174,7 +177,7 @@ const Buscar_AN_CI = () => {
                     <div class="mx-2 mb-1">
                         <Button class="ml-4 bg-gray-200 rounded-lg p-2">
                             Contrapartidas CE (pendiente)
-<!--                            de {{OnlyMonthAndYear(Date.now())}}-->
+                            <!--                            de {{OnlyMonthAndYear(Date.now())}}-->
                         </Button>
                     </div>
 
@@ -223,13 +226,15 @@ const Buscar_AN_CI = () => {
                     <TextInput v-model="data.params.searchDocRef" type="number"
                                class="block w-4/6 md:w-3/6 xl:w-1/12 rounded-lg" placeholder="Doc Ref"/>
                     <div class="my-2 flex gap-2">
-                        <input v-model="data.params.OnlyCP" value="onlycp" type="radio" id="rbutton1"  class="my-2"/>
+                        <input v-model="data.params.OnlyCP" value="onlycp" type="radio" id="rbutton1" class="my-2"/>
                         <label class="mt-1">Con CP</label>
-                        <input v-model="data.params.OnlyCP" value="onlyemptycp" type="radio" id="rbutton2"  class="my-2"/>
+                        <input v-model="data.params.OnlyCP" value="onlyemptycp" type="radio" id="rbutton2"
+                               class="my-2"/>
                         <label class="mt-1">Sin CP</label>
-                        <input v-model="data.params.OnlyCP" value="noSeEncontro" type="radio" id="rbutton2"  class="my-2"/>
+                        <input v-model="data.params.OnlyCP" value="noSeEncontro" type="radio" id="rbutton2"
+                               class="my-2"/>
                         <label class="mt-1">No se encontro</label>
-                        <input v-model="data.params.OnlyCP" value="allcp" type="radio" id="rbutton3"  class="my-2"/>
+                        <input v-model="data.params.OnlyCP" value="allcp" type="radio" id="rbutton3" class="my-2"/>
                         <label class="mt-1">Todas</label>
                     </div>
                 </div>
@@ -313,8 +318,31 @@ const Buscar_AN_CI = () => {
                 <div v-if="props.total > 0"
                      class="flex justify-between items-center p-2 border-t border-gray-200 dark:border-gray-700">
                     <Pagination :links="props.fromController" :filters="data.params"/>
-
                 </div>
+                <div class="grid grid-cols-1 mx-auto">
+                <div class="mx-auto items-center content-center place-self-center inline-flex">
+
+                    <Indicadores
+                        :nombre="'Transacciones no encontradas'"
+                        :Indicador="props.Indicadores.NoSeEncontro"
+                        :Total="props.Indicadores.Transacciones"
+                        class="text-center"
+                    />
+                    <Indicadores
+                        :nombre="'Ajustes'"
+                        :Indicador="props.Indicadores.AJCount"
+                        :Total="props.Indicadores.Transacciones"
+                        class="text-center"
+                    />
+                    <Indicadores
+                        :nombre="'Anulaciones'"
+                        :Indicador="props.Indicadores.ANCount"
+                        :Total="props.Indicadores.Transacciones"
+                        class="text-center"
+                    />
+                </div>
+                </div>
+
             </div>
         </div>
     </AuthenticatedLayout>

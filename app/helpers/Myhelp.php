@@ -13,7 +13,7 @@ use Inertia\Inertia;
 //STRING S
 //LARAVELFunctions
 //dateFunctions
-//arrayFunctions 
+//arrayFunctions
 
 class Myhelp {
 
@@ -23,7 +23,7 @@ class Myhelp {
         $laFecha = new \DateTime();
 
         $mes = $laFecha->format('m'); // Obtiene el mes (en formato numérico)
-        $mes = 8; // Obtiene el mes (en formato numérico)
+        $mes = 8; // agosto
 //      $anio = $laFecha->format('Y'); // Obtiene el año
 
         return transaccion::Where('codigo', $codigo)
@@ -32,7 +32,7 @@ class Myhelp {
             ->whereMonth('fecha_elaboracion', $mes)->get();
     }
     // end JUST THIS PROJECT
-    
+
     // ALL projects
     public static function AuthU(): \Illuminate\Http\RedirectResponse|\Illuminate\Contracts\Auth\Authenticatable
     {
@@ -69,7 +69,7 @@ class Myhelp {
             $palabras = explode(" ", $frase);
             return count($palabras);
         }
-        
+
         function cortarFrase($frase, $maxPalabras = 3) {
             $noTerminales = [
                 "de", "a", "para",
@@ -178,7 +178,7 @@ class Myhelp {
             }
             return $permissions;
         }
-        
+
         public static function WriteAuthLog($thiis, $clase = '', $mensaje = '', $returnPermission = true, $critico = false) {
             $permissions = $returnPermission ? auth()->user()->roles->pluck('name')[0] : null;
             $ListaControladoresYnombreClase = (explode('\\', get_class($thiis)));
@@ -282,9 +282,9 @@ class Myhelp {
         }
         return $result;
     }
-    
 
-    
+
+
 //arrayFunctions
 
     public static function ImplodeSinNulos($theArrayofStrings,$index) {
