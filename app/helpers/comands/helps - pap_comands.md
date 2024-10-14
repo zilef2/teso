@@ -66,5 +66,7 @@ npm install vue-select
 //! ************************* COMMANDS *************************
 php artisan make:command customcommand
 php artisan make:command LanguageCopyU
+php artisan make:job BusquedaConceptoCI
+
 
 //! ************************* PERMISOS *************************

@@ -141,7 +141,8 @@ const Buscar_AN_CI = () => {
                 <div class="inline-flex rounded-xl overflow-hidden w-fit">
                     <div class="mx-2">
                         <PrimaryButton v-if="!form.processing || !data.procensandoCPCI" class="rounded-lg" @click="Buscar_CP_CI">
-                            Contrapartidas CI de {{OnlyMonthAndYear(Date.now())}}
+                            Contrapartidas CI
+<!--                            de {{OnlyMonthAndYear(Date.now())}}-->
                         </PrimaryButton>
                         <div v-else class="text-sky-600">
                             <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
@@ -150,7 +151,9 @@ const Buscar_AN_CI = () => {
                     </div>
                     <div class="mx-2">
                         <PrimaryButton v-if="!form.processing || !data.procensandAJCI" class="rounded-lg" @click="Buscar_AJ_CI">
-                            Ajustes de CI de {{OnlyMonthAndYear(Date.now())}}
+                            Ajustes de CI
+<!--                            de {{OnlyMonthAndYear(Date.now())}}-->
+<!--                            de {{OnlyMonthAndYear(Date.now().getFullYear)}}-->
                         </PrimaryButton>
                         <div v-else class="text-sky-600">
                             <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
@@ -159,7 +162,8 @@ const Buscar_AN_CI = () => {
                     </div>
                     <div class="mx-2">
                         <PrimaryButton v-if="!form.processing || !data.procensandANCI" class="rounded-lg" @click="Buscar_AN_CI">
-                            Anulaciones de CI {{OnlyMonthAndYear(Date.now())}}
+                            Anulaciones de CI
+<!--                            {{OnlyMonthAndYear(Date.now())}}-->
                         </PrimaryButton>
                         <div v-else class="text-sky-600">
                             <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
@@ -169,7 +173,8 @@ const Buscar_AN_CI = () => {
 
                     <div class="mx-2 mb-1">
                         <Button class="ml-4 bg-gray-200 rounded-lg p-2">
-                            Contrapartidas CE de {{OnlyMonthAndYear(Date.now())}}
+                            Contrapartidas CE (pendiente)
+<!--                            de {{OnlyMonthAndYear(Date.now())}}-->
                         </Button>
                     </div>
 
@@ -207,12 +212,12 @@ const Buscar_AN_CI = () => {
                                class="block w-1/6 xl:w-1/12 rounded-lg" placeholder="Código cuenta contable"/>
                     <TextInput v-model="data.params.searchCodigo" type="text"
                                class="block w-1/6 xl:w-1/12 rounded-lg" placeholder="Código"/>
-                    
+
                     <TextInput v-model="data.params.searchDocumento" type="text"
                                class="block w-1/6 xl:w-1/12 rounded-lg" placeholder="Documento"/>
                     <TextInput v-model="data.params.searchContrapartida" type="text"
                                class="block w-1/6 xl:w-1/12 rounded-lg" placeholder="CP"/>
-                    
+
                     <TextInput v-model="data.params.searchConcepto" type="text"
                                class="block w-1/6 xl:w-1/12 rounded-lg" placeholder="Concepto de flujo"/>
                     <TextInput v-model="data.params.searchDocRef" type="number"

@@ -329,8 +329,9 @@ class TransaccionController extends Controller
 
         $Transacciones = transaccion::Where('codigo', $codigo)
             ->WhereNull('concepto_flujo_homologación')
-            ->WhereYear('fecha_elaboracion', $anio)
-            ->whereMonth('fecha_elaboracion', $mes)->get();
+//            ->WhereYear('fecha_elaboracion', $anio)
+//            ->whereMonth('fecha_elaboracion', $mes)
+            ->get();
         //validar que tanto el Comprobante como la transsacion exista
 //        dd($Transacciones[0]);
         return [$Transacciones, $valor_debito_credito];

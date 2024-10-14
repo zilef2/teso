@@ -19,6 +19,7 @@ class ContrapartidasCICEController extends Controller
     {
         try {
             $codigo = "AJ";
+
             if (Comprobante::Where('codigo', $codigo)->count() === 0)
                 return back()->with('error', 'No se encontro ningun comprobante con código: ' . $codigo);
 
@@ -29,16 +30,31 @@ class ContrapartidasCICEController extends Controller
                 $comprobantes = Comprobante::Where('numero_documento', $transa->documento)
                     ->Where('codigo', $codigo);
 
-                if ($this->NoHayComprobantes($comprobantes, $transa)) continue;
+                if ($this->NoHayComprobantes($comprobantes, $transa)){
+                    $transa->update([
+                        'n_contrapartidas' => 0,
+                        'contrapartida_CI' => 'No se encontró comprobantes para el documento',
+                        'concepto_flujo_homologación' => 'No se encontró comprobantes para el documento',
+                    ]);
+                    continue;
+                }
 
                 $lasContrapartidas = clone $comprobantes;
 
+                //core
                 $principales = $comprobantes->where('codigo_cuenta', $transa->codigo_cuenta_contable)->get();
                 $lasContrapartidas = $lasContrapartidas->WhereNotIn("id", $principales->id)
                     ->Where('documento_ref', $principales->documento_ref)->get();
                 // $lasContrapartidas  =  should be one
 
-                if ($this->LaContraPartidaNoSumaCero($lasContrapartidas, $transa, $principales)) continue;
+                if ($this->LaContraPartidaNoSumaCero($lasContrapartidas, $transa, $principales)){
+                    $transa->update([
+                        'n_contrapartidas' => 0,
+                        'contrapartida_CI' => 'No se encontró una suma coherente, no suman 0',
+                        'concepto_flujo_homologación' => 'No se encontró una suma coherente, no suman 0',
+                    ]);
+                    continue;
+                }
 
                 //va y busca los demas
                 foreach ($principales as $principal) {
@@ -77,7 +93,7 @@ class ContrapartidasCICEController extends Controller
 
         }
     }
-    
+
     public function Buscar_AN_CI(Request $request): \Illuminate\Http\RedirectResponse
     {
         try {
