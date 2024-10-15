@@ -1,5 +1,3 @@
-
-
 onBeforeMount: Similar to beforeMount.
 onMounted: Similar to mounted.
 onBeforeUpdate: Similar to beforeUpdate.
@@ -23,18 +21,24 @@ npm install vue-select
     // FIN helps
 
 
-//! ************************* MODELS - MIDDLE - CORREO *************************
+//! ************************* PHP ARTISAN *************************
 
-    //middleware
-        php artisan make:middleware IsAdmin
+# middleware
+    php artisan make:middleware IsAdmin
 
-    //#--  correo - EXPORT AND IMPORTS
-        php artisan make:mail ExampleMail
+# correo - EXPORT AND IMPORTS
+    php artisan make:mail ExampleMail
 
-        //#-- excel
-        php artisan make:export ExampleExport --model=Empresa
+## excel
+php artisan make:export ExampleExport --model=Empresa
+php artisan make:export TodaBDExport
 
+## tablas
+    php artisan make:migration pivot_aspecto_inspeccion_table
 
+### Utilidades
+para borrar:  
+php artisan rm:crud post --force
 
 
 //! ************************* DESPLIEGUE (viejo) *************************
@@ -61,12 +65,3 @@ npm install vue-select
 
     mv /home/aplicativoswebco/public_html/modulonom/bootstrap/cache /home/aplicativoswebco/public_html/modulonom/bootstrap/cache_2
     mkdir /home/aplicativoswebco/public_html/modulonom/storage/framework/cache/data
-
-
-//! ************************* COMMANDS *************************
-php artisan make:command customcommand
-php artisan make:command LanguageCopyU
-php artisan make:job BusquedaConceptoCI
-
-
-//! ************************* PERMISOS *************************

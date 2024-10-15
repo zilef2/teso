@@ -188,6 +188,7 @@ class ComprobanteImport implements ToModel, WithStartRow
         'documento_ref' => $therow[17],
         'plan_cuentas' => $therow[18],
         ]);
+
     }
 
 

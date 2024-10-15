@@ -12,7 +12,8 @@
               <p class="recent">
                   Total transacciones: {{props.Total}}
               </p>
-          </div></div>
+          </div>
+      </div>
   </div>
 </template>
 <script setup>

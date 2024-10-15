@@ -50,7 +50,27 @@ const MontarGrafica = async () => {
                     yAxisID: 'y',
                 },
                 {
+                    type: 'line',
+                    display: true,
+                    label: 'Dif',
+                    data: data.GrafNumbers[0],
+                    borderWidth: 2,
+                    borderColor: 'rgba(22,106,0,1)',
+                    backgroundColor: 'rgba(22,106,0,1)',
+                    yAxisID: 'y',
+                },
+                {
                     label: 'Ingreso para ejecución de convenios', //1
+                    data: data.GrafNumbers[1],
+                    borderWidth: 2,
+                    borderColor: 'rgba(246,106,0,1)',
+                    backgroundColor: 'rgba(246,106,0,1)',
+                    yAxisID: 'y',
+                },
+                {
+                    type: 'line',
+                    display: true,
+                    label: 'Dif Ingreso para ejec',//1
                     data: data.GrafNumbers[1],
                     borderWidth: 2,
                     borderColor: 'rgba(246,106,0,1)',
@@ -92,17 +112,17 @@ const MontarGrafica = async () => {
                     borderColor: 'rgb(135,118,4)',
                     backgroundColor: 'rgb(11,48,1)',
                 },
-                {
-                    type: 'line',
-                    label: 'Diferencias',
-                    data: data.difTotal,
-                    borderColor: 'rgba(22,106,0,1)',
-                    yAxisID: 'y1',
-                    xAxisID: 'x1',
-                }
+                // {
+                //     type: 'line',
+                //     label: 'Diferencias',
+                //     data: data.difTotal,
+                //     borderColor: 'rgba(22,106,0,1)',
+                //     // yAxisID: 'y1',
+                //     // xAxisID: 'x1',
+                // }
             ],
             labels: ['2023', '2024'],
-    // { x: '2024-01-01', y: 10 },
+    //aquiiii { x: '2024-01-01', y: 10 },
         },
         options: {
             plugins: {
@@ -115,29 +135,29 @@ const MontarGrafica = async () => {
                 }
             },
             scales: {
-                x1:{
-                    type: 'linear',
-                    display: true,
-                    position: 'bottom',
-                    ticks: {
-                        color: 'rgba(22,106,0,1)',
-                    }
-                },
-                y: {
-                    type: 'linear',
-                    display: true,
-                    position: 'left',
-                    beginAtZero: true,  // Eje Y para Dataset 1
-                },
-                y1: {
-                    type: 'linear',
-                    display: true,
-                    position: 'right',
-                    beginAtZero: false,  // Eje Y para Dataset 2
-                    grid: {
-                        drawOnChartArea: false,  // Esto evita que el grid de y1 se superponga con el de y
-                    },
-                }
+                // x:{
+                //     type: 'linear',
+                //     display: true,
+                //     position: 'bottom',
+                    // ticks: {
+                    //     color: 'rgba(22,106,0,1)',
+                    // }
+                // },
+                // y: {
+                //     type: 'linear',
+                //     display: true,
+                //     position: 'left',
+                //     beginAtZero: true,  // Eje Y para Dataset 1
+                // },
+                // y1: {
+                //     type: 'linear',
+                //     display: true,
+                //     position: 'right',
+                //     beginAtZero: false,  // Eje Y para Dataset 2
+                //     grid: {
+                //         drawOnChartArea: false,  // Esto evita que el grid de y1 se superponga con el de y
+                //     },
+                // }
             },
             responsive: true,
         }
@@ -151,7 +171,6 @@ watchEffect(() => {
 })
 
 const TrazarLinea = () => {
-
     data.GrafNumbers.forEach((arrNumber,inde) => data.difTotal[inde] = arrNumber[0] - arrNumber[1])
     console.log("=>(EfeActOperacion.vue:147) data.difTotal", data.difTotal);
 }
@@ -199,10 +218,7 @@ const TrazarLinea = () => {
 
 
                 <div class="flex justify-end">
-                    <SecondaryButton @click="emit('close')"> {{
-                            lang().button.close
-                        }}
-                    </SecondaryButton>
+                    <SecondaryButton @click="emit('close')"> {{ lang().button.close }}</SecondaryButton>
                 </div>
             </div>
         </Modal>

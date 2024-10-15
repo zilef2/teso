@@ -138,6 +138,7 @@ let formatoNecesita3 = [
     'codigo',
     'descripcion',
     'comprobante',
+    'descripcion2',
     'notas',
     'numero_documento',
     'numero_cheque',

@@ -172,7 +172,7 @@ onMounted(() => {
                     data: [12903980072, 9468610942],
                     borderWidth: 0,
                     borderColor: 'rgb(0,5,5)',
-                    backgroundColor: 'rgb(248,251,251)',
+                    backgroundColor: 'rgb(0,0,122)',
                     yAxisID: 'y',
                 },
                 {

@@ -137,6 +137,7 @@ class TransaccionController extends Controller
 
         $filters = ['search', 'field', 'order', 'OnlyCP', 'OnlyEmptyCP'];
         $filters = array_merge($this->arrayBusque, $filters);
+
         $Indicadores = [
             'Transacciones' => transaccion::count(),
             'NoSeEncontro' => transaccion::Where('contrapartida_CI','LIKE', "%No se encontro%")->count(),
