@@ -319,28 +319,29 @@ const Buscar_AN_CI = () => {
                      class="flex justify-between items-center p-2 border-t border-gray-200 dark:border-gray-700">
                     <Pagination :links="props.fromController" :filters="data.params"/>
                 </div>
+                
                 <div class="grid grid-cols-1 mx-auto">
-                <div class="mx-auto items-center content-center place-self-center inline-flex">
+                    <div class="mx-auto items-center content-center place-self-center inline-flex">
 
-                    <Indicadores
-                        :nombre="'Transacciones no encontradas'"
-                        :Indicador="props.Indicadores.NoSeEncontro"
-                        :Total="props.Indicadores.Transacciones"
-                        class="text-center"
-                    />
-                    <Indicadores
-                        :nombre="'Ajustes'"
-                        :Indicador="props.Indicadores.AJCount"
-                        :Total="props.Indicadores.Transacciones"
-                        class="text-center"
-                    />
-                    <Indicadores
-                        :nombre="'Anulaciones'"
-                        :Indicador="props.Indicadores.ANCount"
-                        :Total="props.Indicadores.Transacciones"
-                        class="text-center"
-                    />
-                </div>
+                        <Indicadores
+                            :nombre="'Transacciones no encontradas'"
+                            :Indicador="props.Indicadores.NoSeEncontro"
+                            :Total="props.Indicadores.Transacciones"
+                            class="text-center"
+                        />
+                        <Indicadores
+                            :nombre="'Ajustes'"
+                            :Indicador="props.Indicadores.AJCount"
+                            :Total="props.Indicadores.Transacciones"
+                            class="text-center"
+                        />
+                        <Indicadores
+                            :nombre="'Anulaciones'"
+                            :Indicador="props.Indicadores.ANCount"
+                            :Total="props.Indicadores.Transacciones"
+                            class="text-center"
+                        />
+                    </div>
                 </div>
 
             </div>

@@ -13,26 +13,30 @@ const data = reactive({
     params: {
         search: props.filters?.search,
         search2: props.filters?.search2,
+        search3: props.filters?.search3,
+        search4: props.filters?.search4,
         searchNumCuenta: props.filters?.searchNumCuenta,
         searchBanco: props.filters?.searchBanco,
         searchtipo: props.filters?.searchtipo,
 
         searchContrapartida: props.filters?.searchContrapartida,
-        searchConcepto: props.filters?.searchConcepto,
-        OnlyCP: props.filters?.OnlyCP,
+        searchDocumento: props.filters?.searchDocumento,
         searchCodigo: props.filters?.searchCodigo,
-
-        codigo: props.filters.codigo,
-        numero_documento: props.filters.numero_documento,
-        valor_debito: props.filters.valor_debito,
-        valor_credito: props.filters.valor_credito,
+        searchConcepto: props.filters?.searchConcepto,
+        searchDocRef: props.filters?.searchDocRef,
+        OnlyCP: props.filters?.OnlyCP,
+        OnlyEmptyCP: props.filters?.OnlyEmptyCP,
+        
+        codigo: props.filters?.codigo,
+        numero_documento: props.filters?.numero_documento,
+        valor_debito: props.filters?.valor_debito,
+        valor_credito: props.filters?.valor_credito,
 
         field: props.filters?.field,
         order: props.filters?.order,
         perPage: props.filters?.perPage,
     },
 })
-
 const goto = (link) => {
     let params = pickBy(data.params);
     router.get(link, params, {
@@ -41,15 +45,32 @@ const goto = (link) => {
         preserveScroll: true,
     })
 }
-
 watchEffect(() => {
     data.params.search = props.filters?.search
-    data.params.searcLider = props.filters?.searcLider
+    data.params.search2 = props.filters?.search2
+    data.params.search3 = props.filters?.search3
+    data.params.search4 = props.filters?.search4
+    
+    data.params.searchNumCuenta = props.filters?.searchNumCuenta
+    data.params.searchBanco = props.filters?.searchBanco
+    data.params.searchtipo = props.filters?.searchtipo
+    
+    data.params.searchContrapartida = props.filters?.searchContrapartida
+    data.params.searchDocumento = props.filters?.searchDocumento
+    data.params.searchCodigo = props.filters?.searchCodigo
+    data.params.searchConcepto = props.filters?.searchConcepto
+    data.params.searchDocRef = props.filters?.searchDocRef
+    data.params.OnlyCP = props.filters?.OnlyCP
+    data.params.OnlyEmptyCP = props.filters?.OnlyEmptyCP
+    
+    data.params.codigo = props.filters?.codigo
+    data.params.numero_documento = props.filters?.numero_documento
+    data.params.valor_debito = props.filters?.valor_debito
+    data.params.valor_credito = props.filters?.valor_credito
+    
     data.params.field = props.filters?.field
     data.params.order = props.filters?.order
     data.params.perPage = props.filters?.perPage
-    data.params.SoloEnviados = props.filters?.SoloEnviados
-    data.params.OnlyCP = props.filters?.OnlyCP
 })
 
 </script>

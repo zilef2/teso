@@ -31,18 +31,18 @@ class TransaccionController extends Controller
             'search',
             'searchContrapartida',
             'searchDocumento',
+            'searchCodigo',
             'searchConcepto',
             'searchDocRef',
-            'searchCodigo',
         ];
 
         $this->arrayFillableSearch = [
             'codigo_cuenta_contable',
             'contrapartida_CI',
             'documento',
+            'codigo',
             'concepto_flujo_homologación',
             'documento_ref',
-            'codigo',
         ];
     }
 
@@ -70,7 +70,7 @@ class TransaccionController extends Controller
 
     public function Filtros($request)
     {
-        $cacheKey = $this->generateCacheKey($request);
+//        $cacheKey = $this->generateCacheKey($request);
         $transaccions = transaccion::Query();
 
         if ($request->has(['field', 'order'])) {
@@ -137,7 +137,7 @@ class TransaccionController extends Controller
 
         $filters = ['search', 'field', 'order', 'OnlyCP', 'OnlyEmptyCP'];
         $filters = array_merge($this->arrayBusque, $filters);
-
+        
         $Indicadores = [
             'Transacciones' => transaccion::count(),
             'NoSeEncontro' => transaccion::Where('contrapartida_CI','LIKE', "%No se encontro%")->count(),
