@@ -6,6 +6,9 @@ import '@vuepic/vue-datepicker/dist/main.css'
 import {Chart} from 'chart.js';
 import {number_format} from "@/global";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
+import pkg from "lodash";
+
+const {_, debounce, pickBy} = pkg
 
 const props = defineProps({
     show: Boolean,
@@ -17,7 +20,7 @@ const data = reactive({
     params: {
         pregunta: ''
     },
-    showLine:false,
+    HideLine:false,
     GrafNumbers: [
         [12903980072, 9468610942],
         [9993901734, 4593745432],
@@ -32,8 +35,8 @@ const data = reactive({
 });
 
 
-onMounted(async () => {
-});
+onMounted(async () => {});
+
 const chartCanvasHijaEntrada = ref(null);
 let ctx4 = ref(null);
 
@@ -54,7 +57,7 @@ const MontarGrafica = async () => {
                 },
                 {
                     type: 'line',
-                    hidden:data.showLine,
+                    hidden:data.HideLine,
                     label: 'Dif',
                     data: data.GrafNumbers[0],
                     borderWidth: 2,
@@ -72,7 +75,7 @@ const MontarGrafica = async () => {
                 },
                 {
                     type: 'line',
-                    hidden:data.showLine,
+                    hidden:data.HideLine,
                     label: 'Dif Ingreso para ejec',//1
                     data: data.GrafNumbers[1],
                     borderWidth: 2,
@@ -173,12 +176,12 @@ watchEffect(() => {
     }
 })
 
-const TrazarLinea = (BoolMostrar) => {
-    if(!data.showLine && !BoolMostrar){
+const TrazarLinea = debounce((BoolMostrar) => {
+    if(data.HideLine && BoolMostrar){
         return true
     }else{
         data.GrafNumbers.forEach((arrNumber,inde) => data.difTotal[inde] = arrNumber[0] - arrNumber[1])
-        data.showLine = BoolMostrar
+        data.HideLine = BoolMostrar
         ctx4 = chartCanvasHijaEntrada.value.getContext('2d');
         data.Graficas[0].destroy()
         data.Graficas[0] = new Chart(ctx4, {
@@ -195,7 +198,7 @@ const TrazarLinea = (BoolMostrar) => {
                 },
                 {
                     type: 'line',
-                    hidden:data.showLine,
+                    hidden:data.HideLine,
                     label: 'Dif',
                     data: data.GrafNumbers[0],
                     borderWidth: 2,
@@ -213,7 +216,7 @@ const TrazarLinea = (BoolMostrar) => {
                 },
                 {
                     type: 'line',
-                    hidden:data.showLine,
+                    hidden:data.HideLine,
                     label: 'Dif Ingreso para ejec',//1
                     data: data.GrafNumbers[1],
                     borderWidth: 2,
@@ -307,7 +310,8 @@ const TrazarLinea = (BoolMostrar) => {
         }
     });
     }
-}
+}, 250)
+
 </script>
 
 <template>
