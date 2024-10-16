@@ -119,7 +119,6 @@ class ComprobanteImport implements ToModel, WithStartRow
     /**
      * @param array $row
      *
-     * @return \Illuminate\Database\Eloquent\Model|null
      */
     public function model(array $row)
     {
@@ -159,7 +158,7 @@ class ComprobanteImport implements ToModel, WithStartRow
         $ExisteUnComprobante = Comprobante::Where('codigo',$therow[0])
             ->WhereYear('fecha_elaboracion',$anio)
             ->whereMonth('fecha_elaboracion',$mes)->count();
-        
+
         $mesYanio = $mes . '-'. $anio;
         $this->SoloUnaVez++;
         return [$ExisteUnComprobante,$mesYanio];

@@ -139,6 +139,8 @@ class TransaccionesImport implements ToModel, WithStartRow
                     throw new \Exception('|Comprobantes ya cargados del mes: '.$mesYanio);
                 }
             }
+            if (strcmp(strtolower($row[2]), 'tb') === 0) return null;
+
 
             return $this->TheNewObject($row);
         } catch (\Throwable $th) {
