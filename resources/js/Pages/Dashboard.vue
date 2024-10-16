@@ -259,10 +259,7 @@ const changeChar = (numeracion) => {
         <PrimaryButton class="rounded-lg mx-2" @click="changeChar(1)">
             Dona 2
         </PrimaryButton>
-        <PrimaryButton class="rounded-lg mx-2" @click="changeChar(2)">
-            Dona 3
-        </PrimaryButton>
-        <PrimaryButton class="rounded-lg" @click="data.IngresosOpen = true">
+        <PrimaryButton class="rounded-lg mx-2" @click="data.IngresosOpen = true">
             Entradas
         </PrimaryButton>
 
