@@ -4,16 +4,20 @@ namespace App\Http\Controllers;
 
 use App\helpers\Myhelp;
 use App\helpers\ZilefErrors;
-use App\Jobs\BusquedaConceptoCI;
+use App\Jobs\BusquedaConceptoCIJob;
 use App\Models\Comprobante;
 use App\Models\concepto_flujo;
+use App\Models\Parametro;
 use App\Models\transaccion;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class ContrapartidasCICEController extends Controller
 {
     //todo: falta traer y configurar "Buscar_CP_CI" que esta en transaccionController
+
+    private $Transacciones;
 
     private function BusquedaPocasTransacciones($Transacciones)
     {
@@ -22,88 +26,111 @@ class ContrapartidasCICEController extends Controller
 
     public function Buscar_AJ_CI(Request $request): \Illuminate\Http\RedirectResponse
     {
+        $codigo = "AJ";
+        if (Comprobante::Where('codigo', $codigo)->count() === 0)
+            return back()->with('error', 'No se encontro ningun comprobante con código: ' . $codigo);
+
+        $Transacciones = Myhelp::TransaccionesCI_AJ_AN($codigo);
+        $this->Transacciones = $Transacciones;
+
+        $conteoTransac = $Transacciones->count();
+        if ($conteoTransac < 0) {
+            dispatch(new BusquedaConceptoCIJob($Transacciones))->delay(now()->addSeconds());
+            $aproxSeconds = ceil($conteoTransac / 25);
+            $aproxSeconds = $aproxSeconds > 60 ? ($aproxSeconds / 60) . ' mins' : ($aproxSeconds) . ' segs';
+            return redirect()->route('transaccion.index')->with('success',
+                $conteoTransac . ' transacciones ' . $codigo . ' de agosto serán revisadas. Este proceso tardará aprox: ' . $aproxSeconds
+            );
+        }
+
+        $inicioicrotime = microtime(true);
+        Log::info('El job BusquedaConceptoCI ha comenzado.');
+
         try {
+            // Log después de la operación
             $codigo = "AJ";
 
-            if (Comprobante::Where('codigo', $codigo)->count() === 0)
-                return back()->with('error', 'No se encontro ningun comprobante con código: ' . $codigo);
+            $CPController = new ContrapartidasCICEController();
+            DB::beginTransaction();
+            foreach ($this->Transacciones as $index => $transa) {
+                $comprobantes = Comprobante::Where('numero_documento', $transa->documento)
+                    ->Where('codigo', 'ci');
+//dd(
+//    $comprobantes->get()
+//);
+                if ($CPController->NoHayComprobantes($comprobantes, $transa)) {
+                    $transa->update([
+                        'n_contrapartidas' => 0,
+                        'contrapartida_CI' => 'No se encontró comprobantes para el documento',
+                        'concepto_flujo_homologación' => 'No se encontró comprobantes para el documento',
+                    ]);
+                    continue;
+                }
 
-            $Transacciones = Myhelp::TransaccionesCI_AJ_AN($codigo);
-            $conteoTransac = $Transacciones->count();
-            if ($conteoTransac > 100) {
-//                dispatch(new BusquedaConceptoCI($Transacciones));
-                dispatch(new BusquedaConceptoCI($Transacciones))->delay(now()->addSeconds(4));
-                return redirect()->route('transaccion.index')->with('success',
-                    $conteoTransac . ' transacciones ' . $codigo . ' de agosto serán revisadas'
-                );
-            } else {
+                $lasContrapartidas = clone $comprobantes;
+                $lasContrapartidasForeach = clone $comprobantes;
 
-                DB::beginTransaction();
-                foreach ($Transacciones as $index => $transa) {
-                    $comprobantes = Comprobante::Where('numero_documento', $transa->documento)
-                        ->Where('codigo', $codigo);
+                //core
+                $principales = $comprobantes->where('codigo_cuenta', $transa->codigo_cuenta_contable)->get();
 
-                    if ($this->NoHayComprobantes($comprobantes, $transa)) {
-                        $transa->update([
-                            'n_contrapartidas' => 0,
-                            'contrapartida_CI' => 'No se encontró comprobantes para el documento',
-                            'concepto_flujo_homologación' => 'No se encontró comprobantes para el documento',
-                        ]);
-                        continue;
-                    }
+                $lasContrapartidas = $lasContrapartidas->WhereNotIn('id', $principales->pluck('id'))
+                    ->WhereIn('documento_ref', $principales->pluck('documento_ref'))
+                    ->get();
+                // $lasContrapartidas  =  should be one
 
-                    $lasContrapartidas = clone $comprobantes;
-                    $lasContrapartidasForeach = clone $comprobantes;
+                //AJUSTES
+                if ($CPController->LaContraPartidaNoSumaCero($lasContrapartidas, $transa, $principales)) {
+                    $transa->update([
+                        'n_contrapartidas' => 0,
+                        'contrapartida_CI' => 'No se encontró una suma coherente, no suman 0',
+                        'concepto_flujo_homologación' => 'No se encontró una suma coherente, no suman 0',
+                    ]);
+                    continue;
+                }
 
-                    //core
-                    $principales = $comprobantes->where('codigo_cuenta', $transa->codigo_cuenta_contable)->get();
-
-                    $lasContrapartidas = $lasContrapartidas->WhereNotIn('id', $principales->pluck('id'))
-                        ->WhereIn('documento_ref', $principales->pluck('documento_ref'))
+                //va y busca los demas
+                foreach ($principales as $principal) {
+                    //validacion adicional: el doc_ref debe ser igual para el original y la CP
+                    $Col_ContrapartidaRef = $lasContrapartidasForeach->Where('documento_ref', $principal->documento_ref)
+                        ->Where('id', '!=', $principal->id)
                         ->get();
-                    // $lasContrapartidas  =  should be one
+//                   dd(
+//                       $Col_ContrapartidaRef,
+//                       $principal
+//                   );
 
-                    //AJUSTES
-                    if ($this->LaContraPartidaNoSumaCero($lasContrapartidas, $transa, $principales)) {
+                    if ($Col_ContrapartidaRef->count() <= 0 || !isset($ContrapartidaRef[0])) {
                         $transa->update([
                             'n_contrapartidas' => 0,
-                            'contrapartida_CI' => 'No se encontró una suma coherente, no suman 0',
-                            'concepto_flujo_homologación' => 'No se encontró una suma coherente, no suman 0',
+                            'contrapartida_CI' => 'No se encontro CP para doc_ref',
+                            'concepto_flujo_homologación' => 'No se encontro CP para doc_ref',
                         ]);
-                        continue;
-                    }
-
-                    //va y busca los demas
-                    foreach ($principales as $principal) {
-                        //validacion adicional: el doc_ref debe ser igual para el original y la CP
-                        $principalRef = $principal->documento_ref;
-                        $Col_ContrapartidaRef = $lasContrapartidasForeach->Where('documento_ref', $principalRef)
-                            ->Where('id', '!=', $principal->id)
-                            ->get();
-
-                        if ($Col_ContrapartidaRef->count() <= 0 || !isset($ContrapartidaRef[0])) {
-                            $transa->update([
-                                'n_contrapartidas' => 0,
-                                'contrapartida_CI' => 'No se encontro CP en ' . $codigo,
-                                'concepto_flujo_homologación' => 'No se encontro CP en ' . $codigo,
-                            ]);
-                        } else {
-                            $int_ContrapartidaRef = $ContrapartidaRef[0]->codigo_cuenta;
-                            $concepto = $this->hallarConcepto($int_ContrapartidaRef, $codigo);
-                            $transa->update([
-                                'n_contrapartidas' => count($lasContrapartidas),
-                                'contrapartida_CI' => $int_ContrapartidaRef,
-                                'concepto_flujo_homologación' => $concepto,
-                            ]);
-                        }
+                    } else {
+                        $int_ContrapartidaRef = $ContrapartidaRef[0]->codigo_cuenta;
+                        $concepto = $CPController->hallarConcepto($int_ContrapartidaRef, $codigo);
+                        $transa->update([
+                            'n_contrapartidas' => count($lasContrapartidas),
+                            'contrapartida_CI' => $int_ContrapartidaRef,
+                            'concepto_flujo_homologación' => $concepto,
+                        ]);
                     }
                 }
-                DB::commit();
-
-                return redirect()->route('transaccion.index')->with('success',
-                    'Operación exitosa. ' . $Transacciones->count() . ' transacciones ' . $codigo . ' de agosto fueron revisadas'
-                );
             }
+            DB::commit();
+            Log::info('El job BusquedaConceptoCI ha terminado exitosamente.');
+            $finicrotime = microtime(true);
+            Parametro::create([
+                'Fecha_creacion_parametro' => date('Y-m-d H:i:s'),
+                'nombre' => 'Cruzar Ajustes CI',
+                'valor' => number_format($finicrotime - $inicioicrotime, 3),
+                'categoria' => 'jobs_' . $inicioicrotime,
+                'numero' => number_format($finicrotime, 3),
+            ]);
+
+            return redirect()->route('transaccion.index')->with('success',
+                'Operación exitosa. ' . $Transacciones->count() . ' transacciones ' . $codigo . ' de agosto fueron revisadas'
+            );
+
         } catch (\Throwable $th) {
             DB::rollback();
             return back()->with('error', 'Ajustes con errores: ' . ZilefErrors::RastroError($th));
@@ -203,7 +230,7 @@ class ContrapartidasCICEController extends Controller
         }
     }
 
-    private function hallarConcepto($cuentaCP, $codigo)
+    public function hallarConcepto($cuentaCP, $codigo)
     {
         $cf = concepto_flujo::Where('cuenta_contable', $cuentaCP)->first();
         if ($cf) {
@@ -212,7 +239,7 @@ class ContrapartidasCICEController extends Controller
         return "Sin Concepto encontrado en $codigo";
     }
 
-    private function LaContraPartidaNoSumaCero($lasContrapartidas, $transa, $principales): bool
+    public function LaContraPartidaNoSumaCero($lasContrapartidas, $transa, $principales): bool
     {
         $sumprincipales = $principales->sum('valor_debito');
         $sumlasContrapartidas = $lasContrapartidas->sum('valor_credito');
@@ -226,13 +253,13 @@ class ContrapartidasCICEController extends Controller
         return $elCero;
     }
 
-    private function ComprobantesSinCodigoCuentaContable($principales): bool
+    public function ComprobantesSinCodigoCuentaContable($principales): bool
     {
         //todo: verificar que solo exista uno, pueden haber mas comprobantes con ese codigo_cuenta
         return (!isset($principales[0]));
     }
 
-    private function NoHayComprobantes($comprobantes, $transa): bool
+    public function NoHayComprobantes($comprobantes, $transa): bool
     {
         $HayComprobantes = $comprobantes->count();
         if ($HayComprobantes === 0) {

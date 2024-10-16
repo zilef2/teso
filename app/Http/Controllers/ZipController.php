@@ -13,9 +13,10 @@ class ZipController extends Controller
     public function DescompresionDespliegue($esAmbientePruebas = 1): string
     {
         try{
+            $nombreApp = 'teso';
             if (extension_loaded('zip')) {
                 $extensionActiva = 'Zip extension is loaded. Version: ' . phpversion('zip');
-    
+
                 if($esAmbientePruebas){
                     $extractTo = '/home/wwecno/pruebas2';
                     $mensajeAmbiente = ' <br><b>pruebas2 Ambiente de pruebas</b>';
@@ -23,8 +24,8 @@ class ZipController extends Controller
                     $extractTo = '/home/wwecno/pruebas2';
                     $mensajeAmbiente = ' <br><b>pruebas2 Ambiente de produccion</b>';
                 }
-                $zipFile = $extractTo.'/acmainspecciones.zip';
-    
+                $zipFile = $extractTo.'/'.$nombreApp.'.zip';
+
                 $zip = new ZipArchive;
                 if ($zip->open($zipFile) === TRUE) {
                     $zip->extractTo($extractTo);
@@ -39,8 +40,6 @@ class ZipController extends Controller
         } catch (\Throwable $th) {
             $mensan = $th->getMessage() . ' L:' . $th->getLine() . ' Ubi: ' . $th->getFile();
             dd($mensan);
-//            Myhelp::EscribirEnLog($this, 'STORE:inspeccion', 'paso uno: |  fallo en el guardado | ' . $mensan, false);
-//            return back()->with('error', __('app.label.created_error', ['name' => 'store1']) . $mensan);
         }
     }
 }
