@@ -4,7 +4,10 @@ namespace App\Jobs;
 
 use App\helpers\Myhelp;
 use App\helpers\ZilefErrors;
+use App\Http\Controllers\ContrapartidasCICEController;
 use App\Models\Comprobante;
+use App\Models\concepto_flujo;
+use App\Models\Parametro;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -12,8 +15,9 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use PhpParser\Node\Param;
 
-class BusquedaConceptoCI implements ShouldQueue
+class BusquedaConceptoCIJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -32,21 +36,20 @@ class BusquedaConceptoCI implements ShouldQueue
      */
     public function handle(): void
     {
+        $inicioicrotime = microtime(true);
         Log::info('El job BusquedaConceptoCI ha comenzado.');
+
         try {
-
-            // Lógica del job
-            $this->procesarTransacciones();
-
             // Log después de la operación
             $codigo = "AJ";
 
+            $CPController = new ContrapartidasCICEController();
             DB::beginTransaction();
             foreach ($this->Transacciones as $index => $transa) {
                 $comprobantes = Comprobante::Where('numero_documento', $transa->documento)
                     ->Where('codigo', $codigo);
 
-                if ($this->NoHayComprobantes($comprobantes, $transa)){
+                if ($CPController->NoHayComprobantes($comprobantes, $transa)){
                     $transa->update([
                         'n_contrapartidas' => 0,
                         'contrapartida_CI' => 'No se encontró comprobantes para el documento',
@@ -67,7 +70,7 @@ class BusquedaConceptoCI implements ShouldQueue
                 // $lasContrapartidas  =  should be one
 
                 //AJUSTES
-                if ($this->LaContraPartidaNoSumaCero($lasContrapartidas, $transa, $principales)){
+                if ($CPController->LaContraPartidaNoSumaCero($lasContrapartidas, $transa, $principales)){
                     $transa->update([
                         'n_contrapartidas' => 0,
                         'contrapartida_CI' => 'No se encontró una suma coherente, no suman 0',
@@ -92,7 +95,7 @@ class BusquedaConceptoCI implements ShouldQueue
                         ]);
                     } else {
                         $int_ContrapartidaRef = $ContrapartidaRef[0]->codigo_cuenta;
-                        $concepto = $this->hallarConcepto($int_ContrapartidaRef, $codigo);
+                        $concepto = $CPController->hallarConcepto($int_ContrapartidaRef, $codigo);
                         $transa->update([
                             'n_contrapartidas' => count($lasContrapartidas),
                             'contrapartida_CI' => $int_ContrapartidaRef,
@@ -103,14 +106,18 @@ class BusquedaConceptoCI implements ShouldQueue
             }
             DB::commit();
             Log::info('El job BusquedaConceptoCI ha terminado exitosamente.');
-
-//            return redirect()->route('transaccion.index')->with('success',
-//                'Operación exitosa. ' . $Transacciones->count() . ' transacciones ' . $codigo . ' de agosto fueron revisadas'
-//            );
+            $finicrotime = microtime(true);
+            Parametro::create([
+                'Fecha_creacion_parametro' => date('Y-m-d H:i:s'),
+                'nombre' => 'Cruzar Ajustes CI',
+                'valor' => number_format($finicrotime - $inicioicrotime,3),
+                'categoria' => 'jobs_'.$inicioicrotime,
+                'numero' => number_format($finicrotime,3),
+            ]);
         } catch (\Throwable $th) {
+            Log::error(ZilefErrors::RastroError($th));
             DB::rollback();
-//            return back()->with('error', 'Ajustes con errores: ' . ZilefErrors::RastroError($th));
-            Log::info('El job BusquedaConceptoCI ha terminado desastrosamente.');
         }
     }
+
 }
