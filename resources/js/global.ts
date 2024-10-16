@@ -443,9 +443,9 @@ export function EsperaUnMomento(funcion, cooldownDuration = 3000,EmitirAlert = f
     };
 };
 
-export function hasEmptyFields(){
-    return Object.values(form).some(value => value === '');
-}
+// export function hasEmptyFields(){
+//     return Object.values(form).some(value => value === '');
+// }
 
 
 //recorderis

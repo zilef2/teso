@@ -65,7 +65,7 @@ function ValidarVacios(){
 const create = () => {
     if(ValidarVacios()){
         // console.log("🧈 debu pieza_id:", form.pieza_id);
-        form.post(route('AreaInspeccion.store'), {
+        form.post(route('concepto_flujo.store'), {
             preserveScroll: true,
             onSuccess: () => {
                 emit("close")
@@ -103,10 +103,8 @@ const sexos = [{ label: 'Masculino', value: 0 }, { label: 'Femenino', value: 1 }
                         <!-- si es foreign -->
                         <div v-if="atributosform.type === 'id'" id="SelectVue">
                             <label name="labelSelectVue"> {{ atributosform.label }} </label>
-                            <v-select :options="data[atributosform.idd]" label="title"
-                                v-model="form[atributosform.idd]"></v-select>
+                            <v-select :options="data[atributosform.idd]" label="title" v-model="form[atributosform.idd]"></v-select>
                             <InputError class="mt-2" :message="form.errors[atributosform.idd]" />
-
                         </div>
 
 
@@ -118,8 +116,6 @@ const sexos = [{ label: 'Masculino', value: 0 }, { label: 'Femenino', value: 1 }
                                 :error="form.errors[atributosform.idd]" step="3600" />
                             <InputError class="mt-2" :message="form.errors[atributosform.idd]" />
                         </div>
-
-
                         <!-- normal -->
                         <div v-else class="">
                             <InputLabel :for="atributosform.label" :value="lang().label[atributosform.label]" />

@@ -204,8 +204,8 @@ const Abecedario  = Array.from({length: 26}, (_, i) => String.fromCharCode(97 + 
 
                                         <form @submit.prevent="uploadFileTransacciones" id="upload">
                                             <input type="file" @input="form.archivo2 = $event.target.files[0]"
-                                                   accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, .csv,application/vnd.ms-excel"/>
-                                            <!--                                            <p class="font-bold text-red-600">AUN NO DISPONIBLE</p>-->
+                                            />
+<!--                                                   accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, .csv,application/vnd.ms-excel"-->
                                             <br><br>
                                             <progress v-if="form.progress" :value="form.progress.percentage - 20" max="100"
                                                       class="bg-sky-200">
@@ -254,7 +254,8 @@ const Abecedario  = Array.from({length: 26}, (_, i) => String.fromCharCode(97 + 
 
                                         <form @submit.prevent="uploadFileComprobantes" id="upload">
                                             <input type="file" @input="form.archivo3 = $event.target.files[0]"
-                                                   accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"/>
+                                                   accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, .csv,application/vnd.ms-excel"
+                                            />
                                             <!--                                            <p class="font-bold text-red-600">AUN NO DISPONIBLE</p>-->
                                             <br><br>
                                             <progress v-if="form.progress" :value="form.progress.percentage - 20" max="100"

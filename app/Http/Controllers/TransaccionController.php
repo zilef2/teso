@@ -124,7 +124,7 @@ class TransaccionController extends Controller
         $laclase = $this->Mapear($this->Filtros($request));
 //        $losSelect = $this->losSelect();
 
-        $perPage = $request->has('perPage') ? $request->perPage : 10;
+        $perPage = $request->has('perPage') ? $request->perPage : 50;
         $total = $laclase->count();
         $page = request('page', 1);
         $fromController = new LengthAwarePaginator(

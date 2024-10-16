@@ -95,7 +95,7 @@ const select = () => {
 // text // number // dinero // date // datetime // foreign
 const titulos = [
     // { order: 'codigo', label: 'codigo', type: 'text' },
-    { order: 'cuenta_contable', label: 'cuenta_contable', type: 'text' },
+    { order: 'cuenta_contable', label: 'cuenta_contable', type: 'number' },
     { order: 'concepto_flujo', label: 'concepto_flujo', type: 'text' },
     { order: 'ingresos_o_egresos', label: 'ingresos_o_egresos', type: 'text' },
   // { order: 'inventario', label: 'inventario', type: 'foreign',nameid:'nombre'},
@@ -109,15 +109,16 @@ const titulos = [
     <AuthenticatedLayout>
         <Breadcrumb :title="title" :breadcrumbs="breadcrumbs" class="capitalize text-xl font-bold"/>
         <div class="space-y-4">
-            <!-- {{ props.fromController.data[2] }} -->
+            <!-- {{ props.fromController.data[2] }} --> 
             <div class="px-4 sm:px-0">
                 <div class="rounded-lg overflow-hidden w-fit">
                     <PrimaryButton class="rounded-none" @click="data.createOpen = true"
-                        v-if="can(['create concepto_flujo'])">
+                    >
                         {{ lang().button.new }}
                     </PrimaryButton>
 
-                    <Create v-if="can(['create concepto_flujo'])" :numberPermissions="props.numberPermissions"
+<!--                     v-if="can(['create concepto_flujo'])"-->
+                    <Create :numberPermissions="props.numberPermissions"
                         :titulos="titulos" :show="data.createOpen" @close="data.createOpen = false" :title="props.title"
                         :losSelect=props.losSelect />
 
@@ -199,7 +200,7 @@ const titulos = [
                                 <td class="whitespace-nowrap py-4 px-2 sm:py-3 text-center">{{ ++indexu }}</td>
                                 <td v-for="titulo in titulos" class="whitespace-nowrap py-4 px-2 sm:py-3">
                                     <span v-if="titulo['type'] === 'text'"> {{ claseFromController[titulo['order']] }} </span>
-                                    <span v-if="titulo['type'] === 'number'"> {{ number_format(claseFromController[titulo['order']], 0, false) }} </span>
+                                    <span v-if="titulo['type'] === 'number'"> {{ (claseFromController[titulo['order']]) }} </span>
                                     <span v-if="titulo['type'] === 'dinero'"> {{ number_format(claseFromController[titulo['order']], 0, true) }} </span>
                                     <span v-if="titulo['type'] === 'date'"> {{ formatDate(claseFromController[titulo['order']], false) }} </span>
                                     <span v-if="titulo['type'] === 'datetime'"> {{ formatDate(claseFromController[titulo['order']], true) }} </span>

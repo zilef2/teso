@@ -15,7 +15,8 @@ class ContrapartidasCICEController extends Controller
 {
     //todo: falta traer y configurar "Buscar_CP_CI" que esta en transaccionController
 
-    private function BusquedaPocasTransacciones($Transacciones){
+    private function BusquedaPocasTransacciones($Transacciones)
+    {
 
     }
 
@@ -29,20 +30,20 @@ class ContrapartidasCICEController extends Controller
 
             $Transacciones = Myhelp::TransaccionesCI_AJ_AN($codigo);
             $conteoTransac = $Transacciones->count();
-            if($conteoTransac > 100){
+            if ($conteoTransac > 100) {
 //                dispatch(new BusquedaConceptoCI($Transacciones));
                 dispatch(new BusquedaConceptoCI($Transacciones))->delay(now()->addSeconds(4));
                 return redirect()->route('transaccion.index')->with('success',
                     $conteoTransac . ' transacciones ' . $codigo . ' de agosto serán revisadas'
                 );
-            }else{
+            } else {
 
                 DB::beginTransaction();
                 foreach ($Transacciones as $index => $transa) {
                     $comprobantes = Comprobante::Where('numero_documento', $transa->documento)
                         ->Where('codigo', $codigo);
 
-                    if ($this->NoHayComprobantes($comprobantes, $transa)){
+                    if ($this->NoHayComprobantes($comprobantes, $transa)) {
                         $transa->update([
                             'n_contrapartidas' => 0,
                             'contrapartida_CI' => 'No se encontró comprobantes para el documento',
@@ -63,7 +64,7 @@ class ContrapartidasCICEController extends Controller
                     // $lasContrapartidas  =  should be one
 
                     //AJUSTES
-                    if ($this->LaContraPartidaNoSumaCero($lasContrapartidas, $transa, $principales)){
+                    if ($this->LaContraPartidaNoSumaCero($lasContrapartidas, $transa, $principales)) {
                         $transa->update([
                             'n_contrapartidas' => 0,
                             'contrapartida_CI' => 'No se encontró una suma coherente, no suman 0',
@@ -125,13 +126,13 @@ class ContrapartidasCICEController extends Controller
                     ->Where('codigo', $codigo);
 
 
-                if ($this->NoHayComprobantes($comprobantes, $transa)){
-                     $mensaje_t_Error = "No se encontro ningun comprobante para el documento " . $transa->documento_ref;
-                $transa->update([
-                    'n_contrapartidas' => 0,
-                    'contrapartida_CI' => $mensaje_t_Error,
-                    'concepto_flujo_homologación' => $mensaje_t_Error,
-                ]);
+                if ($this->NoHayComprobantes($comprobantes, $transa)) {
+                    $mensaje_t_Error = "No se encontro ningun comprobante para el documento " . $transa->documento_ref;
+                    $transa->update([
+                        'n_contrapartidas' => 0,
+                        'contrapartida_CI' => $mensaje_t_Error,
+                        'concepto_flujo_homologación' => $mensaje_t_Error,
+                    ]);
                     continue;
                 }
 
@@ -140,29 +141,29 @@ class ContrapartidasCICEController extends Controller
 
                 $principales = $comprobantes->where('codigo_cuenta', $transa->codigo_cuenta_contable)->get();
 
-                if ($this->ComprobantesSinCodigoCuentaContable($principales)){
+                if ($this->ComprobantesSinCodigoCuentaContable($principales)) { //$principales[0]
                     $mensaje_t_Error = "No se encontro ningun comprobante para el codigo_cuenta " . $transa->codigo_cuenta_contable;
-                $transa->update([
-                    'n_contrapartidas' => 0,
-                    'contrapartida_CI' => $mensaje_t_Error,
-                    'concepto_flujo_homologación' => $mensaje_t_Error,
-                ]);
+                    $transa->update([
+                        'n_contrapartidas' => 0,
+                        'contrapartida_CI' => $mensaje_t_Error,
+                        'concepto_flujo_homologación' => $mensaje_t_Error,
+                    ]);
                     continue;
                 }
 
                 $lasContrapartidas = $lasContrapartidas->WhereNotIn("id", $principales->pluck('id'))
-                    ->WhereIn('documento_ref', $principales->pluck('documento_ref'))
+//                    ->WhereIn('documento_ref', $principales->pluck('documento_ref'))
                     ->get();
                 // $lasContrapartidas  =  should be one
 
                 //ANULACIONES
-                if ($this->LaContraPartidaNoSumaCero($lasContrapartidas, $transa, $principales)){
-                     $mensaje_t_Error = "La contrapartida y la transaccion no suman cero.";
-                $transa->update([
-                    'n_contrapartidas' => 0,
-                    'contrapartida_CI' => $mensaje_t_Error,
-                    'concepto_flujo_homologación' => $mensaje_t_Error,
-                ]);
+                if ($this->LaContraPartidaNoSumaCero($lasContrapartidas, $transa, $principales)) {
+                    $mensaje_t_Error = "La contrapartida y la transaccion no suman cero.";
+                    $transa->update([
+                        'n_contrapartidas' => 0,
+                        'contrapartida_CI' => $mensaje_t_Error,
+                        'concepto_flujo_homologación' => $mensaje_t_Error,
+                    ]);
                     continue;
                 }
 
@@ -218,8 +219,8 @@ class ContrapartidasCICEController extends Controller
         $elCero = abs($sumprincipales) !== abs($sumlasContrapartidas);
         if ($elCero) {
             $transa->update([
-                'contrapartida_CI' => "debitos y creditos distintos ($sumprincipales | $sumlasContrapartidas)",
-                'concepto_flujo_homologación' => "debitos y creditos distintos ($sumprincipales | $sumlasContrapartidas)",
+                'contrapartida_CI' => "PRINCIPAL DEBITO $sumprincipales",
+                'concepto_flujo_homologación' => "CONTRAPARTIDA CREDITO $sumlasContrapartidas",
             ]);
         }
         return $elCero;
@@ -243,23 +244,28 @@ class ContrapartidasCICEController extends Controller
         return $HayComprobantes === 0;
     }
 
-    public function BorrarConceptos()
+    public function BorrarConceptos(): void
     {
         $laFecha = new \DateTime();
         $mes = $laFecha->format('m'); // Obtiene el mes (en formato numérico)
         $mes = 8; // agosto
 //      $anio = $laFecha->format('Y'); // Obtiene el año
 
-        dd(
-
-        transaccion::WhereNotNull('concepto_flujo_homologación')->whereMonth('fecha_elaboracion', $mes)->get()
-        );
+        $conteo = transaccion::WhereNotNull('concepto_flujo_homologación')->whereMonth('fecha_elaboracion', $mes)->count();
         $tranListas = transaccion::WhereNotNull('concepto_flujo_homologación')->whereMonth('fecha_elaboracion', $mes)->update([
             'n_contrapartidas' => null,
             'contrapartida_CI' => null,
             'concepto_flujo_homologación' => null,
         ]);
-        $conteo = transaccion::WhereNotNull('concepto_flujo_homologación')->whereMonth('fecha_elaboracion', $mes)->count();
         echo "Operacion: $tranListas. $conteo limpiadas";
+    }
+
+    public function BorrarAjustes(): void
+    {
+//        $ajustes = transaccion::WhereNotNull('codigo')->delete();
+        $ajustes = Comprobante::Where('codigo', 'AJ');
+        $conteo = $ajustes->count();
+        $tranListas = $ajustes->delete();
+        echo "Result $tranListas. - $conteo Eliminadas";
     }
 }
