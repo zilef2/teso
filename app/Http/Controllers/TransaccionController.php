@@ -137,7 +137,7 @@ class TransaccionController extends Controller
 
         $filters = ['search', 'field', 'order', 'OnlyCP', 'OnlyEmptyCP'];
         $filters = array_merge($this->arrayBusque, $filters);
-        
+
         $Indicadores = [
             'Transacciones' => transaccion::count(),
             'NoSeEncontro' => transaccion::Where('contrapartida_CI','LIKE', "%No se encontro%")->count(),
@@ -276,13 +276,9 @@ class TransaccionController extends Controller
                 $sumlasContrapartidas = $lasContrapartidas->sum('valor_credito'); //todo: hacer mas dinamica
 
                 if ($sumprincipales !== $sumlasContrapartidas) {
-                    dd('Error fatal, La suma de la contrapartida no concuerda',
-                        $principales,
-                        $lasContrapartidas,
-                        $sumprincipales, $sumlasContrapartidas);
                     $transa->update([
-                        'contrapartida_CI' => "debitos y creditos distintos ($sumprincipales | $sumlasContrapartidas)",
-                        'concepto_flujo_homologación' => "debitos y creditos distintos ($sumprincipales | $sumlasContrapartidas)",
+                        'contrapartida_CI' => "debitos y creditos no concuerdan, principales suman $sumprincipales",
+                        'concepto_flujo_homologación' => "contrapartidas $sumlasContrapartidas",
                     ]);
                     continue;
                 }
