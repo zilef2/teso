@@ -73,8 +73,8 @@ class ContrapartidasCICEController extends Controller
                 $principal = $comprobantes->where('codigo_cuenta', $transa->codigo_cuenta_contable)->first();
                 //todo: si hay mas, es error, del excel o que se permitio subir 2 veces
 
-                $lasContrapartidas = $lasContrapartidas->WhereNotIn('id', $principal->id)
-                    ->WhereIn('documento_ref', $principal->pluck('documento_ref'))
+                $lasContrapartidas = $lasContrapartidas->WhereNot('id', $principal->id)
+                    ->Where('documento_ref', $principal->documento_ref)
                     ->get();
 
                 //AJUSTES
@@ -88,16 +88,17 @@ class ContrapartidasCICEController extends Controller
                 }
 
                 //va y busca los demas
-                foreach ($Todas as $principal) {
+//                foreach ($Todas as $principal) {
                     //validacion adicional: el doc_ref debe ser igual para el original y la CP
                     $Col_ContrapartidaRef = $lasContrapartidasForeach->Where('documento_ref', $principal->documento_ref)
-                        ->WhereNotIn('id', $todasIDS)
+                        ->WhereNotIn('id', $principal->id)
+                        ->Where('valor_credito', $transa->valor_debito)
                         ->get()
                         ->sortByDesc('valor_credito')
                         ->first();
 
 
-                    if ($Col_ContrapartidaRef->count() <= 0) {
+                    if ($Col_ContrapartidaRef) {
                         $transa->update([
                             'n_contrapartidas' => 0,
                             'contrapartida_CI' => 'No se encontro CP para doc_ref',
@@ -106,13 +107,15 @@ class ContrapartidasCICEController extends Controller
                     } else {
                         $int_ContrapartidaRef = intval($Col_ContrapartidaRef->codigo_cuenta);
                         $concepto = $CPController->hallarConcepto($int_ContrapartidaRef, $codigo);
+                        $IntCp = count($lasContrapartidasForeach);
+                        $IntCp = $IntCp == 0 ? $IntCp : $IntCp - 1;
                         $transa->update([
-                            'n_contrapartidas' => count($lasContrapartidas),
+                            'n_contrapartidas' => $IntCp,
                             'contrapartida_CI' => $int_ContrapartidaRef,
                             'concepto_flujo_homologación' => $concepto,
                         ]);
                     }
-                }
+//                }
             }
             DB::commit();
             Log::info('El job BusquedaConceptoCI ha terminado exitosamente.');
@@ -140,26 +143,16 @@ class ContrapartidasCICEController extends Controller
         try {
             $codigo = "AN";
             $Transacciones = transaccion::Where('codigo', $codigo)->WhereNull('concepto_flujo_homologación');
-            $Ntras = clone $Transacciones;
-            $Ntras = $Ntras->count();
-            if ($Ntras === 0)
-                return back()->with('error', 'Sin anulaciones disponibles: ' . $codigo);
+            $NtrasArchivo = transaccion::Where('codigo', $codigo)->count();
+            $NtrasSinConcepto = clone $Transacciones;
+            $NtrasSinConcepto = $NtrasSinConcepto->count();
+            if ($NtrasSinConcepto === 0)
+                return back()->with('warn', 'Las AN ya han sido cruzadas');
+            if ($NtrasArchivo === 0)
+                return back()->with('error', 'Sin anulaciones disponibles ');
 
             DB::beginTransaction();
             foreach ($Transacciones->get() as $index => $transa) {
-//                $comprobantes = Comprobante::Where('', $transa->documento)
-//                    ->Where('codigo', $codigo);
-//
-//
-//                if ($this->NoHayComprobantes($comprobantes, $transa)) {
-//                    $mensaje_t_Error = "No se encontro ningun comprobante para el documento " . $transa->documento_ref;
-//                    $transa->update([
-//                        'n_contrapartidas' => 0,
-//                        'contrapartida_CI' => $mensaje_t_Error,
-//                        'concepto_flujo_homologación' => $mensaje_t_Error,
-//                    ]);
-//                    continue;
-//                }
 
                 $laContra = transaccion::Where('documento', $transa->documento)->Where('id', '!=', $transa->id)->first();
 
@@ -186,7 +179,7 @@ class ContrapartidasCICEController extends Controller
             DB::commit();
 
             return redirect()->route('transaccion.index')->with('success',
-                'Operación exitosa. ' . $Ntras . ' transacciones ' . $codigo . ' de agosto fueron revisadas'
+                'Operación exitosa. ' . $NtrasSinConcepto . ' transacciones ' . $codigo . ' de agosto fueron revisadas'
             );
         } catch (\Throwable $th) {
             DB::rollback();
@@ -253,7 +246,7 @@ class ContrapartidasCICEController extends Controller
 
     public function BorrarAjustes(): void
     {
-//        $ajustes = transaccion::WhereNotNull('codigo')->delete();
+        //$ajustes = transaccion::WhereNotNull('codigo')->delete();
         $ajustes = Comprobante::Where('codigo', 'AJ');
         $conteo = $ajustes->count();
         $tranListas = $ajustes->delete();
