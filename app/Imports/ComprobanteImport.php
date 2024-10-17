@@ -133,6 +133,9 @@ class ComprobanteImport implements ToModel, WithStartRow
                     throw new \Exception('|Comprobantes ya cargados del mes: '.$mesYanio);
                 }
             }
+            if(strcmp($row[0],'AN') === 0){
+                throw new \Exception('|Comprobantes de AN no son aceptados');
+            }
 
             return $this->TheNewObject($row);
         }catch (\Throwable $th) {

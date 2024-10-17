@@ -55,10 +55,8 @@ class ContrapartidasCICEController extends Controller
             DB::beginTransaction();
             foreach ($this->Transacciones as $index => $transa) {
                 $comprobantes = Comprobante::Where('numero_documento', $transa->documento)
-                    ->Where('codigo', 'ci');
-//dd(
-//    $comprobantes->get()
-//);
+                    ->Where('codigo', 'aj');
+
                 if ($CPController->NoHayComprobantes($comprobantes, $transa)) {
                     $transa->update([
                         'n_contrapartidas' => 0,
@@ -72,15 +70,15 @@ class ContrapartidasCICEController extends Controller
                 $lasContrapartidasForeach = clone $comprobantes;
 
                 //core
-                $principales = $comprobantes->where('codigo_cuenta', $transa->codigo_cuenta_contable)->get();
+                $principal = $comprobantes->where('codigo_cuenta', $transa->codigo_cuenta_contable)->first();
+                //todo: si hay mas, es error, del excel o que se permitio subir 2 veces
 
-                $lasContrapartidas = $lasContrapartidas->WhereNotIn('id', $principales->pluck('id'))
-                    ->WhereIn('documento_ref', $principales->pluck('documento_ref'))
+                $lasContrapartidas = $lasContrapartidas->WhereNotIn('id', $principal->id)
+                    ->WhereIn('documento_ref', $principal->pluck('documento_ref'))
                     ->get();
-                // $lasContrapartidas  =  should be one
 
                 //AJUSTES
-                if ($CPController->LaContraPartidaNoSumaCero($lasContrapartidas, $transa, $principales)) {
+                if ($CPController->LaContraPartidaNoSumaCero($lasContrapartidas, $transa, $principal)) {
                     $transa->update([
                         'n_contrapartidas' => 0,
                         'contrapartida_CI' => 'No se encontró una suma coherente, no suman 0',
@@ -90,24 +88,23 @@ class ContrapartidasCICEController extends Controller
                 }
 
                 //va y busca los demas
-                foreach ($principales as $principal) {
+                foreach ($Todas as $principal) {
                     //validacion adicional: el doc_ref debe ser igual para el original y la CP
                     $Col_ContrapartidaRef = $lasContrapartidasForeach->Where('documento_ref', $principal->documento_ref)
-                        ->Where('id', '!=', $principal->id)
-                        ->get();
-//                   dd(
-//                       $Col_ContrapartidaRef,
-//                       $principal
-//                   );
+                        ->WhereNotIn('id', $todasIDS)
+                        ->get()
+                        ->sortByDesc('valor_credito')
+                        ->first();
 
-                    if ($Col_ContrapartidaRef->count() <= 0 || !isset($ContrapartidaRef[0])) {
+
+                    if ($Col_ContrapartidaRef->count() <= 0) {
                         $transa->update([
                             'n_contrapartidas' => 0,
                             'contrapartida_CI' => 'No se encontro CP para doc_ref',
                             'concepto_flujo_homologación' => 'No se encontro CP para doc_ref',
                         ]);
                     } else {
-                        $int_ContrapartidaRef = $ContrapartidaRef[0]->codigo_cuenta;
+                        $int_ContrapartidaRef = intval($Col_ContrapartidaRef->codigo_cuenta);
                         $concepto = $CPController->hallarConcepto($int_ContrapartidaRef, $codigo);
                         $transa->update([
                             'n_contrapartidas' => count($lasContrapartidas),
@@ -164,7 +161,7 @@ class ContrapartidasCICEController extends Controller
 //                    continue;
 //                }
 
-                $laContra = transaccion::Where('documento', $transa->documento)->Where('id','!=',$transa->id)->first();
+                $laContra = transaccion::Where('documento', $transa->documento)->Where('id', '!=', $transa->id)->first();
 
                 if ($laContra === null) {
                     $mensaje_t_Error = "No se encontro la contrapartida en el archivo auxiliar con el documento " . $transa->documento;

@@ -7,12 +7,14 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use function Psy\debug;
 
 class UserSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      *
+     * php artisan db:seed --class=UserSeeder
      * @return void
      */
     public function run(){
@@ -20,9 +22,15 @@ class UserSeeder extends Seeder
         $nombreAdmin = 'Admin';
         $App = env('APP_NAME');
         $genero = 'Masculino';
-        $superadmin = User::create([
+        if($genPa === null){
+            echo 'Sin enviroment';
+            return null;
+        }
+        $superadmin = User::updateOrCreate([
             'name'              => 'Superadmin',
             'email'             => 'ajelof2+11@gmail.com',
+        ],
+            [
 //            'password'          => bcrypt($genPa.'~8~po'), // cont_ins~8~po
             'password'          => bcrypt($genPa),
             'email_verified_at' => date('Y-m-d H:i'),
@@ -32,9 +40,10 @@ class UserSeeder extends Seeder
         ]);$superadmin->assignRole('superadmin');
 
 
-        $admin = User::create([
+        $admin = User::updateOrCreate([
             'name'              => "$nombreAdmin $App",
             'email'             => "alejofg2+11@gmail.com",
+        ],[
             'password'          => bcrypt($genPa),
 //            'password'          => bcrypt($genPa.'uiu'), //cont_insuiu
             'email_verified_at' => date('Y-m-d H:i'),
@@ -60,9 +69,10 @@ class UserSeeder extends Seeder
             $yearRandom = (random_int(22, 55));
             $anios = Carbon::now()->subYears($yearRandom)->format('Y-m-d H:i');
 
-            $unUsuario = User::create([
+            $unUsuario = User::updateOrCreate([
                 'name'              => $value['name'],
                 'email'             => $value['name'] . '@gmail.com', //transacciones@gmail.com //bgenericocont_ins123
+            ],[
                 'password'          => bcrypt($value['name'].'*123'), //123_teso
                 'email_verified_at' => date('Y-m-d H:i'),
                 'identificacion' => $value['cc'],
