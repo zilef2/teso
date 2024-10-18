@@ -47,9 +47,9 @@ class BusquedaConceptoCIJob implements ShouldQueue
             DB::beginTransaction();
             foreach ($this->Transacciones as $index => $transa) {
                 $comprobantes = Comprobante::Where('numero_documento', $transa->documento)
-                    ->Where('codigo', $codigo);
+                    ->Where('codigo', 'aj');
 
-                if ($CPController->NoHayComprobantes($comprobantes, $transa)){
+                if ($CPController->NoHayComprobantes($comprobantes, $transa)) {
                     $transa->update([
                         'n_contrapartidas' => 0,
                         'contrapartida_CI' => 'No se encontró comprobantes para el documento',
@@ -62,15 +62,15 @@ class BusquedaConceptoCIJob implements ShouldQueue
                 $lasContrapartidasForeach = clone $comprobantes;
 
                 //core
-                $principales = $comprobantes->where('codigo_cuenta', $transa->codigo_cuenta_contable)->get();
+                $principal = $comprobantes->where('codigo_cuenta', $transa->codigo_cuenta_contable)->first();
+                //todo: si hay mas, es error, del excel o que se permitio subir 2 veces
 
-                $lasContrapartidas = $lasContrapartidas->WhereNotIn('id', $principales->pluck('id'))
-                    ->WhereIn('documento_ref', $principales->pluck('documento_ref'))
+                $lasContrapartidas = $lasContrapartidas->WhereNot('id', $principal->id)
+                    ->Where('documento_ref', $principal->documento_ref)
                     ->get();
-                // $lasContrapartidas  =  should be one
 
                 //AJUSTES
-                if ($CPController->LaContraPartidaNoSumaCero($lasContrapartidas, $transa, $principales)){
+                if ($CPController->LaContraPartidaNoSumaCero($lasContrapartidas, $transa, $principal)) {
                     $transa->update([
                         'n_contrapartidas' => 0,
                         'contrapartida_CI' => 'No se encontró una suma coherente, no suman 0',
@@ -80,29 +80,34 @@ class BusquedaConceptoCIJob implements ShouldQueue
                 }
 
                 //va y busca los demas
-                foreach ($principales as $principal) {
-                    //validacion adicional: el doc_ref debe ser igual para el original y la CP
-                    $principalRef = $principal->documento_ref;
-                    $Col_ContrapartidaRef = $lasContrapartidasForeach->Where('documento_ref', $principalRef)
-                        ->Where('id', '!=', $principal->id)
-                        ->get();
+//                foreach ($Todas as $principal) {
+                //validacion adicional: el doc_ref debe ser igual para el original y la CP
+                $Col_ContrapartidaRef = $lasContrapartidasForeach->Where('documento_ref', $principal->documento_ref)
+                    ->WhereNotIn('id', $principal->id)
+                    ->Where('valor_credito', $transa->valor_debito)
+                    ->get()
+                    ->sortByDesc('valor_credito')
+                    ->first();
 
-                    if ($Col_ContrapartidaRef->count() <= 0 || !isset($ContrapartidaRef[0])) {
-                        $transa->update([
-                            'n_contrapartidas' => 0,
-                            'contrapartida_CI' => 'No se encontro CP en ' . $codigo,
-                            'concepto_flujo_homologación' => 'No se encontro CP en ' . $codigo,
-                        ]);
-                    } else {
-                        $int_ContrapartidaRef = $ContrapartidaRef[0]->codigo_cuenta;
-                        $concepto = $CPController->hallarConcepto($int_ContrapartidaRef, $codigo);
-                        $transa->update([
-                            'n_contrapartidas' => count($lasContrapartidas),
-                            'contrapartida_CI' => $int_ContrapartidaRef,
-                            'concepto_flujo_homologación' => $concepto,
-                        ]);
-                    }
+
+                if ($Col_ContrapartidaRef) {
+                    $transa->update([
+                        'n_contrapartidas' => 0,
+                        'contrapartida_CI' => 'No se encontro CP para doc_ref',
+                        'concepto_flujo_homologación' => 'No se encontro CP para doc_ref',
+                    ]);
+                } else {
+                    $int_ContrapartidaRef = intval($Col_ContrapartidaRef->codigo_cuenta);
+                    $concepto = $CPController->hallarConcepto($int_ContrapartidaRef, $codigo);
+                    $IntCp = count($lasContrapartidasForeach);
+                    $IntCp = $IntCp == 0 ? $IntCp : $IntCp - 1;
+                    $transa->update([
+                        'n_contrapartidas' => $IntCp,
+                        'contrapartida_CI' => $int_ContrapartidaRef,
+                        'concepto_flujo_homologación' => $concepto,
+                    ]);
                 }
+//                }
             }
             DB::commit();
             Log::info('El job BusquedaConceptoCI ha terminado exitosamente.');
@@ -110,13 +115,14 @@ class BusquedaConceptoCIJob implements ShouldQueue
             Parametro::create([
                 'Fecha_creacion_parametro' => date('Y-m-d H:i:s'),
                 'nombre' => 'Cruzar Ajustes CI',
-                'valor' => number_format($finicrotime - $inicioicrotime,3),
-                'categoria' => 'jobs_'.$inicioicrotime,
-                'numero' => number_format($finicrotime,3),
+                'valor' => number_format($finicrotime - $inicioicrotime, 3),
+                'categoria' => 'jobs_' . $inicioicrotime,
+                'numero' => number_format($finicrotime, 3),
             ]);
+
         } catch (\Throwable $th) {
-            Log::error(ZilefErrors::RastroError($th));
             DB::rollback();
+            ZilefErrors::RastroError($th);
         }
     }
 

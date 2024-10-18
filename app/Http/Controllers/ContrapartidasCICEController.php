@@ -35,7 +35,7 @@ class ContrapartidasCICEController extends Controller
         $this->Transacciones = $Transacciones;
 
         $conteoTransac = $Transacciones->count();
-        if ($conteoTransac < 0) {
+        if ($conteoTransac > 1000) {
             dispatch(new BusquedaConceptoCIJob($Transacciones))->delay(now()->addSeconds());
             $aproxSeconds = ceil($conteoTransac / 25);
             $aproxSeconds = $aproxSeconds > 60 ? ($aproxSeconds / 60) . ' mins' : ($aproxSeconds) . ' segs';

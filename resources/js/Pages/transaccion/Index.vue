@@ -298,7 +298,12 @@ const Buscar_AN_CI = () => {
                             <td class="whitespace-nowrap py-4 px-2 sm:py-3 text-center">{{ ++indexu }}</td>
                             <!--                                <td v-for="titulo in titulos" class="whitespace-nowrap py-4 px-2 sm:py-3">-->
                             <td v-for="titulo in props.thisAtributos" class="whitespace-wrap py-4 px-2 sm:py-3">
-                                <span> {{ claseFromController[titulo] }} </span>
+                                <span v-if="titulo === 'documento'"
+                                      @click="data.params.searchDocumento = claseFromController[titulo]"
+                                class="underline text-blue-500 cursor-pointer">
+                                    {{ claseFromController[titulo] }}
+                                </span>
+                                <span v-else> {{ claseFromController[titulo] }} </span>
                             </td>
 
                         </tr>
@@ -319,7 +324,7 @@ const Buscar_AN_CI = () => {
                      class="flex justify-between items-center p-2 border-t border-gray-200 dark:border-gray-700">
                     <Pagination :links="props.fromController" :filters="data.params"/>
                 </div>
-                
+
                 <div class="grid grid-cols-1 mx-auto">
                     <div class="mx-auto items-center content-center place-self-center inline-flex">
 
