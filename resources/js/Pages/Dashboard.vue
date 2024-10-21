@@ -109,7 +109,7 @@ const buildChar1 = (numeracio) => charInstance[numeracio] = new Chart(ctx_a, {
 
         datasets: [
             {
-                label: 'saldo_inicial_de_la_vigencia',
+                label: 'Saldo Inicial de la Vigencia',
                 data: [93358379599, 92351501438],
                 borderWidth: 1,
                 borderColor: 'rgb(0,14,14)',
@@ -139,7 +139,7 @@ const buildChar1 = (numeracio) => charInstance[numeracio] = new Chart(ctx_a, {
                 backgroundColor: 'rgb(135,118,4)',
             },
             {
-                label: 'Disminucion del efectivo agosto',
+                label: 'Saldo de efectivo al fin de la vigencia',
                 data: [90082294223, 90858843118],
                 borderWidth: 2,
                 borderColor: 'rgba(18,0,2,0.98)',

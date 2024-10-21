@@ -12,6 +12,7 @@ use App\Models\transaccion;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use JetBrains\PhpStorm\NoReturn;
 use function Psy\debug;
 
 class ContrapartidasCICEController extends Controller
@@ -35,18 +36,17 @@ class ContrapartidasCICEController extends Controller
         $this->Transacciones = $Transacciones;
 
         $conteoTransac = $Transacciones->count();
-        if ($conteoTransac > 1000) {
+        if ($conteoTransac < 0) {
             dispatch(new BusquedaConceptoCIJob($Transacciones))->delay(now()->addSeconds());
-            $aproxSeconds = ceil($conteoTransac / 25);
+            $aproxSeconds = ceil($conteoTransac / 25); //25 son las que se analizan por segundo
             $aproxSeconds = $aproxSeconds > 60 ? ($aproxSeconds / 60) . ' mins' : ($aproxSeconds) . ' segs';
-            return redirect()->route('transaccion.index')->with('success',
+            return redirect()->route('transaccion.index')->with('warning',
                 $conteoTransac . ' transacciones ' . $codigo . ' de agosto serán revisadas. Este proceso tardará aprox: ' . $aproxSeconds
             );
         }
 
         $inicioicrotime = microtime(true);
         Log::info('El job BusquedaConceptoCI ha comenzado.');
-
         try {
             // Log después de la operación
             $codigo = "AJ";
@@ -76,27 +76,21 @@ class ContrapartidasCICEController extends Controller
                 $lasContrapartidas = $lasContrapartidas->WhereNot('id', $principal->id)
                     ->Where('documento_ref', $principal->documento_ref)
                     ->get();
-
                 //AJUSTES
-                if ($CPController->LaContraPartidaNoSumaCero($lasContrapartidas, $transa, $principal)) {
-                    $transa->update([
-                        'n_contrapartidas' => 0,
-                        'contrapartida_CI' => 'No se encontró una suma coherente, no suman 0',
-                        'concepto_flujo_homologación' => 'No se encontró una suma coherente, no suman 0',
-                    ]);
+                if ($CPController->LaContraPartidaNoSumaCeroGet($lasContrapartidas, $transa, $principal)) {
                     continue;
                 }
-
                 //va y busca los demas
 //                foreach ($Todas as $principal) {
                     //validacion adicional: el doc_ref debe ser igual para el original y la CP
-                    $Col_ContrapartidaRef = $lasContrapartidasForeach->Where('documento_ref', $principal->documento_ref)
-                        ->WhereNotIn('id', $principal->id)
+                    $Col_ContrapartidaRef =
+                        $lasContrapartidasForeach
+                        ->Where('documento_ref', $principal->documento_ref)
+                        ->WhereNot('id', $principal->id)
                         ->Where('valor_credito', $transa->valor_debito)
                         ->get()
                         ->sortByDesc('valor_credito')
                         ->first();
-
 
                     if ($Col_ContrapartidaRef) {
                         $transa->update([
@@ -107,10 +101,10 @@ class ContrapartidasCICEController extends Controller
                     } else {
                         $int_ContrapartidaRef = intval($Col_ContrapartidaRef->codigo_cuenta);
                         $concepto = $CPController->hallarConcepto($int_ContrapartidaRef, $codigo);
-                        $IntCp = count($lasContrapartidasForeach);
-                        $IntCp = $IntCp == 0 ? $IntCp : $IntCp - 1;
+//                        $IntCp = count($lasContrapartidasForeach);
+//                        $IntCp = $IntCp == 0 ? $IntCp : $IntCp - 1;
                         $transa->update([
-                            'n_contrapartidas' => $IntCp,
+                            'n_contrapartidas' => 1,
                             'contrapartida_CI' => $int_ContrapartidaRef,
                             'concepto_flujo_homologación' => $concepto,
                         ]);
@@ -147,9 +141,9 @@ class ContrapartidasCICEController extends Controller
             $NtrasSinConcepto = clone $Transacciones;
             $NtrasSinConcepto = $NtrasSinConcepto->count();
             if ($NtrasSinConcepto === 0)
-                return back()->with('warn', 'Las AN ya han sido cruzadas');
+                return back()->with('warning', 'Las AN ya han sido cruzadas');
             if ($NtrasArchivo === 0)
-                return back()->with('error', 'Sin anulaciones disponibles ');
+                return back()->with('error', 'Sin anulaciones disponibles en el auxiliar');
 
             DB::beginTransaction();
             foreach ($Transacciones->get() as $index => $transa) {
@@ -167,13 +161,13 @@ class ContrapartidasCICEController extends Controller
                 }
 
                 //ANULACIONES
-                if ($this->LaContraPartidaNoSumaCero($laContra, $transa, $transa)) continue;
+                if ($this->LaContraPartidaNoSumaCeroFirst($laContra, $transa)) continue;
 
-                $concepto = $this->hallarConcepto($laContra->codigo_cuenta_contable, $codigo);
+//                $concepto = $this->hallarConcepto($laContra->codigo_cuenta_contable, $codigo);
                 $transa->update([
                     'n_contrapartidas' => 1,
                     'contrapartida_CI' => $laContra->codigo_cuenta_contable,
-                    'concepto_flujo_homologación' => $concepto,
+                    'concepto_flujo_homologación' => $laContra->concepto_flujo_homologación,
                 ]);
             }
             DB::commit();
@@ -196,14 +190,36 @@ class ContrapartidasCICEController extends Controller
         return "Sin Concepto encontrado en $codigo";
     }
 
-    public function LaContraPartidaNoSumaCero($lasContrapartidas, $transa, $principales): bool
+    public function LaContraPartidaNoSumaCeroFirst($lasContrapartidas, $transa): bool
     {
-        $sumprincipales = $principales->sum('valor_debito');
-        $sumlasContrapartidas = $lasContrapartidas->sum('valor_credito');
-        $elCero = abs($sumprincipales) !== abs($sumlasContrapartidas);
+
+        $transaValor = intval($transa->valor_debito) === 0 ? $transa->valor_credito : $transa->valor_debito;
+        $contraValor = intval($lasContrapartidas->valor_debito) === 0 ? $lasContrapartidas->valor_credito : $lasContrapartidas->valor_debito;
+        $transaValor = intval($transaValor);
+        $contraValor = intval($contraValor);
+        $elCero = abs($transaValor) !== abs($contraValor);
         if ($elCero) {
             $transa->update([
-                'contrapartida_CI' => "No suman cero. PRINCIPAL DEBITO $sumprincipales",
+                'contrapartida_CI' => "No suman cero. PRINCIPAL DEBITO = $transaValor",
+                'concepto_flujo_homologación' => "CONTRAPARTIDA CREDITO = $contraValor",
+            ]);
+        }
+        return $elCero;
+    }
+
+    public function LaContraPartidaNoSumaCeroGet($lasContrapartidas, $transa, $principal): bool
+    {
+        $principalValor = intval($transa->valor_debito) === 0 ? $transa->valor_credito : $transa->valor_debito;
+        $sumlasContrapartidas = $lasContrapartidas->sum('valor_credito');
+        $elCero = abs(intval($principalValor)) !== abs(intval($sumlasContrapartidas));
+//        dd(
+//            $principalValor,
+//$sumlasContrapartidas,
+//$elCero
+//        );
+        if ($elCero) {
+            $transa->update([
+                'contrapartida_CI' => "No suman cero. PRINCIPAL DEBITO $principalValor",
                 'concepto_flujo_homologación' => "CONTRAPARTIDA CREDITO $sumlasContrapartidas",
             ]);
         }

@@ -39,6 +39,10 @@ class BusquedaConceptoCIJob implements ShouldQueue
         $inicioicrotime = microtime(true);
         Log::info('El job BusquedaConceptoCI ha comenzado.');
 
+
+        $inicioicrotime = microtime(true);
+        Log::info('El job BusquedaConceptoCI ha comenzado.');
+
         try {
             // Log después de la operación
             $codigo = "AJ";
@@ -70,7 +74,7 @@ class BusquedaConceptoCIJob implements ShouldQueue
                     ->get();
 
                 //AJUSTES
-                if ($CPController->LaContraPartidaNoSumaCero($lasContrapartidas, $transa, $principal)) {
+                if ($CPController->LaContraPartidaNoSumaCeroGet($lasContrapartidas, $transa, $principal)) {
                     $transa->update([
                         'n_contrapartidas' => 0,
                         'contrapartida_CI' => 'No se encontró una suma coherente, no suman 0',
@@ -119,6 +123,8 @@ class BusquedaConceptoCIJob implements ShouldQueue
                 'categoria' => 'jobs_' . $inicioicrotime,
                 'numero' => number_format($finicrotime, 3),
             ]);
+            //todo: configurar email cuando termine
+
 
         } catch (\Throwable $th) {
             DB::rollback();

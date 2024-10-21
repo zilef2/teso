@@ -13,7 +13,7 @@ import SwitchLangNavbar from '@/Components/SwitchLangNavbar.vue';
             <div class="grid grid-cols-1">
                 <div class="space-y-6 px-6 py-4 lg:py-16">
                     <div class="flex mx-auto content-center items-center">
-                        <ApplicationLogo class="block mx-auto h-64 w-auto fill-current" />
+                        <ApplicationLogo class="block mx-auto h-56 w-auto fill-current shadow-md rounded-2xl scale-75" />
                         <!-- <p class="text-lg ml-2">{{ $page.props.app.name }}</p> -->
 <!--                        <div class="flex space-x-2 items-center">-->
                             <!-- <SwitchLangNavbar /> -->
