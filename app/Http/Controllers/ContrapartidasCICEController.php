@@ -34,7 +34,6 @@ class ContrapartidasCICEController extends Controller
 
         $Transacciones = Myhelp::TransaccionesCI_AJ_AN($codigo);
         $this->Transacciones = $Transacciones;
-
         $conteoTransac = $Transacciones->count();
         if ($conteoTransac < 0) {
             dispatch(new BusquedaConceptoCIJob($Transacciones))->delay(now()->addSeconds());
@@ -76,6 +75,11 @@ class ContrapartidasCICEController extends Controller
                 $lasContrapartidas = $lasContrapartidas->WhereNot('id', $principal->id)
                     ->Where('documento_ref', $principal->documento_ref)
                     ->get();
+                if($principal->numero_documento == 7523)
+                dd(
+                    $principal,
+$lasContrapartidas
+                );
                 //AJUSTES
                 if ($CPController->LaContraPartidaNoSumaCeroGet($lasContrapartidas, $transa, $principal)) {
                     continue;
@@ -93,12 +97,6 @@ class ContrapartidasCICEController extends Controller
                         ->first();
 
                     if ($Col_ContrapartidaRef) {
-                        $transa->update([
-                            'n_contrapartidas' => 0,
-                            'contrapartida_CI' => 'No se encontro CP para doc_ref',
-                            'concepto_flujo_homologación' => 'No se encontro CP para doc_ref',
-                        ]);
-                    } else {
                         $int_ContrapartidaRef = intval($Col_ContrapartidaRef->codigo_cuenta);
                         $concepto = $CPController->hallarConcepto($int_ContrapartidaRef, $codigo);
 //                        $IntCp = count($lasContrapartidasForeach);
@@ -107,6 +105,12 @@ class ContrapartidasCICEController extends Controller
                             'n_contrapartidas' => 1,
                             'contrapartida_CI' => $int_ContrapartidaRef,
                             'concepto_flujo_homologación' => $concepto,
+                        ]);
+                    } else {
+                        $transa->update([
+                            'n_contrapartidas' => 0,
+                            'contrapartida_CI' => 'No se encontro CP para doc_ref',
+                            'concepto_flujo_homologación' => 'No se encontro CP para doc_ref',
                         ]);
                     }
 //                }
@@ -200,8 +204,8 @@ class ContrapartidasCICEController extends Controller
         $elCero = abs($transaValor) !== abs($contraValor);
         if ($elCero) {
             $transa->update([
-                'contrapartida_CI' => "No suman cero. PRINCIPAL DEBITO = $transaValor",
-                'concepto_flujo_homologación' => "CONTRAPARTIDA CREDITO = $contraValor",
+                'contrapartida_CI' => "Debito y credito diferentes. Principal = $transaValor",
+                'concepto_flujo_homologación' => "Contrapartida = $contraValor",
             ]);
         }
         return $elCero;

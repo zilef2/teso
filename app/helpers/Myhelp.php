@@ -27,7 +27,7 @@ class Myhelp {
 //      $anio = $laFecha->format('Y'); // Obtiene el año
 
         return transaccion::Where('codigo', $codigo)
-            ->WhereNull('concepto_flujo_homologación')
+//            ->WhereNull('concepto_flujo_homologación')
 //            ->WhereYear('fecha_elaboracion', $anio)
             ->whereMonth('fecha_elaboracion', $mes)->get();
     }
