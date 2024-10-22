@@ -15,7 +15,7 @@ export default {
     data() {
         return {
             text: 'descargar BD',
-            text2: 'Ver inspecciones borradas', //aquiii
+            text2: 'Ver inspecciones borradas', //todo: aun no piden descargar bd
         }
     },
     methods: {

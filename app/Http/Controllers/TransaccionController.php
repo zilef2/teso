@@ -187,13 +187,7 @@ class TransaccionController extends Controller
 
     //fin store functions
 
-    public function show($id)
-    {
-    }
-
-    public function edit($id)
-    {
-    }
+    public function show($id){}public function edit($id){}
 
     public function update(Request $request, $id)
     {
@@ -247,7 +241,7 @@ class TransaccionController extends Controller
                 return back()->with('error', 'No se encontro ningun comprobante con código: ' . $codigo);
 
             DB::beginTransaction();
-            [$Transacciones, $valor_debito_credito] = $this->TransaccionesCI($codigo);
+            [$Transacciones, $valor_debito_credito, $opuesto_debito_credito] = $this->TransaccionesCI($codigo);
 
 
             foreach ($Transacciones as $index => $transa) {
@@ -265,20 +259,22 @@ class TransaccionController extends Controller
                 }
 
                 $lasContrapartidas = clone $comprobantes;
-
-//                $principales = $comprobantes->where($valor_debito_credito, $transa->{$valor_debito_credito})->get();//todo: no es asi, debe ser mayor a cero
-                $principales = $comprobantes->where($valor_debito_credito, '>', 0)->get();//todo: no es asi, debe ser mayor a cero
+                $principales = $comprobantes->where($valor_debito_credito, '>', 0)->get(); //todo: no es asi, debe ser mayor a cero
                 $lasContrapartidas = $lasContrapartidas->where("valor_credito", '>', 0)->get();
+
+                $justdebug = clone $comprobantes;
+                $justdebug= $justdebug->first()->numero_documento;
 
 
                 //validacion de credito - debito
-                $sumprincipales = $principales->sum('valor_debito'); //todo: hacer mas dinamica
-                $sumlasContrapartidas = $lasContrapartidas->sum('valor_credito'); //todo: hacer mas dinamica
+                $sumprincipales = $principales->sum($valor_debito_credito); //todo: hacer mas dinamica
+                $sumlasContrapartidas = $lasContrapartidas->sum($opuesto_debito_credito); //todo: hacer mas dinamica
+
 
                 if ($sumprincipales !== $sumlasContrapartidas) {
                     $transa->update([
-                        'contrapartida_CI' => "debitos y creditos no concuerdan, principales suman $sumprincipales",
-                        'concepto_flujo_homologación' => "contrapartidas $sumlasContrapartidas",
+                        'contrapartida_CI' => "debitos y creditos no concuerdan, principales suman: $sumprincipales",
+                        'concepto_flujo_homologación' => "contrapartidas suman: $sumlasContrapartidas",
                     ]);
                     continue;
                 }
@@ -286,9 +282,8 @@ class TransaccionController extends Controller
 
                 //va y busca los demas
                 foreach ($principales as $principal) {
-                    foreach ($lasContrapartidas as $item) {
-                        $soloTieneUno = floor(intval($principal->valor_debito)) - floor(intval($item->valor_credito)) == 0;
-                        $cuentaCP = $item->codigo_cuenta;
+                    $FirstMaxContraPartida = $lasContrapartidas->sortByDesc($valor_debito_credito)->first();
+                    $cuentaCP = $FirstMaxContraPartida->codigo_cuenta;
 
                         //buscamos el concepto
                         $concepto = $this->hallarConcepto($cuentaCP);
@@ -297,7 +292,6 @@ class TransaccionController extends Controller
                             'contrapartida_CI' => $cuentaCP,
                             'concepto_flujo_homologación' => $concepto,
                         ]);
-                    }
                 }
             }
             DB::commit();
@@ -324,6 +318,7 @@ class TransaccionController extends Controller
     private function TransaccionesCI($codigo)
     {
         $valor_debito_credito = (strcmp($codigo, "CI") === 0) ? "valor_debito" : "valor_credito";
+        $opuesto_debito_credito = (strcmp($valor_debito_credito, "valor_credito") === 0) ? "valor_debito" : "valor_credito";
         $laFecha = new \DateTime();
 
         $mes = $laFecha->format('m'); // Obtiene el mes (en formato numérico)
@@ -331,13 +326,13 @@ class TransaccionController extends Controller
         $anio = $laFecha->format('Y'); // Obtiene el año
 
         $Transacciones = transaccion::Where('codigo', $codigo)
-            ->WhereNull('concepto_flujo_homologación')
+//            ->WhereNull('concepto_flujo_homologación')
 //            ->WhereYear('fecha_elaboracion', $anio)
 //            ->whereMonth('fecha_elaboracion', $mes)
             ->get();
         //validar que tanto el Comprobante como la transsacion exista
 //        dd($Transacciones[0]);
-        return [$Transacciones, $valor_debito_credito];
+        return [$Transacciones, $valor_debito_credito, $opuesto_debito_credito];
     }
 
 }

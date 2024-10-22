@@ -75,20 +75,20 @@ class ContrapartidasCICEController extends Controller
                 $lasContrapartidas = $lasContrapartidas->WhereNot('id', $principal->id)
                     ->Where('documento_ref', $principal->documento_ref)
                     ->get();
-                if($principal->numero_documento == 7523)
-                dd(
-                    $principal,
-$lasContrapartidas
-                );
+//                if ($principal->numero_documento == 7523)
+//                    dd(
+//                        $principal->getattributes(),
+//                        $lasContrapartidas,
+//                        $lasContrapartidas[0]->getattributes(),
+//                    );
                 //AJUSTES
                 if ($CPController->LaContraPartidaNoSumaCeroGet($lasContrapartidas, $transa, $principal)) {
                     continue;
                 }
                 //va y busca los demas
 //                foreach ($Todas as $principal) {
-                    //validacion adicional: el doc_ref debe ser igual para el original y la CP
-                    $Col_ContrapartidaRef =
-                        $lasContrapartidasForeach
+                //validacion adicional: el doc_ref debe ser igual para el original y la CP
+                $Col_ContrapartidaRef = $lasContrapartidasForeach
                         ->Where('documento_ref', $principal->documento_ref)
                         ->WhereNot('id', $principal->id)
                         ->Where('valor_credito', $transa->valor_debito)
@@ -96,23 +96,23 @@ $lasContrapartidas
                         ->sortByDesc('valor_credito')
                         ->first();
 
-                    if ($Col_ContrapartidaRef) {
-                        $int_ContrapartidaRef = intval($Col_ContrapartidaRef->codigo_cuenta);
-                        $concepto = $CPController->hallarConcepto($int_ContrapartidaRef, $codigo);
+                if ($Col_ContrapartidaRef) {
+                    $int_ContrapartidaRef = intval($Col_ContrapartidaRef->codigo_cuenta);
+                    $concepto = $CPController->hallarConcepto($int_ContrapartidaRef, $codigo);
 //                        $IntCp = count($lasContrapartidasForeach);
 //                        $IntCp = $IntCp == 0 ? $IntCp : $IntCp - 1;
-                        $transa->update([
-                            'n_contrapartidas' => 1,
-                            'contrapartida_CI' => $int_ContrapartidaRef,
-                            'concepto_flujo_homologación' => $concepto,
-                        ]);
-                    } else {
-                        $transa->update([
-                            'n_contrapartidas' => 0,
-                            'contrapartida_CI' => 'No se encontro CP para doc_ref',
-                            'concepto_flujo_homologación' => 'No se encontro CP para doc_ref',
-                        ]);
-                    }
+                    $transa->update([
+                        'n_contrapartidas' => 1,
+                        'contrapartida_CI' => $int_ContrapartidaRef,
+                        'concepto_flujo_homologación' => $concepto,
+                    ]);
+                } else {
+                    $transa->update([
+                        'n_contrapartidas' => 0,
+                        'contrapartida_CI' => 'No se encontro CP para doc_ref',
+                        'concepto_flujo_homologación' => 'No se encontro CP para doc_ref',
+                    ]);
+                }
 //                }
             }
             DB::commit();
@@ -213,14 +213,11 @@ $lasContrapartidas
 
     public function LaContraPartidaNoSumaCeroGet($lasContrapartidas, $transa, $principal): bool
     {
-        $principalValor = intval($transa->valor_debito) === 0 ? $transa->valor_credito : $transa->valor_debito;
-        $sumlasContrapartidas = $lasContrapartidas->sum('valor_credito');
+        $crediODebi = intval($transa->valor_debito) == 0 ? 'valor_credito' : 'valor_debito';
+        $debiOCredi = intval($transa->valor_debito) == 0 ? 'valor_debito' : 'valor_credito';
+        $principalValor = $transa->{$crediODebi};
+        $sumlasContrapartidas = $lasContrapartidas->sum($debiOCredi);
         $elCero = abs(intval($principalValor)) !== abs(intval($sumlasContrapartidas));
-//        dd(
-//            $principalValor,
-//$sumlasContrapartidas,
-//$elCero
-//        );
         if ($elCero) {
             $transa->update([
                 'contrapartida_CI' => "No suman cero. PRINCIPAL DEBITO $principalValor",
