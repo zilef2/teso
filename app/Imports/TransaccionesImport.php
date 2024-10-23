@@ -23,6 +23,8 @@ class TransaccionesImport implements ToModel, WithStartRow
     private $SoloUnaVez = 0;
 
 
+
+    //<editor-fold desc="contruc and privates">
     /**
      * @throws \Exception
      */
@@ -120,6 +122,7 @@ class TransaccionesImport implements ToModel, WithStartRow
 //        }
         return true;
     }
+    //</editor-fold>
 
     /**
      * @param array $row
@@ -127,7 +130,6 @@ class TransaccionesImport implements ToModel, WithStartRow
      * @return \Illuminate\Database\Eloquent\Model|null
      */
     public function model(array $row){
-
         $this->ContarFilasAbsolutas++;
         try {
 //            if ($this->validarNull($row)) return null;
@@ -156,21 +158,15 @@ class TransaccionesImport implements ToModel, WithStartRow
      */
     private function HaSidoGuardadoAnteriormente($therow)
     {
-        $laFecha = HelpExcel::getFechaExcel($therow[4]);
+        $laFecha = HelpExcel::getFechaExcel($therow[4]); //fecha_elaboracion
         $mes = $laFecha->format('m'); // Obtiene el mes (en formato numérico)
         $anio = $laFecha->format('Y'); // Obtiene el año
 
-
         $ExisteUnComprobante = transaccion::
-            Where('documento',$therow[3])
+            Where('documento',$therow[3])//documento
             ->WhereYear('fecha_elaboracion',$anio)
             ->whereMonth('fecha_elaboracion',$mes)->count();
-//        dd(
-//            $laFecha,
-//            $mes,
-//            $anio,
-//            $ExisteUnComprobante
-//        );
+
         $mesYanio = $mes . '-'. $anio;
         $this->SoloUnaVez++;
         return [$ExisteUnComprobante,$mesYanio];

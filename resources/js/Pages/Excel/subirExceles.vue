@@ -108,11 +108,11 @@ let formatoNecesita = [
     'tipo_de_recurso',
     'convenio',
 ]
-let formatoNecesita2 = [
+let formatoNecesita2 = [ //transacciones
     'codigo_cuenta_contable',
     'nombre_cuenta',
     'codigo',
-    'documento',
+    'documento',//3
     'fecha_elaboracion',
     'descripcion',
     'comprobante',

@@ -6,6 +6,7 @@ import {Head} from '@inertiajs/vue3';
 import Chart from 'chart.js/auto';
 import {ref, onMounted, watchEffect, reactive} from 'vue';
 import EfeActOperacion from "@/Pages/EfeActOperacion.vue";
+import {buildCharEnti, chart10} from "@/Pages/chars/numeroEntidades.js";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 
 // <!--<editor-fold desc=" lo demas">-->
@@ -15,6 +16,7 @@ const props = defineProps({
     roles: Number,
     rolesNameds: Object,
     numberPermissions: Number,
+    numeroEntidades: Object,
 })
 
 const data = reactive({
@@ -27,13 +29,16 @@ const data = reactive({
 // <!--</editor-fold>-->
 
 
-const chartCanvas = ref(null);
+const chartCanvas1 = ref(null);
 const chartCanvas2 = ref(null);
 const chartCanvasEfec = ref(null);
+const char10 = chart10;
 let ctx_a, ctx_b, ctx_c
 let charInstance = []
-onMounted(() => {
-    ctx_b = chartCanvas.value.getContext('2d');
+onMounted(async () => {
+    await buildCharEnti(props.numeroEntidades)
+
+    ctx_b = chartCanvas1.value.getContext('2d');
     buildChar2(1)//la2
 
     ctx_c = chartCanvas2.value.getContext('2d'); // la3
@@ -247,7 +252,7 @@ const changeChar = (numeracion) => {
 <template>
     <Head title="Dashboard"/>
     <AuthenticatedLayout>
-        <Breadcrumb :title="'Resumen'" :breadcrumbs="[]"/>
+        <Breadcrumb :title="'Resumen'" :breadcrumbs="[]" />
         <EfeActOperacion :show="data.IngresosOpen" @close="data.IngresosOpen = false"
                          :Chart="Chart"
                          :chartCanvasHijaEntrada="chartCanvasHijaEntrada"
@@ -265,10 +270,13 @@ const changeChar = (numeracion) => {
 
         <div class="grid grid-cols-1 4xl:grid-cols-2">
             <div class="mb-20 w-full md:w-5/6">
+                <canvas ref="char10"></canvas>
+            </div>
+            <div class="my-20 w-full md:w-5/6">
                 <canvas ref="chartCanvasEfec"></canvas>
             </div>
             <div class="my-20 w-full md:w-5/6">
-                <canvas ref="chartCanvas"></canvas>
+                <canvas ref="chartCanvas1"></canvas>
             </div>
             <div class="my-20 w-full md:w-5/6">
                 <canvas ref="chartCanvas2"></canvas>
