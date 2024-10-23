@@ -273,7 +273,7 @@ class TransaccionController extends Controller
 
                 if ($sumprincipales !== $sumlasContrapartidas) {
                     $transa->update([
-                        'contrapartida_CI' => "debitos y creditos no concuerdan, principales suman: $sumprincipales",
+                        'contrapartida_CI' => "No se encontro debitos y creditos no concuerdan, principales suman: $sumprincipales",
                         'concepto_flujo_homologación' => "contrapartidas suman: $sumlasContrapartidas",
                     ]);
                     continue;
