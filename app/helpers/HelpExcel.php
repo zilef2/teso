@@ -40,14 +40,15 @@ class HelpExcel
 
     public function NewValidarArchivoExcel($request)
     {
-        $exten = $request->archivo[$request->Contador]->getClientOriginalExtension();
+        $file = $request->archivo[$request->Contador];
+        $exten = $file->getClientOriginalExtension();
         if ($exten != 'xlsx' && $exten != 'xls') {
             return 'El archivo debe ser de Excel';
         }
-        $megas = 12;
-        $pesoKilobyte = ((int)($request->{$nombreArchivo}->getSize())) / (1024);
-        if ($pesoKilobyte > ($megas * 1024)) { //debe pesar menos de 12MB
-            return 'El archivo debe pesar menos de '.$megas.'MB';
+        $Maxmegas = 12;
+        $pesoKilobyte = ((int)($file->getSize())) / (1024);
+        if ($pesoKilobyte > ($Maxmegas * 1024)) { //debe pesar menos de 12MB
+            return 'El archivo debe pesar menos de '.$Maxmegas.'MB';
         }
         return '';
     }

@@ -73,9 +73,18 @@ function uploadFileComprobantes() {
         onFinish: () => null,
     });
 }
-function uploadFileAsientos(contado) {
+function uploadFileGeneric(contado) {
+    let rutas = [
+        '',
+        'upExTransacciones',
+        'uploadFileComprobantes',
+        'uploadFileAsientos',
+        'upExCuentas',
+    ];
+
+    // console.log("=>(subirExceles.vue:85) form.archivo", form.archivo);
     form.Contador = contado
-    form.post(route('uploadFileAsientos'), {
+    form.post(route(rutas[contado]), {
         preserveScroll: true,
         onSuccess: () => {},
         onError: () => alert('Hay errores en algunos campos'),
@@ -95,6 +104,7 @@ let NombresEntidades = [
 ];
 let formatoNecesita = [];
 
+//transacciones o auxiliar
 formatoNecesita[1] = [ //transacciones
     'codigo_cuenta_contable',
     'nombre_cuenta',
@@ -121,6 +131,7 @@ formatoNecesita[1] = [ //transacciones
     'periodo',
     'plan_cuentas',
 ]
+//comprobantes
 formatoNecesita[2] = [
     'codigo',
     'descripcion',
@@ -142,14 +153,35 @@ formatoNecesita[2] = [
     'documento_ref',
     'plan_cuentas',
 ]
+//asientos
 formatoNecesita[3] = [
-    'codigo_cuenta_contable',
-    'numero_cuenta_bancaria',
-    'banco',
-    'tipo_de_cuenta',
-    'tipo_de_recurso',
-    'convenio',
+    'codigo_cuenta',
+    'nombre_cuenta',
+    'codigo',
+    'documento',
+    'fecha_elaboracion',
+    'descripcion',
+    'comprobante',
+    'valor_debito',
+    'valor_credito',
+    'nit',
+    'nombre',
+    'cod_costos',
+    'desc_costos',
+    'codigo_interno_cuenta',
+    'codigo_tercero',
+    'ccostos',
+    'saldo_inicial',
+    'saldo_final',
+    'nombre_empresa',
+    'nit_empresa',
+    'documento_ref',
+    'consecutivo',
+    'periodo',
+    'plan_cuentas',
 ]
+
+//cuentas
 formatoNecesita[4] = [
     'codigo_cuenta_contable',
     'numero_cuenta_bancaria',
@@ -159,6 +191,26 @@ formatoNecesita[4] = [
     'convenio',
     'estado'
 ]
+//afectacion
+formatoNecesita[5] = [
+    'valor_debito',
+    'valor_credito',
+    'codigo_cuenta',
+    'codigo_asiento',
+    'tipo',
+    'codigo',
+    'fecha_elaboracion',
+    'consecutivo',
+    'descripcion',
+    'descripcion_concepto',
+    'codigo_banco',
+    'otros',
+    'taquilla',
+    'consecutivo',
+    'nombre_empresa',
+    'nombre_dependencia',
+
+]
 // <!--</editor-fold>-->
 
 // data.UniversidadSelect = vectorSelect(data.UniversidadSelect,props.UniversidadSelect,'una')
@@ -167,6 +219,15 @@ formatoNecesita[4] = [
 // <!--<editor-fold desc="fin script">-->
 const Abecedario  = Array.from({length: 26}, (_, i) => String.fromCharCode(97 + i));
 // <!--</editor-fold>-->
+
+const handleFileUpload = (event, numeroArchivo) => {
+    const file = event.target.files[0]; // Tomar el primer archivo
+    if (file) {
+        form.archivo[numeroArchivo] = file;
+    }else{
+        alert('archivo no detectado')
+    }
+};
 </script>
 
 <template>
@@ -195,7 +256,6 @@ const Abecedario  = Array.from({length: 26}, (_, i) => String.fromCharCode(97 + 
             <div class="relative bg-white dark:bg-gray-800 shadow sm:rounded-lg">
                 <section class="text-gray-600 body-font">
                     <div class="container px-5 py-24 mx-auto">
-
                         <!--                        v-if="can(['create user'])"-->
                         <div class="flex flex-wrap -m-4">
                             <div v-for="numeroArchivo in NombresEntidades.length" :class="data.ClassCantidadDeBotonesPorPagina">
@@ -205,10 +265,12 @@ const Abecedario  = Array.from({length: 26}, (_, i) => String.fromCharCode(97 + 
                                         <h3 class="title-font text-lg font-medium text-gray-900 mb-3">Subir {{ NombresEntidades[numeroArchivo] }}</h3>
                                         <p class="leading-relaxed mb-3"> El excel debe contar con el formato aprobado</p>
 
-<!--                                        uploadFileAsientos-->
+<!--                                        uploadFileGeneric-->
 <!--                                        NombresEntidades-->
-                                        <form @submit.prevent="uploadFileAsientos(numeroArchivo)" id="upload">
-                                            <input type="file" @input="form.archivo[numeroArchivo] = $event.target.files[numeroArchivo]"
+                                        <form @submit.prevent="uploadFileGeneric(numeroArchivo)" id="upload">
+<!--                                                   @input="form.archivo[numeroArchivo] = $event.target.files[numeroArchivo]"-->
+                                            <input type="file"
+                                                   @change="handleFileUpload($event, numeroArchivo)"
                                                    accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, .csv,application/vnd.ms-excel"
                                             />
                                             <br><br>
@@ -218,7 +280,8 @@ const Abecedario  = Array.from({length: 26}, (_, i) => String.fromCharCode(97 + 
                                             </progress>
                                             <div class="flex">
                                                 <!--                                                can(['create user']) && -->
-                                                <PrimaryButton v-show="form.archivo[numeroArchivo] !== null" :disabled="form.archivo[numeroArchivo] == null"
+                                                <PrimaryButton
+                                                    v-show="form.archivo[numeroArchivo] !== null" :disabled="form.archivo[numeroArchivo] == null"
                                                                class=" my-4 rounded-md mx-2" :class="{ 'bg-gray-200' : form.archivo[numeroArchivo] == null}">
                                                     {{ lang().button.subir }} excel
                                                 </PrimaryButton>

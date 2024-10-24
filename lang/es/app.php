@@ -16,12 +16,16 @@ return [
         'concepto_flujo' => 'Concepto de flujo',
 		'asiento' => 'Asiento',
 		'parametro' => 'parametro',
+		'afectacion' => 'Afectacion',
+		'afectacion' => 'afectacion',
 		//aquipues
     ],
 
     'label' => [
 		'asiento' => 'Asiento',
         'parametro' => 'parametro',
+		'afectacion' => 'Afectacion',
+		'afectacion' => 'afectacion',
 		//aquipues
 
         //transaccion

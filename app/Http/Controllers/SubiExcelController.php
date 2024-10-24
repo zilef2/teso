@@ -72,7 +72,7 @@ class SubiExcelController extends Controller
         $countfilas = 0;
         try {
             DB::beginTransaction();
-            if ($request->archivo1) {
+            if ($request->archivo[$request->Contador]) {
 
                 $helpExcel = new HelpExcel();
                 $mensageWarning = $helpExcel->validarArchivoExcel($request,'archivo1');
@@ -122,21 +122,20 @@ class SubiExcelController extends Controller
         Myhelp::EscribirEnLog($this, get_called_class(), 'importando transacciones', false);
         $countfilas = 0;
         $entidad = 'Transaccion';
-        $nombreArchivo = 'archivo2';
-
         try {
             DB::beginTransaction();
-            if ($request->archivo2) {
+            $thefile = $request->archivo[$request->Contador];
+            if ($thefile) {
 
                 $helpExcel = new HelpExcel();
-                $mensageWarning = $helpExcel->validarArchivoExcel($request,$nombreArchivo);
+                $mensageWarning = $helpExcel->NewValidarArchivoExcel($request);
                 if ($mensageWarning != ''){
                     DB::rollback();
                     return back()->with('warning', $mensageWarning);
                 }
 
                 $personalImp = new TransaccionesImport();
-                Excel::import($personalImp, $request->archivo2);
+                Excel::import($personalImp, $thefile);
 
                 $countfilas = $personalImp->ContarFilasAbsolutas;
                 $MensajeWarning = HelpExcel::MensajeWarComprobante($personalImp);
@@ -178,22 +177,22 @@ class SubiExcelController extends Controller
 
 
     public function uploadFileComprobantes(Request $request){
-        $archivin = "archivo3";
         Myhelp::EscribirEnLog($this, get_called_class(), 'importando comprobantes ', false);
         $countfilas = 0;
         try {
             DB::beginTransaction();
-            if ($request->{$archivin}) {
+            $thefile = $request->archivo[$request->Contador];
+            if ($thefile) {
 
                 $helpExcel = new HelpExcel();
-                $mensageWarning = $helpExcel->validarArchivoExcel($request,$archivin);
+                $mensageWarning = $helpExcel->NewValidarArchivoExcel($request);
                 if ($mensageWarning != ''){
                     DB::rollback();
                     return back()->with('warning', $mensageWarning);
                 }
 
                 $personalImp = new ComprobanteImport();
-                Excel::import($personalImp, $request->{$archivin});
+                Excel::import($personalImp, $thefile);
 
                 $countfilas = $personalImp->ContarFilasAbsolutas;
 
@@ -246,8 +245,8 @@ class SubiExcelController extends Controller
         $countfilas = 0;
         try {
             DB::beginTransaction();
-            if ($request->archivo[$request->Contador]) {
-
+            $thefile = $request->archivo[$request->Contador];
+            if ($thefile) {
                 $helpExcel = new HelpExcel();
                 $mensageWarning = $helpExcel->NewValidarArchivoExcel($request);
                 if ($mensageWarning != ''){
@@ -256,7 +255,7 @@ class SubiExcelController extends Controller
                 }
 
                 $elImport = new AsientoImport();
-                Excel::import($elImport, $request->{$request->Contador});
+                Excel::import($elImport, $thefile);
 
                 $countfilas = $elImport->ContarFilas;
 

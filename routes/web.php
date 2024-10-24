@@ -95,6 +95,7 @@ Route::middleware(['auth'])->group(callback: function () {
     Route::resource('/Comprobante', ComprobanteController::class);
     Route::resource('/concepto_flujo', \App\Http\Controllers\ConceptoflujoController::class);
 	Route::resource("/asiento", \App\Http\Controllers\AsientoController::class);
+	Route::resource("/afectacion", \App\Http\Controllers\AfectacionController::class);
 	//aquipues
     //</editor-fold>
 

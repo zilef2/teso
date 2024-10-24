@@ -126,16 +126,15 @@ class ComprobanteImport implements ToModel, WithStartRow
             $this->ContarFilasAbsolutas++;
 //            if ($this->validarNull($row)) return null;
             $this->Requeridos($row); //this has dd function
-
             if($this->SoloUnaVez === 0){
                 [$cuantaVeces,$mesYanio] = $this->HaSidoGuardadoAnteriormente($row);
                 if($cuantaVeces > 0){
                     throw new \Exception('|Comprobantes ya cargados del mes: '.$mesYanio);
                 }
             }
-            if(strcmp($row[0],'AN') === 0){
-                throw new \Exception('|Comprobantes de AN no son aceptados');
-            }
+//            if(strcmp($row[0],'AN') === 0){
+//                throw new \Exception('|Comprobantes de AN no son aceptados');
+//            }
 
             return $this->TheNewObject($row);
         }catch (\Throwable $th) {

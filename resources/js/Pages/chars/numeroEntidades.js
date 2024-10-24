@@ -23,16 +23,19 @@ export async function buildCharEnti(numeroEntidades) {
             labels: [
                 'transacciones',
                 'CI',
-                'CE',
                 'AJ',
                 'AN',
+                'CE',
                 'CA',
             ],
 
             datasets: [
                 {
                     label: '# registros',
-                    data: [transaccion,Comprobanteci,Comprobantece,Comprobanteaj,Comprobantean,Comprobanteca],
+                    data: [
+                        transaccion,Comprobanteci,Comprobanteaj,Comprobantean,
+                        Comprobantece,Comprobanteca
+                    ],
                     borderWidth: 1,
                     borderColor: 'rgb(0,14,14)',
                     backgroundColor: 'rgb(0, 86, 82)',

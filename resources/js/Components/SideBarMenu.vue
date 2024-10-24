@@ -30,6 +30,7 @@ const sidebarButtonsNormal = [ //SAME AS WEB.PHP
     'concepto_flujo',
 	'asiento',
 	'parametro',
+	'afectacion',
 	//aquipuesSide
 ];
 
