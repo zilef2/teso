@@ -62,11 +62,11 @@ const { _, debounce, pickBy } = pkg
                         {{ lang().button.add }}
                     </PrimaryButton> -->
                     <Create :show="data.createOpen" @close="data.createOpen = false" :title="props.title"
-                        v-show="can(['create parametro'])" :parametrosSelect="data.parametrosSelect" />
+                        :parametrosSelect="data.parametrosSelect" />
                     <Edit :show="data.editOpen" @close="data.editOpen = false" :parametro="props.fromController"
-                        v-show="can(['edit parametro'])" :title="props.title" :parametrosSelect="data.parametrosSelect" />
+                        :title="props.title" :parametrosSelect="data.parametrosSelect" />
                     <Delete :show="data.deleteOpen" @close="data.deleteOpen = false" :parametro="props.fromController"
-                        v-show="can(['delete parametro'])" :title="props.title" />
+                        :title="props.title" />
                 </div>
             </div>
             <div class="relative bg-white dark:bg-gray-800 shadow sm:rounded-lg">
@@ -88,7 +88,7 @@ const { _, debounce, pickBy } = pkg
                             </tr>
                         </thead>
                         <tbody>
-                            <tr
+                            <tr v-for="generic in props.fromController"
                                 class="border-t border-gray-200 dark:border-gray-700 hover:bg-gray-200/30 hover:dark:bg-gray-900/20">
                                 <td class="whitespace-nowrap py-4 px-2 sm:py-3">
                                     <div class="flex justify-start items-center">
@@ -101,10 +101,11 @@ const { _, debounce, pickBy } = pkg
                                     </div>
                                 </td>
                                 <!-- <td class="whitespace-nowrap py-4 px-2 sm:py-3">{{ (index+1) }}</td> -->
-                                <td class="whitespace-nowrap py-4 px-2 sm:py-3">{{
-                                                                    formatDate(props.fromController.Fecha_creacion_parametro,false) }} </td>
-                                <td class="whitespace-nowrap py-4 px-2 sm:py-3">{{
-                                                                    PrimerasPalabras(props.fromController.nombre,20) }} </td>
+<!--                                <td class="whitespace-nowrap py-4 px-2 sm:py-3">{{ formatDate(generic.Fecha_creacion_parametro,false) }} </td>-->
+                                <td class="whitespace-nowrap py-4 px-2 sm:py-3">{{ PrimerasPalabras(generic.nombre,30) }} </td>
+                                <td class="whitespace-nowrap py-4 px-2 sm:py-3">{{ (generic.valor) }} </td>
+                                <td class="whitespace-nowrap py-4 px-2 sm:py-3">{{ (generic.categoria) }} </td>
+                                <td class="whitespace-nowrap py-4 px-2 sm:py-3">{{ (generic.numero) }} </td>
                             </tr>
                         </tbody>
                     </table>

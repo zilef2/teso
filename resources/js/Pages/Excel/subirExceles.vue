@@ -18,25 +18,21 @@ const props = defineProps({
     ncuenta: Number,
 })
 const data = reactive({
-    UniversidadSelect: null
+    UniversidadSelect: null,
+
+    //tailwind
+    RangeCantidadBotones:[0,1,2,3],
+    CantidadBotones:4,
+    ClassCantidadDeBotonesPorPagina:'p-4 md:w-1/3'
+    // ClassCantidadDeBotonesPorPagina:'p-4 md:w-1/'.data.CantidadBotones
 })
 
-
 const form = useForm({
-    archivo1: null,
-    archivo2: null,
-    archivo3: null,
-    archivo4: null,
-    archivo5: null,
+    archivo:[],
+    Contador: 0,
     Mes: 0,
     // fecha_fin: '2023-04-03T'+horas[1]+':00', //toerase
 });
-
-// const SeleccioneMes = [
-//     { 'value': null, 'label': 'seleccione una quincena' },
-//     { 'value': 1, 'label': 1 },
-//     { 'value': 2, 'label': 2 }
-// ]
 
 // <!--<editor-fold desc="upload taks">-->
 function uploadFileCuentas() {
@@ -72,43 +68,34 @@ function uploadFileTransacciones() {
 function uploadFileComprobantes() {
     form.post(route('uploadFileComprobantes'), {
         preserveScroll: true,
-        onSuccess: () => {
-            // emit("close")
-            // form.reset()
-            // data.respuesta = $page.props.flash.success
-        },
-        onError: () => {
-            alert('Hay errores en algunos campos')
-        },
+        onSuccess: () => {},
+        onError: () => alert('Hay errores en algunos campos'),
         onFinish: () => null,
     });
 }
-function uploadFileBancos() {
-    form.post(route('uploadFileBancos'), {
+function uploadFileAsientos(contado) {
+    form.Contador = contado
+    form.post(route('uploadFileAsientos'), {
         preserveScroll: true,
-        onSuccess: () => {
-            // emit("close")
-            // form.reset()
-            // data.respuesta = $page.props.flash.success
-        },
-        onError: () => {
-            alert('Hay errores en algunos campos')
-        },
+        onSuccess: () => {},
+        onError: () => alert('Hay errores en algunos campos'),
         onFinish: () => null,
     });
 }
 // <!--</editor-fold>-->
 
 // <!--<editor-fold desc="formatoNecesit">-->
-let formatoNecesita = [
-    'codigo_cuenta_contable',
-    'numero_cuenta_bancaria',
-    'banco',
-    'tipo_de_cuenta',
-    'tipo_de_recurso',
-    'convenio',
-]
-let formatoNecesita2 = [ //transacciones
+let NombresEntidades = [
+    '',
+    'Transacciones',
+    'Comprobantes',
+    'Asientos',
+    'cuentas',
+    '',
+];
+let formatoNecesita = [];
+
+formatoNecesita[1] = [ //transacciones
     'codigo_cuenta_contable',
     'nombre_cuenta',
     'codigo',
@@ -134,7 +121,7 @@ let formatoNecesita2 = [ //transacciones
     'periodo',
     'plan_cuentas',
 ]
-let formatoNecesita3 = [
+formatoNecesita[2] = [
     'codigo',
     'descripcion',
     'comprobante',
@@ -154,6 +141,23 @@ let formatoNecesita3 = [
     'codigo_asiento',
     'documento_ref',
     'plan_cuentas',
+]
+formatoNecesita[3] = [
+    'codigo_cuenta_contable',
+    'numero_cuenta_bancaria',
+    'banco',
+    'tipo_de_cuenta',
+    'tipo_de_recurso',
+    'convenio',
+]
+formatoNecesita[4] = [
+    'codigo_cuenta_contable',
+    'numero_cuenta_bancaria',
+    'banco',
+    'tipo_de_cuenta',
+    'tipo_de_recurso',
+    'convenio',
+    'estado'
 ]
 // <!--</editor-fold>-->
 
@@ -194,79 +198,28 @@ const Abecedario  = Array.from({length: 26}, (_, i) => String.fromCharCode(97 + 
 
                         <!--                        v-if="can(['create user'])"-->
                         <div class="flex flex-wrap -m-4">
-
-                            <div class="p-4 md:w-1/3">
-                                <div class="h-full border-2 border-gray-200 border-opacity-60 rounded-lg overflow-hidden">
+                            <div v-for="numeroArchivo in NombresEntidades.length" :class="data.ClassCantidadDeBotonesPorPagina">
+                                <div v-if="NombresEntidades[numeroArchivo] !== '' && NombresEntidades[numeroArchivo]" class="h-full border-2 border-gray-200 border-opacity-60 rounded-lg overflow-hidden">
                                     <TableCellsIcon class=" h-24 lg:h-48 md:h-36 w-full object-cover object-center"/>
                                     <div class="p-6">
-                                        <h3 class="title-font text-lg font-medium text-gray-900 mb-3">Subir Transferencias (Auxiliar)</h3>
+                                        <h3 class="title-font text-lg font-medium text-gray-900 mb-3">Subir {{ NombresEntidades[numeroArchivo] }}</h3>
                                         <p class="leading-relaxed mb-3"> El excel debe contar con el formato aprobado</p>
 
-                                        <form @submit.prevent="uploadFileTransacciones" id="upload">
-                                            <input type="file" @input="form.archivo2 = $event.target.files[0]"
-                                            />
-<!--                                                   accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, .csv,application/vnd.ms-excel"-->
-                                            <br><br>
-                                            <progress v-if="form.progress" :value="form.progress.percentage - 20" max="100"
-                                                      class="bg-sky-200">
-                                                {{ form.progress.percentage }}%
-                                            </progress>
-                                            <div class="flex">
-                                                <!--                                                can(['create user']) && -->
-                                                <PrimaryButton v-show="form.archivo2 !== null" :disabled="form.archivo2 == null"
-                                                               class=" my-4 rounded-md mx-2" :class="{ 'bg-gray-200' : form.archivo2 == null}">
-                                                    {{ lang().button.subir }} excel
-                                                </PrimaryButton>
-                                            </div>
-                                        </form>
-
-                                        <h2 class="text-xl text-gray-900 dark:text-white mt-12">El formato necesita las siguientes columnas</h2>
-                                        <ul class="list-decimal my-6 mx-5">
-                                            <li v-for="(campos, indicice) in formatoNecesita2" class="text-lg">
-                                                {{ Abecedario[indicice] }}. {{ campos }}
-                                            </li>
-                                        </ul>
-
-                                        <div class="flex items-center flex-wrap my-6">
-                                            <!--                                            <a class="text-gray-500 inline-flex items-center md:mb-2 lg:mb-0">Numero de formularios enviados: </a>-->
-                                            <span
-                                                class="text-gray-400 mr-3 inline-flex items-center lg:ml-auto md:ml-0 ml-auto leading-none text-sm pr-3 py-1 border-r-2 border-gray-200">
-                                                <svg class="w-1 h-4 mr-1" stroke="currentColor" stroke-width="2" fill="none"
-                                                     stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-                                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                                                    <circle cx="12" cy="12" r="3"></circle>
-                                                </svg>
-                                                <p class="text-lg">Transacciones: {{ props.ntransaccion }}</p>
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="p-4 md:w-1/3">
-                                <div class="h-full border-2 border-gray-200 border-opacity-60 rounded-lg overflow-hidden">
-                                    <TableCellsIcon class=" h-24 lg:h-48 md:h-36 w-full object-cover object-center"/>
-
-                                    <div class="p-6">
-                                        <h3 class="title-font text-lg font-medium text-gray-900 mb-3">Subir Comprobantes (CI o CE)</h3>
-                                        <p class="leading-relaxed mb-3"> Recuerde que en la columna de codigos, tiene que leerse: CI, CE, AJ. </p>
-                                        <p class="leading-relaxed mb-3">Otros codigos no son usados actualmente.</p>
-<!--                                        <p class="leading-relaxed mb-3"> El excel debe contar con el formato aprobado</p>-->
-
-                                        <form @submit.prevent="uploadFileComprobantes" id="upload">
-                                            <input type="file" @input="form.archivo3 = $event.target.files[0]"
+<!--                                        uploadFileAsientos-->
+<!--                                        NombresEntidades-->
+                                        <form @submit.prevent="uploadFileAsientos(numeroArchivo)" id="upload">
+                                            <input type="file" @input="form.archivo[numeroArchivo] = $event.target.files[numeroArchivo]"
                                                    accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, .csv,application/vnd.ms-excel"
                                             />
-                                            <!--                                            <p class="font-bold text-red-600">AUN NO DISPONIBLE</p>-->
                                             <br><br>
                                             <progress v-if="form.progress" :value="form.progress.percentage - 20" max="100"
                                                       class="bg-sky-200">
                                                 {{ form.progress.percentage }}%
                                             </progress>
-
                                             <div class="flex">
                                                 <!--                                                can(['create user']) && -->
-                                                <PrimaryButton v-show="form.archivo3 !== null" :disabled="form.archivo3 == null"
-                                                               class=" my-4 rounded-md mx-2" :class="{ 'bg-gray-200' : form.archivo3 == null}">
+                                                <PrimaryButton v-show="form.archivo[numeroArchivo] !== null" :disabled="form.archivo[numeroArchivo] == null"
+                                                               class=" my-4 rounded-md mx-2" :class="{ 'bg-gray-200' : form.archivo[numeroArchivo] == null}">
                                                     {{ lang().button.subir }} excel
                                                 </PrimaryButton>
                                             </div>
@@ -274,7 +227,7 @@ const Abecedario  = Array.from({length: 26}, (_, i) => String.fromCharCode(97 + 
 
                                         <h2 class="text-xl text-gray-900 dark:text-white mt-12">El formato necesita las siguientes columnas</h2>
                                         <ul class="list-decimal my-6 mx-5">
-                                            <li v-for="(campos,indicice) in formatoNecesita3" class="text-lg">
+                                            <li v-for="(campos, indicice) in formatoNecesita[numeroArchivo]" class="text-lg">
                                                 {{ Abecedario[indicice] }}. {{ campos }}
                                             </li>
                                         </ul>
@@ -288,62 +241,12 @@ const Abecedario  = Array.from({length: 26}, (_, i) => String.fromCharCode(97 + 
                                                     <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                                                     <circle cx="12" cy="12" r="3"></circle>
                                                 </svg>
-                                                <p class="text-lg">Comprobantes inscritos: {{ props.nComprobante }}</p>
+                                                <p class="text-lg">{{ NombresEntidades[numeroArchivo] }}: {{ props.ntransaccion }}</p>
                                             </span>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-<!--                            <div class="p-4 md:w-1/3">-->
-<!--                                <div class="h-full border-2 border-gray-200 border-opacity-60 rounded-lg overflow-hidden">-->
-<!--                                    <TableCellsIcon class=" h-24 lg:h-48 md:h-36 w-full object-cover object-center"/>-->
-
-<!--                                    <div class="p-6">-->
-<!--                                        <h3 class="title-font text-lg font-medium text-gray-900 mb-3">Subir Cuentas bancarias flujo efectivo</h3>-->
-<!--                                        <p class="leading-relaxed mb-3"> El excel debe contar con el formato aprobado</p>-->
-
-<!--                                        <form @submit.prevent="uploadFileBancos" id="upload">-->
-<!--                                            <input type="file" @input="form.archivo4 = $event.target.files[0]"-->
-<!--                                                   accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"/>-->
-<!--                                            &lt;!&ndash;                                            <p class="font-bold text-red-600">AUN NO DISPONIBLE</p>&ndash;&gt;-->
-<!--                                            <br><br>-->
-<!--                                            <progress v-if="form.progress" :value="form.progress.percentage - 20" max="100"-->
-<!--                                                      class="bg-sky-200">-->
-<!--                                                {{ form.progress.percentage - 20 }} %-->
-<!--                                            </progress>-->
-
-<!--                                            <div class="flex">-->
-<!--                                                &lt;!&ndash;                                                can(['create user']) && &ndash;&gt;-->
-<!--                                                <PrimaryButton v-show="form.archivo4 !== null" :disabled="form.archivo4 == null"-->
-<!--                                                               class=" my-4 rounded-md mx-2" :class="{ 'bg-gray-200' : form.archivo4 == null}">-->
-<!--                                                    {{ lang().button.subir }} excel-->
-<!--                                                </PrimaryButton>-->
-<!--                                            </div>-->
-<!--                                        </form>-->
-
-<!--                                        <h2 class="text-xl text-gray-900 dark:text-white mt-12">El formato necesita las siguientes columnas</h2>-->
-<!--                                        <ul class="list-decimal my-6 mx-5">-->
-<!--                                            <li v-for="(campos,indicice) in formatoNecesita4" class="text-lg">-->
-<!--                                                {{ Abecedario[indicice] }}. {{ campos }}-->
-<!--                                            </li>-->
-<!--                                        </ul>-->
-
-<!--                                        <div class="flex items-center flex-wrap my-6">-->
-<!--                                            &lt;!&ndash;                                            <a class="text-gray-500 inline-flex items-center md:mb-2 lg:mb-0">Numero de formularios enviados: </a>&ndash;&gt;-->
-<!--                                            <span-->
-<!--                                                class="text-gray-400 mr-3 inline-flex items-center lg:ml-auto md:ml-0 ml-auto leading-none text-sm pr-3 py-1 border-r-2 border-gray-200">-->
-<!--                                                <svg class="w-1 h-4 mr-1" stroke="currentColor" stroke-width="2" fill="none"-->
-<!--                                                     stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">-->
-<!--                                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>-->
-<!--                                                    <circle cx="12" cy="12" r="3"></circle>-->
-<!--                                                </svg>-->
-<!--                                                <p class="text-lg">Bancos inscritos: {{ props.numUsuarios }}</p>-->
-<!--                                            </span>-->
-<!--                                        </div>-->
-<!--                                    </div>-->
-<!--                                </div>-->
-<!--                            </div>-->
-
 
                         </div>
                     </div>

@@ -286,12 +286,12 @@ const Buscar_AN_CI = () => {
                                             <PencilIcon class="w-4 h-4"/>
                                         </InfoButton>
                                         <!--                                            v-show="can(['delete transaccion'])"-->
-                                        <DangerButton type="button"
-                                                      @click="(data.deleteOpen = true), (data.transacciono = claseFromController)"
-                                                      class="px-2 py-1.5 rounded-none"
-                                                      v-tooltip="lang().tooltip.delete">
-                                            <TrashIcon class="w-4 h-4"/>
-                                        </DangerButton>
+<!--                                        <DangerButton type="button"-->
+<!--                                                      @click="(data.deleteOpen = true), (data.transacciono = claseFromController)"-->
+<!--                                                      class="px-2 py-1.5 rounded-none"-->
+<!--                                                      v-tooltip="lang().tooltip.delete">-->
+<!--                                            <TrashIcon class="w-4 h-4"/>-->
+<!--                                        </DangerButton>-->
                                     </div>
                                 </div>
                             </td>

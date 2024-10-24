@@ -25,8 +25,17 @@ class ParametrosController extends Controller
             [],
             ["Acciones"]
         ];
-        array_push($nombresTabla[0], "Fecha", "descripcion");
-        $nombresTabla[2][] = ["Fecha_creacion_parametro", "nombre"];
+        array_push($nombresTabla[0],
+            'nombre',
+            'valor',
+            'categoria',
+            'numero'
+        );
+        $nombresTabla[2][] = [
+            'nombre',
+            'valor',
+            'categoria',
+            'numero',];
         return $nombresTabla;
     }
 
@@ -51,7 +60,7 @@ class ParametrosController extends Controller
                 'title'          =>  $titulo,
                 'filters'        =>  $request->all(['search', 'field', 'order']),
                 'perPage'        =>  1,
-                'fromController' =>  Parametro::first(),
+                'fromController' =>  Parametro::all(),
                 'breadcrumbs'    =>  [['label' => __('app.label.parametros'), 'href' => route('parametro.index')]],
                 'nombresTabla'   =>  $nombresTabla,
             ]);

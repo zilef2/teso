@@ -64,11 +64,10 @@ Route::middleware(['auth'])->group(callback: function () {
     Route::resource('/parametro', ParametrosController::class);
 
     //</editor-fold>
-
     Route::post('/upExCuentas', [SubiExcelController::class, 'upExCuentas'])->name('upExCuentas');
     Route::post('/upExTransacciones', [SubiExcelController::class, 'upExTransacciones'])->name('upExTransacciones');
     Route::post('/uploadFileComprobantes', [SubiExcelController::class, 'uploadFileComprobantes'])->name('uploadFileComprobantes');
-    Route::post('/uploadFileBancos', [SubiExcelController::class, 'uploadFileBancos'])->name('uploadFileBancos');
+    Route::post('/uploadFileAsientos', [SubiExcelController::class, 'uploadFileAsientos'])->name('uploadFileAsientos');
 
     Route::post('/Buscar_CP_CI', [TransaccionController::class, 'Buscar_CP_CI'])->name('Buscar_CP_CI');
     Route::post('/Buscar_CP_CE', [TransaccionController::class, 'Buscar_CP_CE'])->name('Buscar_CP_CE');
@@ -95,6 +94,7 @@ Route::middleware(['auth'])->group(callback: function () {
     Route::resource('/porcentajeInteresCuenta', PorcentajeInteresCuentaController::class);
     Route::resource('/Comprobante', ComprobanteController::class);
     Route::resource('/concepto_flujo', \App\Http\Controllers\ConceptoflujoController::class);
+	Route::resource("/asiento", \App\Http\Controllers\AsientoController::class);
 	//aquipues
     //</editor-fold>
 

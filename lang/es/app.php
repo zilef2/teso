@@ -14,15 +14,19 @@ return [
         'porcentajeIC' => 'Porcentaje Interes',
         'conceptoflujo' => 'Concepto de flujo',
         'concepto_flujo' => 'Concepto de flujo',
+		'asiento' => 'Asiento',
+		'parametro' => 'parametro',
 		//aquipues
     ],
 
     'label' => [
+		'asiento' => 'Asiento',
+        'parametro' => 'parametro',
 		//aquipues
 
         //transaccion
         'n_contrapartidas' => '# de CP',
-        'contrapartida_CI' => 'contrapartida CI',
+        'contrapartida' => 'contrapartida CI',
         'concepto_flujo_homologación' => 'concepto flujo homologación',
 
         'cuenta_contable' => 'Cuenta Contable',

@@ -38,7 +38,7 @@ class TransaccionController extends Controller
 
         $this->arrayFillableSearch = [
             'codigo_cuenta_contable',
-            'contrapartida_CI',
+            'contrapartida',
             'documento',
             'codigo',
             'concepto_flujo_homologación',
@@ -80,12 +80,12 @@ class TransaccionController extends Controller
         }
 
         if ($request->has('OnlyCP')) {
-            if($request->OnlyCP == 'onlycp')
-                $transaccions = $transaccions->whereNotNull('contrapartida_CI');
-            if($request->OnlyCP == 'onlyemptycp')
-                $transaccions = $transaccions->whereNull('contrapartida_CI');
-            if($request->OnlyCP == 'noSeEncontro')
-                $transaccions = $transaccions->where('contrapartida_CI','LIKE', "%No se encontro%");
+            if ($request->OnlyCP == 'onlycp')
+                $transaccions = $transaccions->whereNotNull('contrapartida');
+            if ($request->OnlyCP == 'onlyemptycp')
+                $transaccions = $transaccions->whereNull('contrapartida');
+            if ($request->OnlyCP == 'noSeEncontro')
+                $transaccions = $transaccions->where('contrapartida', 'LIKE', "%No se encontro%");
 //            if($request->OnlyCP == 'allcp')
         }
         // Cachear la búsqueda usando Cache::remember()
@@ -140,7 +140,7 @@ class TransaccionController extends Controller
 
         $Indicadores = [
             'Transacciones' => transaccion::count(),
-            'NoSeEncontro' => transaccion::Where('contrapartida_CI','LIKE', "%No se encontro%")->count(),
+            'NoSeEncontro' => transaccion::Where('contrapartida', 'LIKE', "%No se encontro%")->count(),
             'AJCount' => transaccion::Where('codigo', "AJ")->count(),
             'ANCount' => transaccion::Where('codigo', "AN")->count(),
         ];
@@ -187,7 +187,13 @@ class TransaccionController extends Controller
 
     //fin store functions
 
-    public function show($id){}public function edit($id){}
+    public function show($id)
+    {
+    }
+
+    public function edit($id)
+    {
+    }
 
     public function update(Request $request, $id)
     {
@@ -252,7 +258,7 @@ class TransaccionController extends Controller
                 $HayComprobantes = $HayComprobantes->count();
                 if ($HayComprobantes === 0) {
                     $transa->update([
-                        'contrapartida_CI' => 'No se encontro ningun comprobante para el documento ' . $transa->documento,
+                        'contrapartida' => 'No se encontro ningun comprobante para el documento ' . $transa->documento,
                         'concepto_flujo_homologación' => 'No se encontro ningun comprobante para el documento ' . $transa->documento,
                     ]);
                     continue;
@@ -263,7 +269,7 @@ class TransaccionController extends Controller
                 $lasContrapartidas = $lasContrapartidas->where("valor_credito", '>', 0)->get();
 
                 $justdebug = clone $comprobantes;
-                $justdebug= $justdebug->first()->numero_documento;
+                $justdebug = $justdebug->first()->numero_documento;
 
 
                 //validacion de credito - debito
@@ -273,7 +279,7 @@ class TransaccionController extends Controller
 
                 if ($sumprincipales !== $sumlasContrapartidas) {
                     $transa->update([
-                        'contrapartida_CI' => "No se encontro debitos y creditos no concuerdan, principales suman: $sumprincipales",
+                        'contrapartida' => "No se encontro debitos y creditos no concuerdan, principales suman: $sumprincipales",
                         'concepto_flujo_homologación' => "contrapartidas suman: $sumlasContrapartidas",
                     ]);
                     continue;
@@ -285,13 +291,13 @@ class TransaccionController extends Controller
                     $FirstMaxContraPartida = $lasContrapartidas->sortByDesc($valor_debito_credito)->first();
                     $cuentaCP = $FirstMaxContraPartida->codigo_cuenta;
 
-                        //buscamos el concepto
-                        $concepto = $this->hallarConcepto($cuentaCP);
-                        $transa->update([
-                            'n_contrapartidas' => count($lasContrapartidas),
-                            'contrapartida_CI' => $cuentaCP,
-                            'concepto_flujo_homologación' => $concepto,
-                        ]);
+                    //buscamos el concepto
+                    $concepto = $this->hallarConcepto($cuentaCP);
+                    $transa->update([
+                        'n_contrapartidas' => count($lasContrapartidas),
+                        'contrapartida' => $cuentaCP,
+                        'concepto_flujo_homologación' => $concepto,
+                    ]);
                 }
             }
             DB::commit();
@@ -307,7 +313,8 @@ class TransaccionController extends Controller
     }
 
     //FIN : STORE - UPDATE - DELETE
-    private function hallarConcepto($cuentaCP){
+    private function hallarConcepto($cuentaCP)
+    {
         $cf = concepto_flujo::Where('cuenta_contable', $cuentaCP)->first();
         if ($cf) {
             return $cf->concepto_flujo;

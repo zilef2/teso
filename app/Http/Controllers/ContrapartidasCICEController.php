@@ -59,7 +59,7 @@ class ContrapartidasCICEController extends Controller
                 if ($CPController->NoHayComprobantes($comprobantes, $transa)) {
                     $transa->update([
                         'n_contrapartidas' => 0,
-                        'contrapartida_CI' => 'No se encontró comprobantes para el documento',
+                        'contrapartida' => 'No se encontró comprobantes para el documento',
                         'concepto_flujo_homologación' => 'No se encontró comprobantes para el documento',
                     ]);
                     continue;
@@ -103,13 +103,13 @@ class ContrapartidasCICEController extends Controller
 //                        $IntCp = $IntCp == 0 ? $IntCp : $IntCp - 1;
                     $transa->update([
                         'n_contrapartidas' => 1,
-                        'contrapartida_CI' => $int_ContrapartidaRef,
+                        'contrapartida' => $int_ContrapartidaRef,
                         'concepto_flujo_homologación' => $concepto,
                     ]);
                 } else {
                     $transa->update([
                         'n_contrapartidas' => 0,
-                        'contrapartida_CI' => 'No se encontro CP para doc_ref',
+                        'contrapartida' => 'No se encontro CP para doc_ref',
                         'concepto_flujo_homologación' => 'No se encontro CP para doc_ref',
                     ]);
                 }
@@ -174,7 +174,7 @@ class ContrapartidasCICEController extends Controller
                         $mensaje_t_Error = "No se encontro cp (auxiliar y comprobantes). Documento " . $transa->documento;
                         $transa->update([
                             'n_contrapartidas' => 0,
-                            'contrapartida_CI' => $mensaje_t_Error,
+                            'contrapartida' => $mensaje_t_Error,
                             'concepto_flujo_homologación' => $mensaje_t_Error,
                         ]);
                         continue;
@@ -186,7 +186,7 @@ class ContrapartidasCICEController extends Controller
                     if ($this->LaContraPartidaNoSumaCeroFirst($laContra, $transa)) continue;
                     $transa->update([
                         'n_contrapartidas' => $NumContras,
-                        'contrapartida_CI' => $laContra->codigo_cuenta_contable,
+                        'contrapartida' => $laContra->codigo_cuenta_contable,
                         'concepto_flujo_homologación' => $laContra->concepto_flujo_homologación,
                     ]);
                     //explain: ANULACIONES
@@ -197,7 +197,7 @@ class ContrapartidasCICEController extends Controller
                     $contrapartida = $this->hallarConcepto($int_ContrapartidaRef, $codigo);
                     $transa->update([
                         'n_contrapartidas' => $NumContras,
-                        'contrapartida_CI' => $laContra2->codigo_cuenta,
+                        'contrapartida' => $laContra2->codigo_cuenta,
                         'concepto_flujo_homologación' => $contrapartida,
                     ]);
                 }
@@ -231,7 +231,7 @@ class ContrapartidasCICEController extends Controller
         $elCero = abs($transaValor) !== abs($contraValor);
         if ($elCero) {
             $transa->update([
-                'contrapartida_CI' => "No se encontro un Debito y credito igual. Principal = $transaValor",
+                'contrapartida' => "No se encontro un Debito y credito igual. Principal = $transaValor",
                 'concepto_flujo_homologación' => "Contrapartida = $contraValor",
             ]);
         }
@@ -247,7 +247,7 @@ class ContrapartidasCICEController extends Controller
         $elCero = abs(intval($principalValor)) !== abs(intval($sumlasContrapartidas));
         if ($elCero) {
             $transa->update([
-                'contrapartida_CI' => "No se encontro un Debito y credito iguales.DEBITO: $principalValor",
+                'contrapartida' => "No se encontro un Debito y credito iguales.DEBITO: $principalValor",
                 'concepto_flujo_homologación' => "CONTRAPARTIDA CREDITO: $sumlasContrapartidas",
             ]);
         }
@@ -265,7 +265,7 @@ class ContrapartidasCICEController extends Controller
         $HayComprobantes = $comprobantes->count();
         if ($HayComprobantes === 0) {
             $transa->update([
-                'contrapartida_CI' => 'No se encontro ningun comprobante para el documento ' . $transa->documento,
+                'contrapartida' => 'No se encontro ningun comprobante para el documento ' . $transa->documento,
                 'concepto_flujo_homologación' => 'No se encontro ningun comprobante para el documento ' . $transa->documento,
             ]);
         }
@@ -282,7 +282,7 @@ class ContrapartidasCICEController extends Controller
         $conteo = transaccion::WhereNotNull('concepto_flujo_homologación')->whereMonth('fecha_elaboracion', $mes)->count();
         $tranListas = transaccion::WhereNotNull('concepto_flujo_homologación')->whereMonth('fecha_elaboracion', $mes)->update([
             'n_contrapartidas' => null,
-            'contrapartida_CI' => null,
+            'contrapartida' => null,
             'concepto_flujo_homologación' => null,
         ]);
         echo "Operacion: $tranListas. $conteo limpiadas";

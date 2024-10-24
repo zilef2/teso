@@ -28,6 +28,8 @@ const sidebarButtonsNormal = [ //SAME AS WEB.PHP
     'transaccion',
     'Comprobante',
     'concepto_flujo',
+	'asiento',
+	'parametro',
 	//aquipuesSide
 ];
 

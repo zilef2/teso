@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\helpers\HelpExcel;
 use App\helpers\Myhelp;
-use App\Imports\BancoImport;
+use App\Imports\AsientoImport;
 use App\Imports\ComprobanteImport;
 use App\Imports\CuentaImport;
 use App\Imports\TransaccionesImport;
@@ -241,23 +241,22 @@ class SubiExcelController extends Controller
             }
         }
     }
-    public function uploadFileBancos(Request $request){
-        $archivin = "archivo4";
+    public function uploadFileAsientos(Request $request){
         Myhelp::EscribirEnLog($this, get_called_class(), 'importando bancos ', false);
         $countfilas = 0;
         try {
             DB::beginTransaction();
-            if ($request->{$archivin}) {
+            if ($request->archivo[$request->Contador]) {
 
                 $helpExcel = new HelpExcel();
-                $mensageWarning = $helpExcel->validarArchivoExcel($request,$archivin);
+                $mensageWarning = $helpExcel->NewValidarArchivoExcel($request);
                 if ($mensageWarning != ''){
                     DB::rollback();
                     return back()->with('warning', $mensageWarning);
                 }
 
-                $elImport = new BancoImport();
-                Excel::import($elImport, $request->{$archivin});
+                $elImport = new AsientoImport();
+                Excel::import($elImport, $request->{$request->Contador});
 
                 $countfilas = $elImport->ContarFilas;
 
@@ -270,9 +269,8 @@ class SubiExcelController extends Controller
                 Myhelp::EscribirEnLog($this, 'IMPORT:users', ' finalizo con exito', false);
                 DB::commit();
                 if ($countfilas == 0){
-                    return back()->with('success', __('app.label.op_successfully') . ' No hubo cambios');
+                    return back()->with('warning', __('app.label.op_successfully') . ' No hubo cambios');
                 } else{
-//                    cuenta::where('user_id', $personalImp->usuario->id)->update(['enviado' => 1]);
                     return back()->with('success', __('app.label.op_successfully') . ' Se leyeron ' . $countfilas . ' filas con exito');
                 }
             } else {

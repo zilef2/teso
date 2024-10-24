@@ -40,10 +40,9 @@ return new class extends Migration
             $table->string('periodo')->nullable();
             $table->string('plan_cuentas')->nullable();
 
-            $table->string('contrapartida_CI')->nullable();
+            $table->string('contrapartida')->nullable();
             $table->string('concepto_flujo_homologación')->nullable();
             $table->string('n_contrapartidas')->nullable();
-
 
             $table->timestamps();
         });

@@ -38,6 +38,19 @@ class HelpExcel
         } else return $fechaReturn;
     }
 
+    public function NewValidarArchivoExcel($request)
+    {
+        $exten = $request->archivo[$request->Contador]->getClientOriginalExtension();
+        if ($exten != 'xlsx' && $exten != 'xls') {
+            return 'El archivo debe ser de Excel';
+        }
+        $megas = 12;
+        $pesoKilobyte = ((int)($request->{$nombreArchivo}->getSize())) / (1024);
+        if ($pesoKilobyte > ($megas * 1024)) { //debe pesar menos de 12MB
+            return 'El archivo debe pesar menos de '.$megas.'MB';
+        }
+        return '';
+    }
     public function validarArchivoExcel($request, $nombreArchivo)
     {
         $exten = $request->{$nombreArchivo}->getClientOriginalExtension();

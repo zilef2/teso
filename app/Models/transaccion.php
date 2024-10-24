@@ -24,7 +24,7 @@ class transaccion extends Model
         'valor_credito',
         'nit',
         'n_contrapartidas',
-        'contrapartida_CI',
+        'contrapartida',
         'concepto_flujo_homologación',
         'nombre',
         'cod_costos',

@@ -23,7 +23,7 @@ class UserSeederCustomize extends Seeder
 
         $nombresGenericos = [
             ['name' => 'Sandra Cristina Bedoya Cardenas', 'cc' => '112', 'email' => 'sandra.bedoya@colmayor.edu.co', 'sexo' => 'Femenino', 'rol' => 'tesorera'],
-//            ['name' => 'Jennyfer Figueroa Cano', 'cc' => '113', 'email' => 'jennyfer.figueroa@colmayor.edu.co', 'sexo' => 'Femenino', 'rol' => 'administrativo'],
+            ['name' => 'Sandra Patricia Giraldo Bustos', 'cc' => '26424937', 'email' => 'tesoreria@colmayor.edu.co', 'sexo' => 'Femenino', 'rol' => 'tesorera'],
         ];
         /* ROLES
             'tesorera',//1

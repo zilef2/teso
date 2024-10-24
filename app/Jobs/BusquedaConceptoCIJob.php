@@ -56,7 +56,7 @@ class BusquedaConceptoCIJob implements ShouldQueue
                 if ($CPController->NoHayComprobantes($comprobantes, $transa)) {
                     $transa->update([
                         'n_contrapartidas' => 0,
-                        'contrapartida_CI' => 'No se encontró comprobantes para el documento',
+                        'contrapartida' => 'No se encontró comprobantes para el documento',
                         'concepto_flujo_homologación' => 'No se encontró comprobantes para el documento',
                     ]);
                     continue;
@@ -77,7 +77,7 @@ class BusquedaConceptoCIJob implements ShouldQueue
                 if ($CPController->LaContraPartidaNoSumaCeroGet($lasContrapartidas, $transa, $principal)) {
                     $transa->update([
                         'n_contrapartidas' => 0,
-                        'contrapartida_CI' => 'No se encontró una suma coherente, no suman 0',
+                        'contrapartida' => 'No se encontró una suma coherente, no suman 0',
                         'concepto_flujo_homologación' => 'No se encontró una suma coherente, no suman 0',
                     ]);
                     continue;
@@ -97,7 +97,7 @@ class BusquedaConceptoCIJob implements ShouldQueue
                 if ($Col_ContrapartidaRef) {
                     $transa->update([
                         'n_contrapartidas' => 0,
-                        'contrapartida_CI' => 'No se encontro CP para doc_ref',
+                        'contrapartida' => 'No se encontro CP para doc_ref',
                         'concepto_flujo_homologación' => 'No se encontro CP para doc_ref',
                     ]);
                 } else {
@@ -107,7 +107,7 @@ class BusquedaConceptoCIJob implements ShouldQueue
                     $IntCp = $IntCp == 0 ? $IntCp : $IntCp - 1;
                     $transa->update([
                         'n_contrapartidas' => $IntCp,
-                        'contrapartida_CI' => $int_ContrapartidaRef,
+                        'contrapartida' => $int_ContrapartidaRef,
                         'concepto_flujo_homologación' => $concepto,
                     ]);
                 }

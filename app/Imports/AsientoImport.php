@@ -4,11 +4,13 @@ namespace App\Imports;
 
 use App\helpers\HelpExcel;
 use App\helpers\Myhelp;
+use App\Models\asiento;
 use App\Models\Banco;
+use App\Models\Comprobante;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithStartRow;
 
-class BancoImport implements ToModel,WithStartRow
+class AsientoImport implements ToModel,WithStartRow
 {
 
     public int $ContarFilasAbsolutas;
@@ -27,7 +29,7 @@ class BancoImport implements ToModel,WithStartRow
      */
     function __construct()
     {
-        $this->nombrePropio = 'banco';
+        $this->nombrePropio = 'asiento';
         //contares
         $this->ContarFilasAbsolutas = 1; // eso mismo
         $this->ContarFilas = 0;
@@ -38,14 +40,10 @@ class BancoImport implements ToModel,WithStartRow
     }
 
 
-    public function startRow(): int
-    {
-        return 2;
-    }
+    public function startRow(): int{return 2;}
 
 
-    private function validarNull($row)
-    {
+    private function validarNull($row){
         session(['larow' => $row]);
         return (
             !isset($row[0])
@@ -66,12 +64,12 @@ class BancoImport implements ToModel,WithStartRow
             if ($this->validarNull($row)) return null;
             $this->Requeridos($row); //this has dd function
 
-//            if($this->SoloUnaVez === 0){
-//                [$cuantaVeces,$mesYanio] = $this->ValidarArchivoHaSidoGuardadoAnteriormente($row);
-//                if($cuantaVeces > 0){
-//                    throw new \Exception('|Comprobantes ya cargados del mes: '.$mesYanio);
-//                }
-//            }
+            if($this->SoloUnaVez === 0){
+                [$cuantaVeces,$mesYanio] = $this->HaSidoGuardadoAnteriormente($row);
+                if($cuantaVeces > 0){
+                    throw new \Exception('|'.$this->nombrePropio.'s ya cargados del mes: '.$mesYanio);
+                }
+            }
 
             return $this->TheNewObject($row);
         } catch (\Throwable $th) {
@@ -132,26 +130,23 @@ class BancoImport implements ToModel,WithStartRow
         return new Banco([
             'codigo_cuenta_contable' => $therow[0],
             'numero_cuenta_bancaria' => $therow[1],
-            'banco' => $therow[2],
-            'tipo_de_cuenta' => $therow[3],
-            'tipo_de_recursos' => $therow[4],
-            'convenio' => $therow[5],
         ]);
     }
 
-    
-//    private function ValidarArchivoHaSidoGuardadoAnteriormente($therow)
-//    {
-//        $laFecha = HelpExcel::getFechaExcel($therow[7]);
-//        $mes = $laFecha->format('m'); // Obtiene el mes (en formato numérico)
-//        $anio = $laFecha->format('Y'); // Obtiene el año
-//
-//        $ExisteUnComprobante = Banco::WhereYear('fecha_elaboracion',$anio)
-//            ->whereMonth('fecha_elaboracion',$mes)->count();
-//
-//        $mesYanio = $mes . '-'. $anio;
-//        $this->SoloUnaVez++;
-//        return [$ExisteUnComprobante,$mesYanio];
-//    }
+
+    private function HaSidoGuardadoAnteriormente($therow)
+    {
+        $laFecha = HelpExcel::getFechaExcel($therow[7]); //la fecha
+        $mes = $laFecha->format('m'); // Obtiene el mes (en formato numérico)
+        $anio = $laFecha->format('Y'); // Obtiene el año
+
+        $ExisteUnComprobante = asiento::Where('codigo', $therow[0])
+            ->WhereYear('fecha_elaboracion', $anio)
+            ->whereMonth('fecha_elaboracion', $mes)->count();
+
+        $mesYanio = $mes . '-' . $anio;
+        $this->SoloUnaVez++;
+        return [$ExisteUnComprobante, $mesYanio];
+    }
 }
 

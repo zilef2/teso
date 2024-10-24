@@ -15,6 +15,7 @@ class CreateParametrosTable extends Migration
     {
         Schema::create('parametros', function (Blueprint $table) {
             $table->id();
+            $table->softDeletes();
 			$table->date('Fecha_creacion_parametro');
 			$table->text('nombre');
 			$table->string('valor');

@@ -14,5 +14,7 @@ class Parametro extends Model
         'Fecha_creacion_parametro',
         'nombre',
         'valor',
+        'categoria',
+        'numero',
     ];
 }
