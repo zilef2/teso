@@ -241,7 +241,8 @@ class SubiExcelController extends Controller
         }
     }
     public function uploadFileAsientos(Request $request){
-        Myhelp::EscribirEnLog($this, get_called_class(), 'importando bancos ', false);
+
+        Myhelp::EscribirEnLog($this, get_called_class(), 'importando asientos ', false);
         $countfilas = 0;
         try {
             DB::beginTransaction();
@@ -255,10 +256,11 @@ class SubiExcelController extends Controller
                 }
 
                 $elImport = new AsientoImport();
+                ini_set('memory_limit', '1024M');
                 Excel::import($elImport, $thefile);
+                ini_set('memory_limit', '256M');
 
                 $countfilas = $elImport->ContarFilas;
-
                 $MensajeWarning = HelpExcel::MensajeWarSoloVacios($elImport);
                 if ($MensajeWarning !== '') { //exito
                     return back()->with('success', 'Formularios nuevos: ' . $countfilas)
@@ -269,7 +271,7 @@ class SubiExcelController extends Controller
                 DB::commit();
                 if ($countfilas == 0){
                     return back()->with('warning', __('app.label.op_successfully') . ' No hubo cambios');
-                } else{
+                } else {
                     return back()->with('success', __('app.label.op_successfully') . ' Se leyeron ' . $countfilas . ' filas con exito');
                 }
             } else {
@@ -278,6 +280,7 @@ class SubiExcelController extends Controller
             }
         } catch (\Throwable $th) {
             DB::rollback();
+
             $lasession = session('larow') ?? 'error de session';
             $lasession = $lasession[0] ?? 'error de session';
 
@@ -287,13 +290,13 @@ class SubiExcelController extends Controller
                 return back()->with('warning',$th->getMessage());
 
             }else{
-
                 $mensajeError = $th->getMessage() . ' L:' . $th->getLine() . ' Ubi: ' . $th->getFile();
+
                 Myhelp::EscribirEnLog($this, 'IMPORT:users', ' Fallo importacion: '
                     . $mensajeError, false);
                 return back()->with(
                     'error', __('app.label.op_not_successfully')
-                    . ' Comprobante del error: ' . $lasession
+                    . ' Asiento del error: ' . $lasession
                     . ' error en la iteracion ' . $countfilas . ' ' .$mensajeError
                 );
             }

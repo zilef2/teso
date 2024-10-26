@@ -26,5 +26,4 @@ class afectacion extends Model
         'nombre_empresa',
         'nombre_dependencia',
     ];
-
 }

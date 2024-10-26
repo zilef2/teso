@@ -120,7 +120,8 @@ class Myhelp {
 
 
     //LARAVELFunctions
-        public function mensajesErrorBD($e,$clasePrincipal,$elid,$elnombre) {
+        public function mensajesErrorBD($e,$clasePrincipal,$elid,$elnombre): string
+        {
             $errorCode = $e->getCode();
             $arrayCodes = [
                 23000 => ' No se puede eliminar porque está relacionado con otros registros.',
@@ -130,11 +131,8 @@ class Myhelp {
                 1216 => ' Este registro no se puede eliminar, hay dependencias pendientes.'
             ];
 
-            if(isset($arrayCodes[$errorCode])){
-                $errorMessage = $arrayCodes[$errorCode];
-            }else{
-                $errorMessage = "Ocurrió un error de base de datos.";
-            }
+            $mensajeNormal = $e->getMessage() . ' '.$e->getFile().':'.$e->getLine();
+            $errorMessage = $arrayCodes[$errorCode] ?? "Ocurrió un error.\n ". $mensajeNormal;
 
             Myhelp::EscribirEnLog(
                 $this,
@@ -143,6 +141,7 @@ class Myhelp {
                 false,
                 true
             );
+            $errorMessage = $errorMessage == null? 'Mensaje Null desde mensajesErrorBD' : $errorMessage;
             return $errorMessage;
 
         }
@@ -168,7 +167,8 @@ class Myhelp {
                 $nombreP = end($Elpapa);
 
                 if ($permissions == 'admin' || $permissions == 'superadmin') {
-                    $ElMensaje = $mensaje != '' ? ' Mensaje: ' . $mensaje : '';
+                    $ElMensaje = $mensaje != '' ? ' Mensaje: ' . $mensaje : 'mensaje Null desde erroresExcel';
+
                     Log::channel('soloadmin')->info('Vista:' . $nombreC . ' Padre: ' . $nombreP . '|  U:' . Auth::user()->name . $ElMensaje);
                 } else {
                     Log::info('Vista: ' . $nombreC . ' Padre: ' . $nombreP . '||  U:' . Auth::user()->name ?? 'us desconocido'.' | '. $clase . '| ' . $mensaje);

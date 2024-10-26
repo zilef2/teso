@@ -144,7 +144,9 @@ class TransaccionesImport implements ToModel, WithStartRow
             if (strcmp(strtolower($row[2]), 'tb') === 0) return null;
 
 
-            return $this->TheNewObject($row);
+            $result = $this->TheNewObject($row);
+            $this->ContarFilas++;
+            return $result;
         } catch (\Throwable $th) {
             $mensajeError = ' Fallo dentro de la importacion: ' . $th->getMessage() . ' L:' . $th->getLine() . ' Ubi: ' . $th->getFile();
             Myhelp::EscribirEnLog($this, 'IMPORT:cuentas', $mensajeError, false);

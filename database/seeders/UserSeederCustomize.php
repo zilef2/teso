@@ -21,9 +21,11 @@ class UserSeederCustomize extends Seeder
 
 //        $tiposResponsable = DB::table('tipo_users')->pluck('nombre')->toArray();
 
+        //CargosModelos.php
         $nombresGenericos = [
-            ['name' => 'Sandra Cristina Bedoya Cardenas', 'cc' => '112', 'email' => 'sandra.bedoya@colmayor.edu.co', 'sexo' => 'Femenino', 'rol' => 'tesorera'],
+            ['name' => 'Sandra Cristina Bedoya Cardenas', 'cc' => '43923483', 'email' => 'sandra.bedoya@colmayor.edu.co', 'sexo' => 'Femenino', 'rol' => 'tesorera'],
             ['name' => 'Sandra Patricia Giraldo Bustos', 'cc' => '26424937', 'email' => 'tesoreria@colmayor.edu.co', 'sexo' => 'Femenino', 'rol' => 'tesorera'],
+            ['name' => 'Jorge William Arredondo Arango', 'cc' => '71719090', 'email' => 'viceadministrativa@colmayor.edu.co', 'sexo' => 'Masculino', 'rol' => 'administrativo'],
         ];
         /* ROLES
             'tesorera',//1
@@ -32,12 +34,13 @@ class UserSeederCustomize extends Seeder
         $myhelp = new Myhelp();
         foreach ($nombresGenericos as $key => $value) {
             $primeraParte = $myhelp->cortarFrase($value['name'],1);
+            $segundaParte = $value['cc'];
             $yearRandom = (random_int(20, 40));
             $anios = Carbon::now()->subYears($yearRandom)->format('Y-m-d H:i');
             $unUsuario = User::create([
                 'name' => $value['name'],
                 'email' => $value['email'],
-                'password' => bcrypt($primeraParte . '+*'),
+                'password' => bcrypt($primeraParte . '+'. $segundaParte),
                 'email_verified_at' => date('Y-m-d H:i'),
                 'identificacion' => $value['cc'],
                 'celular' => '123456',

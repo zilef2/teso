@@ -136,7 +136,9 @@ class ComprobanteImport implements ToModel, WithStartRow
 //                throw new \Exception('|Comprobantes de AN no son aceptados');
 //            }
 
-            return $this->TheNewObject($row);
+            $result = $this->TheNewObject($row);
+            $this->ContarFilas++;
+            return $result;
         }catch (\Throwable $th) {
             if(str_starts_with($th->getMessage(),'|')) {
                 throw new \Exception($th->getMessage());
@@ -191,7 +193,6 @@ class ComprobanteImport implements ToModel, WithStartRow
         ]);
 
     }
-
 
 }
 
