@@ -67,6 +67,7 @@ class dashboardController extends Controller
     {
 //        $conceptos = concepto_flujo::Where('ingresos_o_egresos', 'ingresos')->pluck('concepto_flujo');
         $ResumenCI = [];
+        $losconceptos=[];
         for ($i = $yearnow; $i >= $yearPast; $i--) {
             $transacciones = transaccion::whereYear('fecha_elaboracion', $i)
                 ->select('concepto_flujo_homologación', 'valor_debito')
@@ -97,6 +98,7 @@ class dashboardController extends Controller
     }
     private function ResumenCI2($yearnow, $yearPast)
     {
+        $losconceptos=[];
         $ResumenCI = [];
         for ($i = $yearnow; $i >= $yearPast; $i--) {
             $transacciones = transaccion::whereYear('fecha_elaboracion', $i)
