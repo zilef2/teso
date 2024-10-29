@@ -69,6 +69,8 @@ Route::middleware(['auth'])->group(callback: function () {
     Route::post('/uploadFileComprobantes', [SubiExcelController::class, 'uploadFileComprobantes'])->name('uploadFileComprobantes');
     Route::post('/uploadFileAsientos', [SubiExcelController::class, 'uploadFileAsientos'])->name('uploadFileAsientos');
 
+    Route::get('/jobs', [\App\Http\Controllers\JobController::class, 'index'])->name('jobs');
+
     Route::post('/Buscar_CP_CI', [TransaccionController::class, 'Buscar_CP_CI'])->name('Buscar_CP_CI');
     Route::post('/Buscar_CP_CE', [TransaccionController::class, 'Buscar_CP_CE'])->name('Buscar_CP_CE');
     Route::post('/Buscar_AJ_CI', [\App\Http\Controllers\ContrapartidasCICEController::class, 'Buscar_AJ_CI'])->name('Buscar_AJ_CI');

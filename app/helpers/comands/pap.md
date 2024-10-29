@@ -19,3 +19,9 @@ php artisan make:import BancoImport --model=Banco // desuso
 # Comandos
 php artisan make:command LanguageCopyU
 php artisan make:job BusquedaConceptoCI
+
+
+# PAP
+php artisan make:controller JobController
+php artisan make:notification JobCompleted
+

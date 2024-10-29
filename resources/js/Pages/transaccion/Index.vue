@@ -1,6 +1,6 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import {Head, router, useForm, usePage} from '@inertiajs/vue3';
+import {Head, Link, router, useForm, usePage} from '@inertiajs/vue3';
 import Breadcrumb from '@/Components/Breadcrumb.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SelectInput from '@/Components/SelectInput.vue';
@@ -139,6 +139,11 @@ const Buscar_AN_CI = () => {
             <!-- {{ props.fromController.data[2] }} -->
             <div class="flex justify-between px-4 sm:px-0">
                 <div class="inline-flex rounded-xl overflow-hidden w-fit">
+                        <Link :href="route('jobs')">
+                            <PrimaryButton class="rounded-lg mx-2">
+                                Ver Cruces
+                            </PrimaryButton>
+                        </Link>
                     <div class="mx-2">
                         <PrimaryButton v-if="!form.processing || !data.procensandoCPCI" class="rounded-lg"
                                        @click="Buscar_CP_CI">

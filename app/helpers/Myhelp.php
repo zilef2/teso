@@ -2,6 +2,7 @@
 
 namespace App\helpers;
 
+use App\Models\Parametro;
 use App\Models\transaccion;
 use Carbon\Carbon;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -20,12 +21,10 @@ class Myhelp {
     // JUST THIS PROJECT
     public static function TransaccionesCI_AJ_AN($codigo)
     {
-        $laFecha = new \DateTime();
-
-        $mes = $laFecha->format('m'); // Obtiene el mes (en formato numérico)
-        $mes = 8; // agosto
-//      $anio = $laFecha->format('Y'); // Obtiene el año
-
+        $paraMes = Parametro::Where("nombre", "Mes transaccional")->first();
+        if ($paraMes) {
+            $mes = intval($paraMes->valor);
+        }
         return transaccion::Where('codigo', $codigo)
 //            ->WhereNull('concepto_flujo_homologación')
 //            ->WhereYear('fecha_elaboracion', $anio)

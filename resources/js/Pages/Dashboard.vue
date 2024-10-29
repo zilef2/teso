@@ -10,6 +10,7 @@ import {buildCharEnti, chart10} from "@/Pages/chars/numeroEntidades.js";
 import {buildCharCPnull, chart11} from "@/Pages/chars/ComparacionContrapartidaNull.js";
 import {ResumenCI,ResumenCI2, chart12,chart13} from "@/Pages/chars/ResumenCI.js";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
+import {Link} from '@inertiajs/vue3';
 
 // <!--<editor-fold desc=" lo demas">-->
 // roles: Number,
@@ -270,12 +271,14 @@ const changeChar = (numeracion) => {
                          :chartCanvasHijaEntrada="chartCanvasHijaEntrada"
                          :ctxEntrada="ctxEntrada"
         />
-        <PrimaryButton class="rounded-lg mx-2" @click="changeChar(0)">
-            Dona 1
-        </PrimaryButton>
-        <PrimaryButton class="rounded-lg mx-2" @click="changeChar(1)">
-            Dona 2
-        </PrimaryButton>
+<!--        <PrimaryButton class="rounded-lg mx-2" @click="changeChar(0)">-->
+<!--            Dona 1-->
+<!--        </PrimaryButton>-->
+        <Link :href="route('jobs')">
+            <PrimaryButton class="rounded-lg mx-2">
+                Ver Cruces
+            </PrimaryButton>
+        </Link>
         <PrimaryButton class="rounded-lg mx-2" @click="data.IngresosOpen = true">
             Entradas
         </PrimaryButton>

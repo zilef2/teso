@@ -23,7 +23,9 @@ class UserSeeder extends Seeder
         $App = env('APP_NAME');
         $genero = 'Masculino';
         if($genPa === null){
-            echo 'Sin enviroment';
+            echo "Sin enviroment\n";
+            echo "Sin enviroment\n";
+            echo "Sin enviroment\n";
             return null;
         }
         $superadmin = User::updateOrCreate([
@@ -31,7 +33,6 @@ class UserSeeder extends Seeder
             'email'             => 'ajelof2+11@gmail.com',
         ],
             [
-//            'password'          => bcrypt($genPa.'~8~po'), // cont_ins~8~po
             'password'          => bcrypt($genPa),
             'email_verified_at' => date('Y-m-d H:i'),
             'sexo' => $genero,
@@ -44,8 +45,7 @@ class UserSeeder extends Seeder
             'name'              => "$nombreAdmin $App",
             'email'             => "alejofg2+11@gmail.com",
         ],[
-            'password'          => bcrypt($genPa),
-//            'password'          => bcrypt($genPa.'uiu'), //cont_insuiu
+            'password'          => bcrypt($genPa.'uiu'), //cont_insuiu
             'email_verified_at' => date('Y-m-d H:i'),
             'sexo' => $genero,
             'identificacion' => '11232411',
