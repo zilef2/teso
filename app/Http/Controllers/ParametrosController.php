@@ -49,7 +49,7 @@ class ParametrosController extends Controller
 
     public function index(Request $request)
     {
-        $permissions = Myhelp::EscribirEnLog($this, ' parametro');
+        $permissions = ZilefLogs::EscribirEnLog($this, ' parametro');
 
 
         $titulo = __('app.label.parametros');
@@ -65,7 +65,7 @@ class ParametrosController extends Controller
                 'nombresTabla'   =>  $nombresTabla,
             ]);
         } else {
-            Myhelp::EscribirEnLog($this, ' parametro', 'en el index nos hackearon ', false, true); //!usefull
+            ZilefLogs::EscribirEnLog($this, ' parametro', 'en el index nos hackearon ', false, true); //!usefull
         }
     } //fin index
 
@@ -75,7 +75,7 @@ class ParametrosController extends Controller
     public function store(Request $request)
     {
         DB::beginTransaction();
-        Myhelp::EscribirEnLog($this, get_called_class(), ' store ', false); //!usefull
+        ZilefLogs::EscribirEnLog($this, get_called_class(), ' store ', false); //!usefull
 
         try {
             $parametro = Parametro::create([
@@ -106,7 +106,7 @@ class ParametrosController extends Controller
     {
         $parametro = Parametro::find($id);
         DB::beginTransaction();
-        Myhelp::EscribirEnLog($this, get_called_class(), '', false);
+        ZilefLogs::EscribirEnLog($this, get_called_class(), '', false);
         try {
             // dd($parametro,$request->nombre);
             $numticke = $request->NumeroTicketDefecto < 0 ? $request->NumeroTicketDefecto * -1 : $request->NumeroTicketDefecto;
@@ -131,13 +131,13 @@ class ParametrosController extends Controller
     // public function destroy(parametro $parametro)
     public function destroy($id)
     {
-        Myhelp::EscribirEnLog($this, get_called_class(), '', false);
+        ZilefLogs::EscribirEnLog($this, get_called_class(), '', false);
 
         DB::beginTransaction();
 
         try {
             $parametros = Parametro::findOrFail($id);
-            Myhelp::EscribirEnLog($this, get_called_class(), "La parametro id:" . $id . " y nombre:" . $parametros->nombre . " ha sido borrada correctamente", false);
+            ZilefLogs::EscribirEnLog($this, get_called_class(), "La parametro id:" . $id . " y nombre:" . $parametros->nombre . " ha sido borrada correctamente", false);
 
 
             // $parametros->delete();

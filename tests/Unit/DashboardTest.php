@@ -24,7 +24,7 @@ class DashboardTest extends TestCase
             $mock->shouldReceive('getPermissionToNumber')->andReturn(10);
         });
 //
-//        // Mockear el método estático Myhelp::EscribirEnLog
+//        // Mockear el método estático ZilefLogs::EscribirEnLog
 //        $this->mock(Myhelp::class, function ($mock) {
 //            $mock->shouldReceive('EscribirEnLog')->andReturn('mocked log');
 //        });

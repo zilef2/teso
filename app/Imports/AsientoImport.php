@@ -70,7 +70,7 @@ class AsientoImport implements ToModel,WithStartRow
             return $result;
         } catch (\Throwable $th) {
             $mensajeError = (new \App\helpers\Myhelp)->mensajesErrorBD($th, 'AsientoImport', 0, '_');
-            Myhelp::EscribirEnLog($this, 'IMPORT:comprobante', $mensajeError, false);
+            ZilefLogs::EscribirEnLog($this, 'IMPORT:comprobante', $mensajeError, false);
 
             if (str_starts_with($th->getMessage(), '|')) {
                 throw new \Exception(

@@ -55,7 +55,7 @@ class geenericController extends Controller
     //</editor-fold>
 
     public function index(Request $request) {
-        $numberPermissions = MyModels::getPermissionToNumber(Myhelp::EscribirEnLog($this, ' generics '));
+        $numberPermissions = MyModels::getPermissionToNumber(ZilefLogs::EscribirEnLog($this, ' generics '));
         $generics = $this->Mapear();
         $this->Filtros($generics,$request);
 //        $losSelect = $this->losSelect();
@@ -81,14 +81,14 @@ class geenericController extends Controller
     //! STORE functions
 
     public function store(Request $request){
-        $permissions = Myhelp::EscribirEnLog($this, ' Begin STORE:generics');
+        $permissions = ZilefLogs::EscribirEnLog($this, ' Begin STORE:generics');
         DB::beginTransaction();
 //        $dependex = $request->dependex['id'];
 //        $request->merge(['dependex_id' => $request->dependex['id']]);
         $generic = generic::create($request->all());
 
         DB::commit();
-        Myhelp::EscribirEnLog($this, 'STORE:generics EXITOSO', 'generic id:' . $generic->id . ' | ' . $generic->nombre, false);
+        ZilefLogs::EscribirEnLog($this, 'STORE:generics EXITOSO', 'generic id:' . $generic->id . ' | ' . $generic->nombre, false);
         return back()->with('success', __('app.label.created_successfully', ['name' => $generic->nombre]));
     }
     //fin store functions
@@ -96,14 +96,14 @@ class geenericController extends Controller
     public function show($id){}public function edit($id){}
 
     public function update(Request $request, $id){
-        $permissions = Myhelp::EscribirEnLog($this, ' Begin UPDATE:generics');
+        $permissions = ZilefLogs::EscribirEnLog($this, ' Begin UPDATE:generics');
         DB::beginTransaction();
         $generic = generic::findOrFail($id);
         $request->merge(['dependex_id' => $request->dependex['id']]);
         $generic->update($request->all());
 
         DB::commit();
-        Myhelp::EscribirEnLog($this, 'UPDATE:generics EXITOSO', 'generic id:' . $generic->id . ' | ' . $generic->nombre , false);
+        ZilefLogs::EscribirEnLog($this, 'UPDATE:generics EXITOSO', 'generic id:' . $generic->id . ' | ' . $generic->nombre , false);
         return back()->with('success', __('app.label.updated_successfully2', ['nombre' => $generic->nombre]));
     }
 
@@ -115,11 +115,11 @@ class geenericController extends Controller
      */
 
     public function destroy($genericid){
-        $permissions = Myhelp::EscribirEnLog($this, 'DELETE:generics');
+        $permissions = ZilefLogs::EscribirEnLog($this, 'DELETE:generics');
         $generic = generic::find($genericid);
         $elnombre = $generic->nombre;
         $generic->delete();
-        Myhelp::EscribirEnLog($this, 'DELETE:generics', 'generic id:' . $generic->id . ' | ' . $generic->nombre . ' borrado', false);
+        ZilefLogs::EscribirEnLog($this, 'DELETE:generics', 'generic id:' . $generic->id . ' | ' . $generic->nombre . ' borrado', false);
         return back()->with('success', __('app.label.deleted_successfully', ['name' => $elnombre]));
     }
 

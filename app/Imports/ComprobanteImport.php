@@ -144,7 +144,7 @@ class ComprobanteImport implements ToModel, WithStartRow
                 throw new \Exception($th->getMessage());
             }else{
                 $mensajeError = '  ' . $th->getMessage() . '. Informar al desarrollador - L:' . $th->getLine() . ' Ubi: ' . $th->getFile();
-                Myhelp::EscribirEnLog($this, 'IMPORT:comprobante', $mensajeError, false);
+                ZilefLogs::EscribirEnLog($this, 'IMPORT:comprobante', $mensajeError, false);
                 throw new \Exception($mensajeError);
             }
         }

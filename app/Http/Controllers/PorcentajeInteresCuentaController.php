@@ -55,7 +55,7 @@ class PorcentajeInteresCuentaController extends Controller
     //</editor-fold>
 
     public function index(Request $request) {
-        $numberPermissions = MyModels::getPermissionToNumber(Myhelp::EscribirEnLog($this, ' PorcentajeInteresCuentas '));
+        $numberPermissions = MyModels::getPermissionToNumber(ZilefLogs::EscribirEnLog($this, ' PorcentajeInteresCuentas '));
         $PorcentajeInteresCuentas = $this->Mapear();
         $this->Filtros($PorcentajeInteresCuentas,$request);
 //        $losSelect = $this->losSelect();
@@ -81,14 +81,14 @@ class PorcentajeInteresCuentaController extends Controller
     //! STORE functions
 
     public function store(Request $request){
-        $permissions = Myhelp::EscribirEnLog($this, ' Begin STORE:PorcentajeInteresCuentas');
+        $permissions = ZilefLogs::EscribirEnLog($this, ' Begin STORE:PorcentajeInteresCuentas');
         DB::beginTransaction();
 //        $no_nada = $request->no_nada['id'];
 //        $request->merge(['no_nada_id' => $request->no_nada['id']]);
         $PorcentajeInteresCuenta = PorcentajeInteresCuenta::create($request->all());
 
         DB::commit();
-        Myhelp::EscribirEnLog($this, 'STORE:PorcentajeInteresCuentas EXITOSO', 'PorcentajeInteresCuenta id:' . $PorcentajeInteresCuenta->id . ' | ' . $PorcentajeInteresCuenta->nombre, false);
+        ZilefLogs::EscribirEnLog($this, 'STORE:PorcentajeInteresCuentas EXITOSO', 'PorcentajeInteresCuenta id:' . $PorcentajeInteresCuenta->id . ' | ' . $PorcentajeInteresCuenta->nombre, false);
         return back()->with('success', __('app.label.created_successfully', ['name' => $PorcentajeInteresCuenta->nombre]));
     }
     //fin store functions
@@ -96,14 +96,14 @@ class PorcentajeInteresCuentaController extends Controller
     public function show($id){}public function edit($id){}
 
     public function update(Request $request, $id){
-        $permissions = Myhelp::EscribirEnLog($this, ' Begin UPDATE:PorcentajeInteresCuentas');
+        $permissions = ZilefLogs::EscribirEnLog($this, ' Begin UPDATE:PorcentajeInteresCuentas');
         DB::beginTransaction();
         $PorcentajeInteresCuenta = PorcentajeInteresCuenta::findOrFail($id);
         $request->merge(['no_nada_id' => $request->no_nada['id']]);
         $PorcentajeInteresCuenta->update($request->all());
 
         DB::commit();
-        Myhelp::EscribirEnLog($this, 'UPDATE:PorcentajeInteresCuentas EXITOSO', 'PorcentajeInteresCuenta id:' . $PorcentajeInteresCuenta->id . ' | ' . $PorcentajeInteresCuenta->nombre , false);
+        ZilefLogs::EscribirEnLog($this, 'UPDATE:PorcentajeInteresCuentas EXITOSO', 'PorcentajeInteresCuenta id:' . $PorcentajeInteresCuenta->id . ' | ' . $PorcentajeInteresCuenta->nombre , false);
         return back()->with('success', __('app.label.updated_successfully2', ['nombre' => $PorcentajeInteresCuenta->nombre]));
     }
 
@@ -115,11 +115,11 @@ class PorcentajeInteresCuentaController extends Controller
      */
 
     public function destroy($PorcentajeInteresCuentaid){
-        $permissions = Myhelp::EscribirEnLog($this, 'DELETE:PorcentajeInteresCuentas');
+        $permissions = ZilefLogs::EscribirEnLog($this, 'DELETE:PorcentajeInteresCuentas');
         $PorcentajeInteresCuenta = PorcentajeInteresCuenta::find($PorcentajeInteresCuentaid);
         $elnombre = $PorcentajeInteresCuenta->nombre;
         $PorcentajeInteresCuenta->delete();
-        Myhelp::EscribirEnLog($this, 'DELETE:PorcentajeInteresCuentas', 'PorcentajeInteresCuenta id:' . $PorcentajeInteresCuenta->id . ' | ' . $PorcentajeInteresCuenta->nombre . ' borrado', false);
+        ZilefLogs::EscribirEnLog($this, 'DELETE:PorcentajeInteresCuentas', 'PorcentajeInteresCuenta id:' . $PorcentajeInteresCuenta->id . ' | ' . $PorcentajeInteresCuenta->nombre . ' borrado', false);
         return back()->with('success', __('app.label.deleted_successfully', ['name' => $elnombre]));
     }
 

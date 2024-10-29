@@ -21,7 +21,7 @@ class SubiExcelController extends Controller
 
     public function subirexceles()
     { //just  a view
-        Myhelp::EscribirEnLog($this, ' ingreso a la vista subir excel');
+        ZilefLogs::EscribirEnLog($this, ' ingreso a la vista subir excel');
 
         return Inertia::render('Excel/subirExceles', [
             'title' => __('app.label.user'),
@@ -68,7 +68,7 @@ class SubiExcelController extends Controller
     }
 
     public function upExCuentas(Request $request){
-        Myhelp::EscribirEnLog($this, get_called_class(), 'importando cuentas', false);
+        ZilefLogs::EscribirEnLog($this, get_called_class(), 'importando cuentas', false);
         $countfilas = 0;
         try {
             DB::beginTransaction();
@@ -93,7 +93,7 @@ class SubiExcelController extends Controller
                         ->with('warning2', $MensajeWarning);
                 }
 
-                Myhelp::EscribirEnLog($this, 'IMPORT:users', ' finalizo con exito', false);
+                ZilefLogs::EscribirEnLog($this, 'IMPORT:users', ' finalizo con exito', false);
                 DB::commit();
                 if ($countfilas == 0){
                     return back()->with('success', __('app.label.op_successfully') . ' No hubo cambios');
@@ -112,14 +112,14 @@ class SubiExcelController extends Controller
             $lasession = $lasession[0] ?? 'error de session';
             $mensajeError = $th->getMessage() . ' L:' . $th->getLine() . ' Ubi: ' . $th->getFile();
 
-            Myhelp::EscribirEnLog($this, 'IMPORT:users', ' Fallo importacion: ' . $mensajeError, false);
+            ZilefLogs::EscribirEnLog($this, 'IMPORT:users', ' Fallo importacion: ' . $mensajeError, false);
             return back()->with('error', __('app.label.op_not_successfully') . ' Usuario del error: ' . $lasession . ' error en la iteracion ' . $countfilas . ' ' .$mensajeError);
         }
     }
 
 
     public function upExTransacciones(Request $request){
-        Myhelp::EscribirEnLog($this, get_called_class(), 'importando transacciones', false);
+        ZilefLogs::EscribirEnLog($this, get_called_class(), 'importando transacciones', false);
         $countfilas = 0;
         $entidad = 'Transaccion';
         try {
@@ -145,7 +145,7 @@ class SubiExcelController extends Controller
                         ->with('warning2', $MensajeWarning);
                 }
 
-                Myhelp::EscribirEnLog($this, 'IMPORT:'.$entidad, '. operacion con exito', false);
+                ZilefLogs::EscribirEnLog($this, 'IMPORT:'.$entidad, '. operacion con exito', false);
                 DB::commit();
                 if ($countfilas == 0){
                     return back()->with('warning', __('app.label.op_successfully') . ' No hubo cambios');
@@ -162,7 +162,7 @@ class SubiExcelController extends Controller
             $lasession = $lasession[0] ?? 'error de session';
             $mensajeError = $th->getMessage() . ' L:' . $th->getLine() . ' Ubi: ' . $th->getFile();
 
-            Myhelp::EscribirEnLog($this, 'IMPORT:users', ' Fallo importacion: ' . $mensajeError, false);
+            ZilefLogs::EscribirEnLog($this, 'IMPORT:users', ' Fallo importacion: ' . $mensajeError, false);
             if(str_starts_with($th->getMessage(),'|')){
                 return back()->with('warning',$mensajeError);
             }else{
@@ -177,7 +177,7 @@ class SubiExcelController extends Controller
 
 
     public function uploadFileComprobantes(Request $request){
-        Myhelp::EscribirEnLog($this, get_called_class(), 'importando comprobantes ', false);
+        ZilefLogs::EscribirEnLog($this, get_called_class(), 'importando comprobantes ', false);
         $countfilas = 0;
         try {
             DB::beginTransaction();
@@ -203,7 +203,7 @@ class SubiExcelController extends Controller
                         ->with('warning2', $MensajeWarning);
                 }
 
-                Myhelp::EscribirEnLog($this, 'IMPORT:users', ' finalizo con exito', false);
+                ZilefLogs::EscribirEnLog($this, 'IMPORT:users', ' finalizo con exito', false);
                 DB::commit();
                 if ($countfilas == 0){
                     return back()->with('success', __('app.label.op_successfully') . ' No hubo cambios');
@@ -223,14 +223,14 @@ class SubiExcelController extends Controller
             $lasession = $lasession[0] ?? 'error de session';
 
             if(str_starts_with($th->getMessage(),'|')){
-                Myhelp::EscribirEnLog($this, 'IMPORT:users', ' Fallo importacion: '
+                ZilefLogs::EscribirEnLog($this, 'IMPORT:users', ' Fallo importacion: '
                     . $th->getMessage(), false);
                 return back()->with('warning',$th->getMessage());
 
             }else{
 
                 $mensajeError = $th->getMessage() . ' L:' . $th->getLine() . ' Ubi: ' . $th->getFile();
-                Myhelp::EscribirEnLog($this, 'IMPORT:users', ' Fallo importacion: '
+                ZilefLogs::EscribirEnLog($this, 'IMPORT:users', ' Fallo importacion: '
                     . $mensajeError, false);
                 return back()->with(
                     'error', __('app.label.op_not_successfully')
@@ -242,7 +242,7 @@ class SubiExcelController extends Controller
     }
     public function uploadFileAsientos(Request $request){
 
-        Myhelp::EscribirEnLog($this, get_called_class(), 'importando asientos ', false);
+        ZilefLogs::EscribirEnLog($this, get_called_class(), 'importando asientos ', false);
         $countfilas = 0;
         try {
             DB::beginTransaction();
@@ -267,7 +267,7 @@ class SubiExcelController extends Controller
                         ->with('warning2', $MensajeWarning);
                 }
 
-                Myhelp::EscribirEnLog($this, 'IMPORT:users', ' finalizo con exito', false);
+                ZilefLogs::EscribirEnLog($this, 'IMPORT:users', ' finalizo con exito', false);
                 DB::commit();
                 if ($countfilas == 0){
                     return back()->with('warning', __('app.label.op_successfully') . ' No hubo cambios');
@@ -285,14 +285,14 @@ class SubiExcelController extends Controller
             $lasession = $lasession[0] ?? 'error de session';
 
             if(str_starts_with($th->getMessage(),'|')){
-                Myhelp::EscribirEnLog($this, 'IMPORT:users', ' Fallo importacion: '
+                ZilefLogs::EscribirEnLog($this, 'IMPORT:users', ' Fallo importacion: '
                     . $th->getMessage(), false);
                 return back()->with('warning',$th->getMessage());
 
             }else{
                 $mensajeError = $th->getMessage() . ' L:' . $th->getLine() . ' Ubi: ' . $th->getFile();
 
-                Myhelp::EscribirEnLog($this, 'IMPORT:users', ' Fallo importacion: '
+                ZilefLogs::EscribirEnLog($this, 'IMPORT:users', ' Fallo importacion: '
                     . $mensajeError, false);
                 return back()->with(
                     'error', __('app.label.op_not_successfully')

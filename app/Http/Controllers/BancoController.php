@@ -55,7 +55,7 @@ class BancoController extends Controller
     //</editor-fold>
 
     public function index(Request $request) {
-        $numberPermissions = MyModels::getPermissionToNumber(Myhelp::EscribirEnLog($this, ' bancos '));
+        $numberPermissions = MyModels::getPermissionToNumber(ZilefLogs::EscribirEnLog($this, ' bancos '));
         $bancos = $this->Mapear();
         $this->Filtros($bancos,$request);
 //        $losSelect = $this->losSelect();
@@ -81,14 +81,14 @@ class BancoController extends Controller
     //! STORE functions
 
     public function store(Request $request){
-        $permissions = Myhelp::EscribirEnLog($this, ' Begin STORE:bancos');
+        $permissions = ZilefLogs::EscribirEnLog($this, ' Begin STORE:bancos');
         DB::beginTransaction();
 //        $no_nada = $request->no_nada['id'];
 //        $request->merge(['no_nada_id' => $request->no_nada['id']]);
         $banco = banco::create($request->all());
 
         DB::commit();
-        Myhelp::EscribirEnLog($this, 'STORE:bancos EXITOSO', 'banco id:' . $banco->id . ' | ' . $banco->nombre, false);
+        ZilefLogs::EscribirEnLog($this, 'STORE:bancos EXITOSO', 'banco id:' . $banco->id . ' | ' . $banco->nombre, false);
         return back()->with('success', __('app.label.created_successfully', ['name' => $banco->nombre]));
     }
     //fin store functions
@@ -96,14 +96,14 @@ class BancoController extends Controller
     public function show($id){}public function edit($id){}
 
     public function update(Request $request, $id){
-        $permissions = Myhelp::EscribirEnLog($this, ' Begin UPDATE:bancos');
+        $permissions = ZilefLogs::EscribirEnLog($this, ' Begin UPDATE:bancos');
         DB::beginTransaction();
         $banco = banco::findOrFail($id);
         $request->merge(['no_nada_id' => $request->no_nada['id']]);
         $banco->update($request->all());
 
         DB::commit();
-        Myhelp::EscribirEnLog($this, 'UPDATE:bancos EXITOSO', 'banco id:' . $banco->id . ' | ' . $banco->nombre , false);
+        ZilefLogs::EscribirEnLog($this, 'UPDATE:bancos EXITOSO', 'banco id:' . $banco->id . ' | ' . $banco->nombre , false);
         return back()->with('success', __('app.label.updated_successfully2', ['nombre' => $banco->nombre]));
     }
 
@@ -115,11 +115,11 @@ class BancoController extends Controller
      */
 
     public function destroy($bancoid){
-        $permissions = Myhelp::EscribirEnLog($this, 'DELETE:bancos');
+        $permissions = ZilefLogs::EscribirEnLog($this, 'DELETE:bancos');
         $banco = banco::find($bancoid);
         $elnombre = $banco->nombre;
         $banco->delete();
-        Myhelp::EscribirEnLog($this, 'DELETE:bancos', 'banco id:' . $banco->id . ' | ' . $banco->nombre . ' borrado', false);
+        ZilefLogs::EscribirEnLog($this, 'DELETE:bancos', 'banco id:' . $banco->id . ' | ' . $banco->nombre . ' borrado', false);
         return back()->with('success', __('app.label.deleted_successfully', ['name' => $elnombre]));
     }
 

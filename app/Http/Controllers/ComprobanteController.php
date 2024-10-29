@@ -82,7 +82,7 @@ class ComprobanteController extends Controller
     //</editor-fold>
 
     public function index(Request $request) {
-        $numberPermissions = MyModels::getPermissionToNumber(Myhelp::EscribirEnLog($this, ' Comprobantes '));
+        $numberPermissions = MyModels::getPermissionToNumber(ZilefLogs::EscribirEnLog($this, ' Comprobantes '));
         $laclase = $this->Mapear($this->Filtros($request));
 
 
@@ -121,14 +121,14 @@ class ComprobanteController extends Controller
     //! STORE functions
 
     public function store(Request $request){
-        $permissions = Myhelp::EscribirEnLog($this, ' Begin STORE:Comprobantes');
+        $permissions = ZilefLogs::EscribirEnLog($this, ' Begin STORE:Comprobantes');
         DB::beginTransaction();
 //        $no_nada = $request->no_nada['id'];
 //        $request->merge(['no_nada_id' => $request->no_nada['id']]);
         $Comprobante = Comprobante::create($request->all());
 
         DB::commit();
-        Myhelp::EscribirEnLog($this, 'STORE:Comprobantes EXITOSO', 'Comprobante id:' . $Comprobante->id . ' | ' . $Comprobante->nombre, false);
+        ZilefLogs::EscribirEnLog($this, 'STORE:Comprobantes EXITOSO', 'Comprobante id:' . $Comprobante->id . ' | ' . $Comprobante->nombre, false);
         return back()->with('success', __('app.label.created_successfully', ['name' => $Comprobante->nombre]));
     }
     //fin store functions
@@ -136,14 +136,14 @@ class ComprobanteController extends Controller
     public function show($id){}public function edit($id){}
 
     public function update(Request $request, $id){
-        $permissions = Myhelp::EscribirEnLog($this, ' Begin UPDATE:Comprobantes');
+        $permissions = ZilefLogs::EscribirEnLog($this, ' Begin UPDATE:Comprobantes');
         DB::beginTransaction();
         $Comprobante = Comprobante::findOrFail($id);
         $request->merge(['no_nada_id' => $request->no_nada['id']]);
         $Comprobante->update($request->all());
 
         DB::commit();
-        Myhelp::EscribirEnLog($this, 'UPDATE:Comprobantes EXITOSO', 'Comprobante id:' . $Comprobante->id . ' | ' . $Comprobante->nombre , false);
+        ZilefLogs::EscribirEnLog($this, 'UPDATE:Comprobantes EXITOSO', 'Comprobante id:' . $Comprobante->id . ' | ' . $Comprobante->nombre , false);
         return back()->with('success', __('app.label.updated_successfully2', ['nombre' => $Comprobante->nombre]));
     }
 
@@ -155,11 +155,11 @@ class ComprobanteController extends Controller
      */
 
     public function destroy($Comprobanteid){
-        $permissions = Myhelp::EscribirEnLog($this, 'DELETE:Comprobantes');
+        $permissions = ZilefLogs::EscribirEnLog($this, 'DELETE:Comprobantes');
         $Comprobante = Comprobante::find($Comprobanteid);
         $elnombre = $Comprobante->nombre;
         $Comprobante->delete();
-        Myhelp::EscribirEnLog($this, 'DELETE:Comprobantes', 'Comprobante id:' . $Comprobante->id . ' | ' . $Comprobante->nombre . ' borrado', false);
+        ZilefLogs::EscribirEnLog($this, 'DELETE:Comprobantes', 'Comprobante id:' . $Comprobante->id . ' | ' . $Comprobante->nombre . ' borrado', false);
         return back()->with('success', __('app.label.deleted_successfully', ['name' => $elnombre]));
     }
 

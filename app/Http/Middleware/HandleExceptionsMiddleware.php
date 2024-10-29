@@ -10,7 +10,7 @@ use Illuminate\Database\QueryException;
 use Symfony\Component\HttpFoundation\Response;
 
 class HandleExceptionsMiddleware{
-   
+
     public function handle(Request $request, Closure $next)
     {
 //        DB::beginTransaction();
@@ -35,7 +35,7 @@ class HandleExceptionsMiddleware{
 //                return !str_contains($line, 'vendor');
 //            }));
 //
-//            Myhelp::EscribirEnLog($this, 
+//            ZilefLogs::EscribirEnLog($this,
 //                ' MiddleOperation ', ' fallo | ' . $mensan . ' Trace: ' . $filteredTrace, false);
 //
 //            $myhelp = new Myhelp();

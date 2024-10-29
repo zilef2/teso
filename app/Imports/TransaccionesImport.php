@@ -149,7 +149,7 @@ class TransaccionesImport implements ToModel, WithStartRow
             return $result;
         } catch (\Throwable $th) {
             $mensajeError = ' Fallo dentro de la importacion: ' . $th->getMessage() . ' L:' . $th->getLine() . ' Ubi: ' . $th->getFile();
-            Myhelp::EscribirEnLog($this, 'IMPORT:cuentas', $mensajeError, false);
+            ZilefLogs::EscribirEnLog($this, 'IMPORT:cuentas', $mensajeError, false);
             dd($mensajeError, 'fila ' . $this->ContarFilasAbsolutas);
         }
     }

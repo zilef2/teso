@@ -75,11 +75,11 @@ class CuentaImport implements ToModel,WithStartRow
 //        $this->vectorMlineaInsensitive = array_map('mb_strtolower', $this->Mlineadelplan);
 
     }
-    
-    
+
+
     public function startRow(): int{return 2;}
 
-    
+
     private function validarNull($row){
         session(['larow' => $row]);
         return (
@@ -101,13 +101,13 @@ class CuentaImport implements ToModel,WithStartRow
     {
         try {
             $this->ContarFilasAbsolutas++;
-            
+
             if($this->validarNull($row)) return null;
 
             //#: post validaciones
             $row[12] = $row[12] ?? 0;
             $vigAnterior = intval($row[12]);
-            
+
 
             /*
                 'codigo_cuenta_contable', 1
@@ -159,7 +159,7 @@ class CuentaImport implements ToModel,WithStartRow
 
             $this->numero_necesidad++;
             $cuenta = new cuenta([
-                
+
                 'codigo_cuenta_contable' => trim($row[0]),
                 'numero_cuenta_bancaria' => trim($row[1]),
                 'banco' => trim($row[2]),
@@ -174,7 +174,7 @@ class CuentaImport implements ToModel,WithStartRow
 
         } catch (\Throwable $th) {
             $mensajeError = ' Fallo dentro de la importacion: ' . $th->getMessage() . ' L:' . $th->getLine() . ' Ubi: ' . $th->getFile();
-            Myhelp::EscribirEnLog($this, 'IMPORT:cuentas', $mensajeError, false);
+            ZilefLogs::EscribirEnLog($this, 'IMPORT:cuentas', $mensajeError, false);
             dd($mensajeError,'fila '.$this->ContarFilasAbsolutas);
         }
     }

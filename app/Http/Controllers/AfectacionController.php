@@ -55,7 +55,7 @@ class AfectacionController extends Controller
     //</editor-fold>
 
     public function index(Request $request) {
-        $numberPermissions = MyModels::getPermissionToNumber(Myhelp::EscribirEnLog($this, ' afectacions '));
+        $numberPermissions = MyModels::getPermissionToNumber(ZilefLogs::EscribirEnLog($this, ' afectacions '));
         $afectacions = $this->Mapear();
         $this->Filtros($afectacions,$request);
 //        $losSelect = $this->losSelect();
@@ -81,14 +81,14 @@ class AfectacionController extends Controller
     //! STORE functions
 
     public function store(Request $request){
-        $permissions = Myhelp::EscribirEnLog($this, ' Begin STORE:afectacions');
+        $permissions = ZilefLogs::EscribirEnLog($this, ' Begin STORE:afectacions');
         DB::beginTransaction();
 //        $no_nada = $request->no_nada['id'];
 //        $request->merge(['no_nada_id' => $request->no_nada['id']]);
         $afectacion = afectacion::create($request->all());
 
         DB::commit();
-        Myhelp::EscribirEnLog($this, 'STORE:afectacions EXITOSO', 'afectacion id:' . $afectacion->id . ' | ' . $afectacion->nombre, false);
+        ZilefLogs::EscribirEnLog($this, 'STORE:afectacions EXITOSO', 'afectacion id:' . $afectacion->id . ' | ' . $afectacion->nombre, false);
         return back()->with('success', __('app.label.created_successfully', ['name' => $afectacion->nombre]));
     }
     //fin store functions
@@ -96,14 +96,14 @@ class AfectacionController extends Controller
     public function show($id){}public function edit($id){}
 
     public function update(Request $request, $id){
-        $permissions = Myhelp::EscribirEnLog($this, ' Begin UPDATE:afectacions');
+        $permissions = ZilefLogs::EscribirEnLog($this, ' Begin UPDATE:afectacions');
         DB::beginTransaction();
         $afectacion = afectacion::findOrFail($id);
         $request->merge(['no_nada_id' => $request->no_nada['id']]);
         $afectacion->update($request->all());
 
         DB::commit();
-        Myhelp::EscribirEnLog($this, 'UPDATE:afectacions EXITOSO', 'afectacion id:' . $afectacion->id . ' | ' . $afectacion->nombre , false);
+        ZilefLogs::EscribirEnLog($this, 'UPDATE:afectacions EXITOSO', 'afectacion id:' . $afectacion->id . ' | ' . $afectacion->nombre , false);
         return back()->with('success', __('app.label.updated_successfully2', ['nombre' => $afectacion->nombre]));
     }
 
@@ -115,11 +115,11 @@ class AfectacionController extends Controller
      */
 
     public function destroy($afectacionid){
-        $permissions = Myhelp::EscribirEnLog($this, 'DELETE:afectacions');
+        $permissions = ZilefLogs::EscribirEnLog($this, 'DELETE:afectacions');
         $afectacion = afectacion::find($afectacionid);
         $elnombre = $afectacion->nombre;
         $afectacion->delete();
-        Myhelp::EscribirEnLog($this, 'DELETE:afectacions', 'afectacion id:' . $afectacion->id . ' | ' . $afectacion->nombre . ' borrado', false);
+        ZilefLogs::EscribirEnLog($this, 'DELETE:afectacions', 'afectacion id:' . $afectacion->id . ' | ' . $afectacion->nombre . ' borrado', false);
         return back()->with('success', __('app.label.deleted_successfully', ['name' => $elnombre]));
     }
 

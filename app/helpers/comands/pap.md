@@ -18,10 +18,13 @@ php artisan make:import BancoImport --model=Banco // desuso
 
 # Comandos
 php artisan make:command LanguageCopyU
-php artisan make:job BusquedaConceptoCI
 
-
-# PAP
+# Primera notificacion (intento fallido)
 php artisan make:controller JobController
 php artisan make:notification JobCompleted
+
+# Buscando Cruces
+php artisan make:job BusquedaConceptoCI
+php artisan make:job BC_CIGeneral
+php artisan make:controller BusquedaIndependienteController
 

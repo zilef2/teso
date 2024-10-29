@@ -18,7 +18,7 @@ class dashboardController extends Controller
 {
     public function Dashboard()
     {
-        $numberPermissions = MyModels::getPermissionToNumber(Myhelp::EscribirEnLog($this, ' | inspeccions create | '));
+        $numberPermissions = MyModels::getPermissionToNumber(ZilefLogs::EscribirEnLog($this, ' | inspeccions create | '));
 
         $yearnow = date('Y');
         $yearPast = $yearnow - 1;

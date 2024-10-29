@@ -55,7 +55,7 @@ class AsientoController extends Controller
     //</editor-fold>
 
     public function index(Request $request) {
-        $numberPermissions = MyModels::getPermissionToNumber(Myhelp::EscribirEnLog($this, ' asientos '));
+        $numberPermissions = MyModels::getPermissionToNumber(ZilefLogs::EscribirEnLog($this, ' asientos '));
         $asientos = $this->Mapear();
         $this->Filtros($asientos,$request);
 //        $losSelect = $this->losSelect();
@@ -81,14 +81,14 @@ class AsientoController extends Controller
     //! STORE functions
 
     public function store(Request $request){
-        $permissions = Myhelp::EscribirEnLog($this, ' Begin STORE:asientos');
+        $permissions = ZilefLogs::EscribirEnLog($this, ' Begin STORE:asientos');
         DB::beginTransaction();
 //        $no_nada = $request->no_nada['id'];
 //        $request->merge(['no_nada_id' => $request->no_nada['id']]);
         $asiento = asiento::create($request->all());
 
         DB::commit();
-        Myhelp::EscribirEnLog($this, 'STORE:asientos EXITOSO', 'asiento id:' . $asiento->id . ' | ' . $asiento->nombre, false);
+        ZilefLogs::EscribirEnLog($this, 'STORE:asientos EXITOSO', 'asiento id:' . $asiento->id . ' | ' . $asiento->nombre, false);
         return back()->with('success', __('app.label.created_successfully', ['name' => $asiento->nombre]));
     }
     //fin store functions
@@ -96,14 +96,14 @@ class AsientoController extends Controller
     public function show($id){}public function edit($id){}
 
     public function update(Request $request, $id){
-        $permissions = Myhelp::EscribirEnLog($this, ' Begin UPDATE:asientos');
+        $permissions = ZilefLogs::EscribirEnLog($this, ' Begin UPDATE:asientos');
         DB::beginTransaction();
         $asiento = asiento::findOrFail($id);
         $request->merge(['no_nada_id' => $request->no_nada['id']]);
         $asiento->update($request->all());
 
         DB::commit();
-        Myhelp::EscribirEnLog($this, 'UPDATE:asientos EXITOSO', 'asiento id:' . $asiento->id . ' | ' . $asiento->nombre , false);
+        ZilefLogs::EscribirEnLog($this, 'UPDATE:asientos EXITOSO', 'asiento id:' . $asiento->id . ' | ' . $asiento->nombre , false);
         return back()->with('success', __('app.label.updated_successfully2', ['nombre' => $asiento->nombre]));
     }
 
@@ -115,11 +115,11 @@ class AsientoController extends Controller
      */
 
     public function destroy($asientoid){
-        $permissions = Myhelp::EscribirEnLog($this, 'DELETE:asientos');
+        $permissions = ZilefLogs::EscribirEnLog($this, 'DELETE:asientos');
         $asiento = asiento::find($asientoid);
         $elnombre = $asiento->nombre;
         $asiento->delete();
-        Myhelp::EscribirEnLog($this, 'DELETE:asientos', 'asiento id:' . $asiento->id . ' | ' . $asiento->nombre . ' borrado', false);
+        ZilefLogs::EscribirEnLog($this, 'DELETE:asientos', 'asiento id:' . $asiento->id . ' | ' . $asiento->nombre . ' borrado', false);
         return back()->with('success', __('app.label.deleted_successfully', ['name' => $elnombre]));
     }
 

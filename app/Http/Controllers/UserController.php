@@ -104,7 +104,7 @@ class UserController extends Controller {
 
 
     public function index(Request $request) {
-        $permissions = Myhelp::EscribirEnLog($this, ' users');
+        $permissions = ZilefLogs::EscribirEnLog($this, ' users');
         $numberPermissions = MyModels::getPermissionToNumber($permissions);
 
         $users = User::query()->with('roles');
@@ -138,7 +138,7 @@ class UserController extends Controller {
 
     //! STORE - UPDATE - DELETE
     public function store(UserStoreRequest $request){
-        $permissions = Myhelp::EscribirEnLog($this, 'STORE:users');
+        $permissions = ZilefLogs::EscribirEnLog($this, 'STORE:users');
         if(isset($request->sexo['value'])){
             $sexo = is_string($request->sexo) ? $request->sexo : $request->sexo['value'];
         }else{
@@ -160,7 +160,7 @@ class UserController extends Controller {
             'firma'     => $request->firma,
         ]);
         $user->assignRole($request->role);
-        Myhelp::EscribirEnLog($this, 'STORE:users', 'usuario id:' . $user->id . ' | ' . $user->name . ' guardado', false);
+        ZilefLogs::EscribirEnLog($this, 'STORE:users', 'usuario id:' . $user->id . ' | ' . $user->name . ' guardado', false);
 
         return back()->with('success', __('app.label.created_successfully', ['name' => $user->name]));
     }
@@ -168,7 +168,7 @@ class UserController extends Controller {
     public function show($id){}public function edit($id){}
 
     public function update(UserUpdateRequest $request, $id){
-        Myhelp::EscribirEnLog($this, 'UPDATE:users', '', false);
+        ZilefLogs::EscribirEnLog($this, 'UPDATE:users', '', false);
 
         $sexo = is_string($request->sexo) ? $request->sexo : $request->sexo['value'];
         $user = User::findOrFail($id);
@@ -187,7 +187,7 @@ class UserController extends Controller {
         ]);
 
         $user->syncRoles($request->role);
-        Myhelp::EscribirEnLog($this, 'UPDATE:users', 'usuario id:' . $user->id . ' | ' . $user->name . ' actualizado', false);
+        ZilefLogs::EscribirEnLog($this, 'UPDATE:users', 'usuario id:' . $user->id . ' | ' . $user->name . ' actualizado', false);
         return back()->with('success', __('app.label.updated_successfully', ['name' => $user->name]));
     }
 
@@ -198,14 +198,14 @@ class UserController extends Controller {
      * @return \Illuminate\Http\RedirectResponse
      */
     public function destroy(User $user){
-        $permissions = Myhelp::EscribirEnLog($this, 'DELETE:users');
+        $permissions = ZilefLogs::EscribirEnLog($this, 'DELETE:users');
 
         try {
             $user->delete();
-            Myhelp::EscribirEnLog($this, 'DELETE:users', 'usuario id:' . $user->id . ' | ' . $user->name . ' borrado', false);
+            ZilefLogs::EscribirEnLog($this, 'DELETE:users', 'usuario id:' . $user->id . ' | ' . $user->name . ' borrado', false);
             return back()->with('success', __('app.label.deleted_successfully', ['name' => $user->name]));
         } catch (\Throwable $th) {
-            Myhelp::EscribirEnLog($this, 'DELETE:users', 'usuario id:' . $user->id . ' | ' . $user->name . ' fallo en el borrado:: ' . $th->getMessage() . ' L:' . $th->getLine() . ' Ubi: ' . $th->getFile(), false);
+            ZilefLogs::EscribirEnLog($this, 'DELETE:users', 'usuario id:' . $user->id . ' | ' . $user->name . ' fallo en el borrado:: ' . $th->getMessage() . ' L:' . $th->getLine() . ' Ubi: ' . $th->getFile(), false);
             return back()->with('error', __('app.label.deleted_error', ['name' => $user->name]) . $th->getMessage() . ' L:' . $th->getLine() . ' Ubi: ' . $th->getFile());
         }
     }
@@ -223,7 +223,7 @@ class UserController extends Controller {
     //FIN : STORE - UPDATE - DELETE
 
     public function subirexceles(){ //just  a view
-        Myhelp::EscribirEnLog($this, ' materia');
+        ZilefLogs::EscribirEnLog($this, ' materia');
 
         return Inertia::render('User/subirExceles', [
             'breadcrumbs'   => [['label' => __('app.label.user'), 'href' => route('user.index')]],

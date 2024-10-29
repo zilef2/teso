@@ -25,14 +25,14 @@ class CuentaController extends Controller
 //        $this->middleware('permission:read cuenta', ['only' => ['index', 'show']]);
 //        $this->middleware('permission:update cuenta', ['only' => ['edit', 'update']]);
 //        $this->middleware('permission:delete cuenta', ['only' => ['destroy', 'destroyBulk']]);
-        $this->thisAtributos = (new cuenta())->getFillable(); 
+        $this->thisAtributos = (new cuenta())->getFillable();
         $this->arrayBusque = [
             'search',
             'searchNumCuenta',
             'searchBanco',
             'searchtipo',
         ];
-        
+
         $this->arrayFillableSearch = [
             'codigo_cuenta_contable',
             'numero_cuenta_bancaria',
@@ -48,7 +48,7 @@ class CuentaController extends Controller
         return $cuentas;
 
     }
-    
+
     private function BusquedasText($cuentas,$arrayBusquedas,$request){
         foreach ($arrayBusquedas as $index => $busqueda) {
             $campo = $this->arrayFillableSearch[$index];
@@ -62,7 +62,7 @@ class CuentaController extends Controller
         return $cuentas;
     }
     public function Filtros(&$cuentas,$request){
-        
+
         $cuentas = $this->BusquedasText($cuentas,$this->arrayBusque,$request);
 
         if ($request->has(['field', 'order'])) {
@@ -71,7 +71,7 @@ class CuentaController extends Controller
             $cuentas = $cuentas->orderBy('updated_at', 'DESC');
         }
     }
-    
+
 //    public function losSelect()
 //    {
 //        $no_nadasSelect = No_nada::all('id','nombre as name')->toArray();
@@ -81,7 +81,7 @@ class CuentaController extends Controller
     //</editor-fold>
 
     public function index(Request $request) {
-        $numberPermissions = MyModels::getPermissionToNumber(Myhelp::EscribirEnLog($this, ' cuentas '));
+        $numberPermissions = MyModels::getPermissionToNumber(ZilefLogs::EscribirEnLog($this, ' cuentas '));
         $cuentas = $this->Mapear();
         $this->Filtros($cuentas,$request);
 //        $losSelect = $this->losSelect();
@@ -117,14 +117,14 @@ class CuentaController extends Controller
     //! STORE functions
 
     public function store(Request $request){
-        $permissions = Myhelp::EscribirEnLog($this, ' Begin STORE:cuentas');
+        $permissions = ZilefLogs::EscribirEnLog($this, ' Begin STORE:cuentas');
         DB::beginTransaction();
 //        $no_nada = $request->no_nada['id'];
 //        $request->merge(['no_nada_id' => $request->no_nada['id']]);
         $cuenta = cuenta::create($request->all());
 
         DB::commit();
-        Myhelp::EscribirEnLog($this, 'STORE:cuentas EXITOSO', 'cuenta id:' . $cuenta->id . ' | ' . $cuenta->nombre, false);
+        ZilefLogs::EscribirEnLog($this, 'STORE:cuentas EXITOSO', 'cuenta id:' . $cuenta->id . ' | ' . $cuenta->nombre, false);
         return back()->with('success', __('app.label.created_successfully', ['name' => $cuenta->nombre]));
     }
     //fin store functions
@@ -132,14 +132,14 @@ class CuentaController extends Controller
     public function show($id){}public function edit($id){}
 
     public function update(Request $request, $id){
-        $permissions = Myhelp::EscribirEnLog($this, ' Begin UPDATE:cuentas');
+        $permissions = ZilefLogs::EscribirEnLog($this, ' Begin UPDATE:cuentas');
         DB::beginTransaction();
         $cuenta = cuenta::findOrFail($id);
         $request->merge(['no_nada_id' => $request->no_nada['id']]);
         $cuenta->update($request->all());
 
         DB::commit();
-        Myhelp::EscribirEnLog($this, 'UPDATE:cuentas EXITOSO', 'cuenta id:' . $cuenta->id . ' | ' . $cuenta->nombre , false);
+        ZilefLogs::EscribirEnLog($this, 'UPDATE:cuentas EXITOSO', 'cuenta id:' . $cuenta->id . ' | ' . $cuenta->nombre , false);
         return back()->with('success', __('app.label.updated_successfully2', ['nombre' => $cuenta->nombre]));
     }
 
@@ -151,11 +151,11 @@ class CuentaController extends Controller
      */
 
     public function destroy($cuentaid){
-        $permissions = Myhelp::EscribirEnLog($this, 'DELETE:cuentas');
+        $permissions = ZilefLogs::EscribirEnLog($this, 'DELETE:cuentas');
         $cuenta = cuenta::find($cuentaid);
         $elnombre = $cuenta->nombre;
         $cuenta->delete();
-        Myhelp::EscribirEnLog($this, 'DELETE:cuentas', 'cuenta id:' . $cuenta->id . ' | ' . $cuenta->nombre . ' borrado', false);
+        ZilefLogs::EscribirEnLog($this, 'DELETE:cuentas', 'cuenta id:' . $cuenta->id . ' | ' . $cuenta->nombre . ' borrado', false);
         return back()->with('success', __('app.label.deleted_successfully', ['name' => $elnombre]));
     }
 

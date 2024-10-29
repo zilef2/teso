@@ -72,7 +72,7 @@ class ConceptoflujoController extends Controller
     //</editor-fold>
 
     public function index(Request $request) {
-        $numberPermissions = MyModels::getPermissionToNumber(Myhelp::EscribirEnLog($this, ' concepto_flujos '));
+        $numberPermissions = MyModels::getPermissionToNumber(ZilefLogs::EscribirEnLog($this, ' concepto_flujos '));
         $laclase = $this->Mapear($this->Filtros($request));
 //        $losSelect = $this->losSelect();
 
@@ -112,14 +112,14 @@ class ConceptoflujoController extends Controller
     //! STORE functions
 
     public function store(Request $request){
-        $permissions = Myhelp::EscribirEnLog($this, ' Begin STORE:concepto_flujos');
+        $permissions = ZilefLogs::EscribirEnLog($this, ' Begin STORE:concepto_flujos');
         DB::beginTransaction();
 //        $no_nada = $request->no_nada['id'];
 //        $request->merge(['no_nada_id' => $request->no_nada['id']]);
         $concepto_flujo = concepto_flujo::create($request->all());
 
         DB::commit();
-        Myhelp::EscribirEnLog($this, 'STORE:concepto_flujos EXITOSO', 'concepto_flujo id:' . $concepto_flujo->id . ' | ' . $concepto_flujo->nombre, false);
+        ZilefLogs::EscribirEnLog($this, 'STORE:concepto_flujos EXITOSO', 'concepto_flujo id:' . $concepto_flujo->id . ' | ' . $concepto_flujo->nombre, false);
         return back()->with('success', __('app.label.created_successfully', ['name' => $concepto_flujo->nombre]));
     }
     //fin store functions
@@ -127,14 +127,14 @@ class ConceptoflujoController extends Controller
     public function show($id){}public function edit($id){}
 
     public function update(Request $request, $id){
-        $permissions = Myhelp::EscribirEnLog($this, ' Begin UPDATE:concepto_flujos');
+        $permissions = ZilefLogs::EscribirEnLog($this, ' Begin UPDATE:concepto_flujos');
         DB::beginTransaction();
         $concepto_flujo = concepto_flujo::findOrFail($id);
         $request->merge(['no_nada_id' => $request->no_nada['id']]);
         $concepto_flujo->update($request->all());
 
         DB::commit();
-        Myhelp::EscribirEnLog($this, 'UPDATE:concepto_flujos EXITOSO', 'concepto_flujo id:' . $concepto_flujo->id . ' | ' . $concepto_flujo->nombre , false);
+        ZilefLogs::EscribirEnLog($this, 'UPDATE:concepto_flujos EXITOSO', 'concepto_flujo id:' . $concepto_flujo->id . ' | ' . $concepto_flujo->nombre , false);
         return back()->with('success', __('app.label.updated_successfully2', ['nombre' => $concepto_flujo->nombre]));
     }
 
@@ -146,11 +146,11 @@ class ConceptoflujoController extends Controller
      */
 
     public function destroy($concepto_flujoid){
-        $permissions = Myhelp::EscribirEnLog($this, 'DELETE:concepto_flujos');
+        $permissions = ZilefLogs::EscribirEnLog($this, 'DELETE:concepto_flujos');
         $concepto_flujo = concepto_flujo::find($concepto_flujoid);
         $elnombre = $concepto_flujo->nombre;
         $concepto_flujo->delete();
-        Myhelp::EscribirEnLog($this, 'DELETE:concepto_flujos', 'concepto_flujo id:' . $concepto_flujo->id . ' | ' . $concepto_flujo->nombre . ' borrado', false);
+        ZilefLogs::EscribirEnLog($this, 'DELETE:concepto_flujos', 'concepto_flujo id:' . $concepto_flujo->id . ' | ' . $concepto_flujo->nombre . ' borrado', false);
         return back()->with('success', __('app.label.deleted_successfully', ['name' => $elnombre]));
     }
 

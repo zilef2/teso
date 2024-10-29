@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\helpers\Myhelp;
 use App\helpers\MyModels;
+use App\helpers\ZilefLogs;
 use App\Models\Comprobante;
 use App\Models\concepto_flujo;
 use App\Models\Parametro;
@@ -121,7 +122,7 @@ class TransaccionController extends Controller
 
     public function index(Request $request)
     {
-        $numberPermissions = MyModels::getPermissionToNumber(Myhelp::EscribirEnLog($this, ' index transaccions '));
+        $numberPermissions = MyModels::getPermissionToNumber(ZilefLogs::EscribirEnLog($this, ' index transaccions '));
         $laclase = $this->Mapear($this->Filtros($request));
 //        $losSelect = $this->losSelect();
 
@@ -175,14 +176,14 @@ class TransaccionController extends Controller
 
     public function store(Request $request)
     {
-        $permissions = Myhelp::EscribirEnLog($this, ' Begin STORE:transaccions');
+        $permissions = ZilefLogs::EscribirEnLog($this, ' Begin STORE:transaccions');
         DB::beginTransaction();
 //        $no_nada = $request->no_nada['id'];
 //        $request->merge(['no_nada_id' => $request->no_nada['id']]);
         $transaccion = transaccion::create($request->all());
 
         DB::commit();
-        Myhelp::EscribirEnLog($this, 'STORE:transaccions EXITOSO', 'transaccion id:' . $transaccion->id . ' | ' . $transaccion->nombre, false);
+        ZilefLogs::EscribirEnLog($this, 'STORE:transaccions EXITOSO', 'transaccion id:' . $transaccion->id . ' | ' . $transaccion->nombre, false);
         return back()->with('success', __('app.label.created_successfully', ['name' => $transaccion->nombre]));
     }
 
@@ -198,14 +199,14 @@ class TransaccionController extends Controller
 
     public function update(Request $request, $id)
     {
-        Myhelp::EscribirEnLog($this, ' Begin UPDATE:transaccions');
+        ZilefLogs::EscribirEnLog($this, ' Begin UPDATE:transaccions');
         DB::beginTransaction();
         $transaccion = transaccion::findOrFail($id);
 //        $request->merge(['no_nada_id' => $request->no_nada['id']]);
         $transaccion->update($request->all());
 
         DB::commit();
-        Myhelp::EscribirEnLog($this, 'UPDATE:transaccions EXITOSO', 'transaccion id:' . $transaccion->id . ' | ' . $transaccion->nombre, false);
+        ZilefLogs::EscribirEnLog($this, 'UPDATE:transaccions EXITOSO', 'transaccion id:' . $transaccion->id . ' | ' . $transaccion->nombre, false);
         return back()->with('success', __('app.label.updated_successfully2', ['nombre' => $transaccion->nombre]));
     }
 
@@ -218,11 +219,11 @@ class TransaccionController extends Controller
 
     public function destroy($transaccionid)
     {
-        $permissions = Myhelp::EscribirEnLog($this, 'DELETE:transaccions');
+        $permissions = ZilefLogs::EscribirEnLog($this, 'DELETE:transaccions');
         $transaccion = transaccion::find($transaccionid);
         $elnombre = $transaccion->nombre;
         $transaccion->delete();
-        Myhelp::EscribirEnLog($this, 'DELETE:transaccions', 'transaccion id:' . $transaccion->id . ' | ' . $transaccion->nombre . ' borrado', false);
+        ZilefLogs::EscribirEnLog($this, 'DELETE:transaccions', 'transaccion id:' . $transaccion->id . ' | ' . $transaccion->nombre . ' borrado', false);
         return back()->with('success', __('app.label.deleted_successfully', ['name' => $elnombre]));
     }
 
