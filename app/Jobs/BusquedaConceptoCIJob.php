@@ -26,13 +26,15 @@ class BusquedaConceptoCIJob implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     private mixed $Transacciones;
+    private string $mensaje;
 
     /**
      * Create a new job instance.
      */
-    public function __construct($Transacciones)
+    public function __construct($Transacciones,$mensaje)
     {
         $this->Transacciones = $Transacciones;
+        $this->mensaje = $mensaje;
     }
 
     /**
@@ -42,26 +44,22 @@ class BusquedaConceptoCIJob implements ShouldQueue
     {
         try {
             $user = Myhelp::AuthU();
-            Log::info("U -> " . Auth::user()->name);
-//            $contraCICE = new \App\Http\Controllers\ContrapartidasCICEController();
+            Log::info("U -> " . $user->name);
+            $contraCICE = new \App\Http\Controllers\ContrapartidasCICEController();
             Log::info("asdasdasdasdasU -> " . Auth::user()->name);
 
-//            $contraCICE->Uscar_AJ_CI($this->Transacciones);
-//            try {
-//                Mail::to($user->email)->send(new Jobfinished());
-//            } catch (\Exception $e) {
-//                Log::error("Error sending email: " . $e->getMessage());
-//            }
-
-//                (new MailMessage)
-//                    ->greeting('Hello!')
-//                    ->line('One of your invoices has been paid!')
-//                    ->lineIf($this->amount > 0, "Amount paid: {$this->amount}")
-//                    ->action('View Invoice', $url)
-//                    ->line('Thank you for using our application!');
+            $contraCICE->Uscar_AJ_CI($this->Transacciones);
+            try {
+                $destinatario = $user->email;
+                $mensaje = $this->mensaje;
+                Mail::raw($mensaje, function ($message) use ($mensaje, $destinatario) {
+                    $message->to($destinatario)->subject($mensaje);
+                });
+            } catch (\Exception $e) {
+                Log::error("Error enviado correo: " . $e->getMessage());
+            }
         } catch (\Throwable $th) {
-//            DB::rollback();
-//            return back()->with('error', 'Ajustes con errores: ' . ZilefErrors::RastroError($th));
+            Log::error(ZilefErrors::RastroError($th));
         }
     }
 

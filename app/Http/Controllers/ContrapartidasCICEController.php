@@ -37,7 +37,8 @@ class ContrapartidasCICEController extends Controller
         $conteoTransac = $Transacciones->count();
 
         if ($conteoTransac > 2) {
-            dispatch(new BusquedaConceptoCIJob($Transacciones))->delay(now()->addSeconds());
+            dispatch(new BusquedaConceptoCIJob($Transacciones, "Cruce de AJ finalizado"))->delay(now()->addSeconds());
+
             $aproxSeconds = ceil($conteoTransac / 25); //25 son las que se analizan por segundo
             $aproxSeconds = $aproxSeconds > 60 ? ($aproxSeconds / 60) . ' mins' : ($aproxSeconds) . ' segs';
             return redirect()->route('transaccion.index')->with('warning',

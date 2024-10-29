@@ -16,6 +16,7 @@ use App\Http\Controllers\ZipController;
 use App\Http\Controllers\SubiExcelController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
 use Maatwebsite\Excel\Facades\Excel;
@@ -70,6 +71,13 @@ Route::middleware(['auth'])->group(callback: function () {
     Route::post('/uploadFileAsientos', [SubiExcelController::class, 'uploadFileAsientos'])->name('uploadFileAsientos');
 
     Route::get('/jobs', [\App\Http\Controllers\JobController::class, 'index'])->name('jobs');
+    Route::get('/jo', function() {
+        $destinatario = 'ajelof2@gmail.com';
+        $mensaje = 'Proceso finalizado';
+        Mail::raw($mensaje, function ($message) use ($destinatario) {
+            $message->to($destinatario)->subject('Cruce AJ esta listo');
+        });
+    });
 
     Route::post('/Buscar_CP_CI', [TransaccionController::class, 'Buscar_CP_CI'])->name('Buscar_CP_CI');
     Route::post('/Buscar_CP_CE', [TransaccionController::class, 'Buscar_CP_CE'])->name('Buscar_CP_CE');
