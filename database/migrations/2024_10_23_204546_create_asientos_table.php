@@ -17,7 +17,7 @@ return new class extends Migration {
             $table->string('codigo');
             $table->string('documento');
             $table->string('fecha_elaboracion');
-            $table->string('descripcion');
+            $table->string('descripcion',1024)->nullable();
             $table->string('comprobante');
             $table->decimal('valor_debito', 15)->nullable();
             $table->decimal('valor_credito', 15)->nullable();

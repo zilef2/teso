@@ -35,7 +35,7 @@ class ZilefLogs {
             $nombreP = end($Elpapa);
 
             if ($permissions == 'admin' || $permissions == 'superadmin') {
-                $ElMensaje = $mensaje != '' ? ' Mensaje: ' . $mensaje : 'mensaje Null desde erroresExcel';
+                $ElMensaje = $mensaje != '' ? ' Mensaje: ' . $mensaje : ' mensaje Null desde EscribirEnLog';
 
                 Log::info('Vista:' . $nombreC . ' Padre: ' . $nombreP . '|  U:' . Auth::user()->name . $ElMensaje);
                 //Log::channel('soloadmin')->info('Vista:' . $nombreC . ' Padre: ' . $nombreP . '|  U:' . Auth::user()->name . $ElMensaje);

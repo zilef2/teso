@@ -29,7 +29,13 @@ const data = reactive({
 
     //tailwind
     RangeCantidadBotones: [0, 1, 2, 3],
-    DisponibleONo: [0, 1, 1, 0, 0],
+    DisponibleONo: [
+        0, //nada
+        1,//transacciones
+        1,//comprobantes
+        1,//asientos
+        0,//cuentas
+    ],
     CantidadBotones: 4,
     ClassCantidadDeBotonesPorPagina: 'p-4 md:w-1/3',
     // ClassCantidadDeBotonesPorPagina:'p-4 md:w-1/'.data.CantidadBotones

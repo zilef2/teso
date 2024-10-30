@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\helpers\Myhelp;
 use App\helpers\MyModels;
+use App\helpers\ZilefLogs;
 use App\Models\asiento;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
@@ -48,9 +49,9 @@ class AsientoController extends Controller
     }
     public function losSelect()
     {
-        $no_nadasSelect = No_nada::all('id','nombre as name')->toArray();
-        array_unshift($no_nadasSelect,["name"=>"Seleccione un no_nada",'id'=>0]);
-        return $no_nadasSelect;
+//        $no_nadasSelect = No_nada::all('id','nombre as name')->toArray();
+//        array_unshift($no_nadasSelect,["name"=>"Seleccione un no_nada",'id'=>0]);
+//        return $no_nadasSelect;
     }
     //</editor-fold>
 

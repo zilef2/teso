@@ -3,12 +3,13 @@
 namespace App\Imports;
 
 use App\helpers\HelpExcel;
-use App\helpers\Myhelp;
+use App\helpers\ZilefLogs;
 use App\Models\asiento;
 use Maatwebsite\Excel\Concerns\ToModel;
+use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Maatwebsite\Excel\Concerns\WithStartRow;
 
-class AsientoImport implements ToModel,WithStartRow
+class AsientoImport implements ToModel,WithStartRow, WithChunkReading
 {
 
     public int $ContarFilasAbsolutas;
@@ -39,14 +40,8 @@ class AsientoImport implements ToModel,WithStartRow
 
 
     public function startRow(): int{return 2;}
-
-
-    private function validarNull($row){
-        session(['larow' => $row]);
-        return (
-            !isset($row[0])
-            || mb_strtolower($row[0]) == 'codigo_cuenta'
-        );
+    public function chunkSize(): int{
+        return 1000;
     }
 
     public function model(array $row)
@@ -179,6 +174,14 @@ class AsientoImport implements ToModel,WithStartRow
         ]);
     }
 
+    private function validarNull($row)
+    {
+        session(['larow' => $row]);
+        return (
+            !isset($row[0])
+            || mb_strtolower($row[0]) == 'codigo_cuenta'
+        );
+    }
 
     private function HaSidoGuardadoAnteriormente($therow)
     {

@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use App\helpers\Myhelp;
 use App\helpers\ZilefErrors;
+use App\Http\Controllers\BusquedaIndependienteController;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -33,9 +34,9 @@ class BC_CIGeneral implements ShouldQueue
         try {
             $user = Myhelp::AuthU();
             Log::info("U -> " . $user->name);
-            $contraCICE = new \App\Http\Controllers\ContrapartidasCICEController();
+            $bsuqeudaind = new BusquedaIndependienteController();
 
-            $contraCICE->Encontrar_AJ_CI($this->Transacciones);
+            $bsuqeudaind->Encontrar_AJ_CI($this->Transacciones);
             try {
                 $destinatario = $user->email;
                 $mensaje = $this->mensaje;

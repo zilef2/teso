@@ -1,9 +1,10 @@
-<?php
+<?php /** @noinspection ALL */
 
 namespace App\Http\Controllers;
 
 use App\helpers\Myhelp;
 use App\helpers\MyModels;
+use App\helpers\ZilefLogs;
 use App\Models\afectacion;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
@@ -48,14 +49,14 @@ class AfectacionController extends Controller
     }
     public function losSelect()
     {
-        $no_nadasSelect = No_nada::all('id','nombre as name')->toArray();
-        array_unshift($no_nadasSelect,["name"=>"Seleccione un no_nada",'id'=>0]);
-        return $no_nadasSelect;
+//        $no_nadasSelect = No_nada::all('id','nombre as name')->toArray();
+//        array_unshift($no_nadasSelect,["name"=>"Seleccione un no_nada",'id'=>0]);
+//        return $no_nadasSelect;
     }
     //</editor-fold>
 
     public function index(Request $request) {
-        $numberPermissions = MyModels::getPermissionToNumber(ZilefLogs::EscribirEnLog($this, ' afectacions '));
+        $numberPermissions = MyModels::getPermissionToNumber(ZilefLogs::EscribirEnLog($this, ' afectacions ','index.vue'));
         $afectacions = $this->Mapear();
         $this->Filtros($afectacions,$request);
 //        $losSelect = $this->losSelect();
@@ -81,7 +82,7 @@ class AfectacionController extends Controller
     //! STORE functions
 
     public function store(Request $request){
-        $permissions = ZilefLogs::EscribirEnLog($this, ' Begin STORE:afectacions');
+        $permissions = ZilefLogs::EscribirEnLog($this, 'store',' Begin STORE:afectacions');
         DB::beginTransaction();
 //        $no_nada = $request->no_nada['id'];
 //        $request->merge(['no_nada_id' => $request->no_nada['id']]);
@@ -96,7 +97,7 @@ class AfectacionController extends Controller
     public function show($id){}public function edit($id){}
 
     public function update(Request $request, $id){
-        $permissions = ZilefLogs::EscribirEnLog($this, ' Begin UPDATE:afectacions');
+        $permissions = ZilefLogs::EscribirEnLog($this, 'update',' Begin UPDATE:afectacions');
         DB::beginTransaction();
         $afectacion = afectacion::findOrFail($id);
         $request->merge(['no_nada_id' => $request->no_nada['id']]);

@@ -269,7 +269,6 @@ const TrazarLinea = debounce((BoolMostrar) => {
                 // }
             ],
             labels: ['2023', '2024'],
-            //aquiiii { x: '2024-01-01', y: 10 },
         },
         options: {
             plugins: {

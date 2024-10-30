@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\helpers\Myhelp;
+use App\helpers\ZilefLogs;
 use App\Models\Parametro;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;

@@ -4,15 +4,20 @@ namespace App\Http\Controllers;
 
 use App\helpers\HelpExcel;
 use App\helpers\Myhelp;
+use App\helpers\ZilefLogs;
 use App\Imports\AsientoImport;
 use App\Imports\ComprobanteImport;
 use App\Imports\CuentaImport;
 use App\Imports\TransaccionesImport;
+use App\Jobs\BC_AnulacionesJob;
+use App\Jobs\testingAndDoubs;
+use App\Jobs\UpAsientosJob;
 use App\Models\Comprobante;
 use App\Models\cuenta;
 use App\Models\transaccion;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -21,7 +26,7 @@ class SubiExcelController extends Controller
 
     public function subirexceles()
     { //just  a view
-        ZilefLogs::EscribirEnLog($this, ' ingreso a la vista subir excel');
+        ZilefLogs::EscribirEnLog($this, 'subirexceles' ,' ingreso a la vista subir excel');
 
         return Inertia::render('Excel/subirExceles', [
             'title' => __('app.label.user'),
@@ -254,17 +259,39 @@ class SubiExcelController extends Controller
                     DB::rollback();
                     return back()->with('warning', $mensageWarning);
                 }
+//                ini_set('memory_limit', '2048M');
 
+                $pesoMegabyte = ((int)($thefile->getSize())) / (1024 *1024);
+
+//                if ($pesoMegabyte > 4) {
+//                    $user = Myhelp::AuthU();
+//                    $usermail = $user->email;
+//                    $path = $thefile->store('AsientosJob');
+//                    Log::info('UpAsientosJob ha comenzado.');
+//                    Log::info('testingAndDoubs deveras ha comenzado.');
+//                    dispatch(job: new UpAsientosJob(
+//                        $usermail,
+//                        "El archivo de asientos ha sido cargado al sistema",
+//                        $path
+//                    ))->delay(now()->addSeconds());
+//                    dispatch(new testingAndDoubs());
+//                    $aproxMinutos = ceil($pesoMegabyte / 3);
+//                    ini_set('memory_limit', '256M');
+//                    return back()->with('warning',
+//                        'Se avisará por correo cuando la carga finalize. Este proceso tardará aprox: ' . $aproxMinutos . ' minutos'
+//                    );
+//                }
+
+                //si es liviano, continue
                 $elImport = new AsientoImport();
-                ini_set('memory_limit', '1024M');
                 Excel::import($elImport, $thefile);
-                ini_set('memory_limit', '256M');
 
+                ini_set('memory_limit', '256M');
                 $countfilas = $elImport->ContarFilas;
                 $MensajeWarning = HelpExcel::MensajeWarSoloVacios($elImport);
                 if ($MensajeWarning !== '') { //exito
-                    return back()->with('success', 'Formularios nuevos: ' . $countfilas)
-                        ->with('warning2', $MensajeWarning);
+                    return back()->with('success', 'asientos nuevos: ' . $countfilas)
+                        ->with('warning', $MensajeWarning);
                 }
 
                 ZilefLogs::EscribirEnLog($this, 'IMPORT:users', ' finalizo con exito', false);
@@ -283,23 +310,21 @@ class SubiExcelController extends Controller
 
             $lasession = session('larow') ?? 'error de session';
             $lasession = $lasession[0] ?? 'error de session';
-
+            $mensajeError = $th->getMessage() . ' L:' . $th->getLine() . ' Ubi: ' . $th->getFile();
+dd(
+    $mensajeError
+);
+            $tipoError = 'error';
             if(str_starts_with($th->getMessage(),'|')){
-                ZilefLogs::EscribirEnLog($this, 'IMPORT:users', ' Fallo importacion: '
-                    . $th->getMessage(), false);
-                return back()->with('warning',$th->getMessage());
-
-            }else{
-                $mensajeError = $th->getMessage() . ' L:' . $th->getLine() . ' Ubi: ' . $th->getFile();
-
-                ZilefLogs::EscribirEnLog($this, 'IMPORT:users', ' Fallo importacion: '
-                    . $mensajeError, false);
-                return back()->with(
-                    'error', __('app.label.op_not_successfully')
-                    . ' Asiento del error: ' . $lasession
-                    . ' error en la iteracion ' . $countfilas . ' ' .$mensajeError
-                );
+                $tipoError = 'warning';
             }
+            ZilefLogs::EscribirEnLog($this, 'IMPORT:users', ' Fallo importacion: '
+                . $mensajeError, false);
+            return back()->with(
+                $tipoError, __('app.label.op_not_successfully')
+                . ' Asiento del error: ' . $lasession
+                . ' error en la iteracion ' . $countfilas . ' ' .$mensajeError
+            );
         }
     }
 

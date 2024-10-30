@@ -77,11 +77,12 @@ Route::middleware(['auth'])->group(callback: function () {
         Mail::raw($mensaje, function ($message) use ($destinatario) {
             $message->to($destinatario)->subject('Cruce AJ esta listo');
         });
+        return 'Mensaje enviado a '.$destinatario;
     });
 
     Route::post('/Buscar_CP_CI', [TransaccionController::class, 'Buscar_CP_CI'])->name('Buscar_CP_CI');
     Route::post('/Buscar_CP_CE', [TransaccionController::class, 'Buscar_CP_CE'])->name('Buscar_CP_CE');
-    Route::post('/BEncontrar_AJ_CI', [\App\Http\Controllers\ContrapartidasCICEController::class, 'BEncontrar_AJ_CI'])->name('BEncontrar_AJ_CI');
+    Route::post('/Buscar_AJ_CI', [\App\Http\Controllers\ContrapartidasCICEController::class, 'Buscar_AJ_CI'])->name('Buscar_AJ_CI');
     Route::post('/Buscar_AN_CI', [\App\Http\Controllers\ContrapartidasCICEController::class, 'Buscar_AN_CI'])->name('Buscar_AN_CI');
     Route::get('/borrarconceptos', [\App\Http\Controllers\ContrapartidasCICEController::class, 'BorrarConceptos'])->name('BorrarConceptos');
     Route::get('/borraraj', [\App\Http\Controllers\ContrapartidasCICEController::class, 'BorrarAjustes'])->name('BorrarAjustes');

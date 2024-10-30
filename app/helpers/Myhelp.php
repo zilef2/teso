@@ -5,6 +5,7 @@ namespace App\helpers;
 use App\Models\Parametro;
 use App\Models\transaccion;
 use Carbon\Carbon;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -33,7 +34,7 @@ class Myhelp {
     // end JUST THIS PROJECT
 
     // ALL projects
-    public static function AuthU(): \Illuminate\Http\RedirectResponse|\Illuminate\Contracts\Auth\Authenticatable
+    public static function AuthU(): Authenticatable|\Illuminate\Http\RedirectResponse
     {
         $TheUser = Auth::user();
         if($TheUser){

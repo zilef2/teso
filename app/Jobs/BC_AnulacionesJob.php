@@ -13,22 +13,22 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
-class BusquedaConceptoCI_AJJob implements ShouldQueue
+class BC_AnulacionesJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     private mixed $Transacciones;
     private string $mensajeEmail;
-    private User $user;
+    private string $userMail;
 
     /**
      * Create a new job instance.
      */
-    public function __construct($Transacciones,$mensaje,$user)
+    public function __construct($Transacciones, $mensaje, $user)
     {
         $this->Transacciones = $Transacciones;
         $this->mensajeEmail = $mensaje;
-        $this->user = $user;
+        $this->userMail = $user;
     }
 
     /**
@@ -37,21 +37,20 @@ class BusquedaConceptoCI_AJJob implements ShouldQueue
     public function handle(): void
     {
         try {
-            Log::info("U -> " . $this->user->name. ' handle_job de BusquedaConceptoCI_AJJob');
+            Log::info("U -> " . $this->userMail . ' handle_job de BusquedaConceptoCI_AJJob');
+
             $busquedaInd = new BusquedaIndependienteController();
+            $busquedaInd->Encontrar_AN_CI($this->Transacciones);
 
-            $busquedaInd->Encontrar_AJ_CI($this->Transacciones);
-            try {
-                $destinatario = $this->user->email;
-                $mensaje = $this->mensajeEmail;
+            $destinatario = $this->userMail;
+            $mensaje = $this->mensajeEmail;
+            Mail::raw($mensaje, function ($message) use ($destinatario, $mensaje) {
+                $message->to($destinatario)->subject($mensaje);
+            });
 
-                Mail::raw($mensaje, function ($message) use ($destinatario, $mensaje) {
-                    $message->to($destinatario)->subject($mensaje);
-                });
-            } catch (\Exception $e) {
-                $mesnajeErr= "Error, no se envio correo: " . $e->getMessage();
-                Log::error($mesnajeErr);
-            }
+        } catch (\Exception $e) {
+            $mesnajeErr = "Error, no se envio correo: " . $e->getMessage();
+            Log::error($mesnajeErr);
         } catch (\Throwable $th) {
             Log::error(ZilefErrors::RastroError($th));
         }

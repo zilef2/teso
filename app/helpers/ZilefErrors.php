@@ -14,7 +14,8 @@ class ZilefErrors
 {
 
 
-    public static function RastroError($th) {
+    public static function RastroError($th): string
+    {
         // Obtener el archivo y la línea donde ocurrió la excepción
         $filePath = str_replace(base_path(), '', $th->getFile());
         $lineError = $th->getLine();
