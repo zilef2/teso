@@ -246,76 +246,28 @@ class SubiExcelController extends Controller
         }
     }
     public function uploadFileAsientos(Request $request){
-
         ZilefLogs::EscribirEnLog($this, get_called_class(), 'importando asientos ', false);
         $countfilas = 0;
         try {
-            DB::beginTransaction();
+//            DB::beginTransaction();
             $thefile = $request->archivo[$request->Contador];
             if ($thefile) {
                 $helpExcel = new HelpExcel();
                 $mensageWarning = $helpExcel->NewValidarArchivoExcel($request);
-                if ($mensageWarning != ''){
+                if ($mensageWarning != '') {
                     DB::rollback();
                     return back()->with('warning', $mensageWarning);
                 }
-//                ini_set('memory_limit', '2048M');
-
-                $pesoMegabyte = ((int)($thefile->getSize())) / (1024 *1024);
-
-//                if ($pesoMegabyte > 4) {
-//                    $user = Myhelp::AuthU();
-//                    $usermail = $user->email;
-//                    $path = $thefile->store('AsientosJob');
-//                    Log::info('UpAsientosJob ha comenzado.');
-//                    Log::info('testingAndDoubs deveras ha comenzado.');
-//                    dispatch(job: new UpAsientosJob(
-//                        $usermail,
-//                        "El archivo de asientos ha sido cargado al sistema",
-//                        $path
-//                    ))->delay(now()->addSeconds());
-//                    dispatch(new testingAndDoubs());
-//                    $aproxMinutos = ceil($pesoMegabyte / 3);
-//                    ini_set('memory_limit', '256M');
-//                    return back()->with('warning',
-//                        'Se avisará por correo cuando la carga finalize. Este proceso tardará aprox: ' . $aproxMinutos . ' minutos'
-//                    );
-//                }
-
-                //si es liviano, continue
-                $elImport = new AsientoImport();
-                Excel::import($elImport, $thefile);
-
-                ini_set('memory_limit', '256M');
-                $countfilas = $elImport->ContarFilas;
-                $MensajeWarning = HelpExcel::MensajeWarSoloVacios($elImport);
-                if ($MensajeWarning !== '') { //exito
-                    return back()->with('success', 'asientos nuevos: ' . $countfilas)
-                        ->with('warning', $MensajeWarning);
-                }
-
-                ZilefLogs::EscribirEnLog($this, 'IMPORT:users', ' finalizo con exito', false);
-                DB::commit();
-                if ($countfilas == 0){
-                    return back()->with('warning', __('app.label.op_successfully') . ' No hubo cambios');
-                } else {
-                    return back()->with('success', __('app.label.op_successfully') . ' Se leyeron ' . $countfilas . ' filas con exito');
-                }
-            } else {
-                DB::rollback();
-                return back()->with('error', __('app.label.op_not_successfully') . ' Archivo no seleccionado');
             }
+            dispatch(new testingAndDoubs())->delay(now()->addSeconds(6));
         } catch (\Throwable $th) {
             DB::rollback();
 
             $lasession = session('larow') ?? 'error de session';
             $lasession = $lasession[0] ?? 'error de session';
             $mensajeError = $th->getMessage() . ' L:' . $th->getLine() . ' Ubi: ' . $th->getFile();
-dd(
-    $mensajeError
-);
             $tipoError = 'error';
-            if(str_starts_with($th->getMessage(),'|')){
+            if (str_starts_with($th->getMessage(), '|')) {
                 $tipoError = 'warning';
             }
             ZilefLogs::EscribirEnLog($this, 'IMPORT:users', ' Fallo importacion: '
@@ -323,7 +275,7 @@ dd(
             return back()->with(
                 $tipoError, __('app.label.op_not_successfully')
                 . ' Asiento del error: ' . $lasession
-                . ' error en la iteracion ' . $countfilas . ' ' .$mensajeError
+                . ' error en la iteracion ' . $countfilas . ' ' . $mensajeError
             );
         }
     }

@@ -1,3 +1,7 @@
+# Aprendiendo jobs
+php artisan queue:restart
+
+
 # INICIO DEL PROYECTO
 // 18septiembre2024 FLUEF
 php artisan copy:u PorcentajeInteresCuenta

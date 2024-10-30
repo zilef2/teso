@@ -7,7 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Opcodes\LogViewer\Log;
+use Illuminate\Support\Facades\Log;
 
 class testingAndDoubs implements ShouldQueue
 {
@@ -27,6 +27,5 @@ class testingAndDoubs implements ShouldQueue
     public function handle(): void
     {
         Log::info('UpAsientosJob 33333333333333333333333333333333333.');
-
     }
 }
