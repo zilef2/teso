@@ -31,6 +31,11 @@ return new class extends Migration {
             $table->string('codigo_asiento');
             $table->string('documento_ref');
             $table->string('plan_cuentas');
+
+            $table->string('resultado_asientos')->nullable();
+            $table->integer('sin_afectacion')->nullable();
+            $table->integer('cuenta_contrapartida')->nullable();
+            $table->integer('numerounico')->nullable();
             $table->timestamps();
         });
     }

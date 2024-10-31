@@ -83,10 +83,13 @@ Route::middleware(['auth'])->group(callback: function () {
 
     Route::post('/Buscar_CP_CI', [TransaccionController::class, 'Buscar_CP_CI'])->name('Buscar_CP_CI');
     Route::post('/Buscar_CP_CE', [TransaccionController::class, 'Buscar_CP_CE'])->name('Buscar_CP_CE');
-    Route::post('/Buscar_AJ_CI', [\App\Http\Controllers\ContrapartidasCICEController::class, 'Buscar_AJ_CI'])->name('Buscar_AJ_CI');
-    Route::post('/Buscar_AN_CI', [\App\Http\Controllers\ContrapartidasCICEController::class, 'Buscar_AN_CI'])->name('Buscar_AN_CI');
-    Route::get('/borrarconceptos', [\App\Http\Controllers\ContrapartidasCICEController::class, 'BorrarConceptos'])->name('BorrarConceptos');
-    Route::get('/borraraj', [\App\Http\Controllers\ContrapartidasCICEController::class, 'BorrarAjustes'])->name('BorrarAjustes');
+    Route::post('/Buscar_AJ_CI', [\App\Http\Controllers\ContrapartidasCIController::class, 'Buscar_AJ_CI'])->name('Buscar_AJ_CI');
+    Route::post('/Buscar_AN_CI', [\App\Http\Controllers\ContrapartidasCIController::class, 'Buscar_AN_CI'])->name('Buscar_AN_CI');
+    Route::post('/Buscar_CP_CE', [\App\Http\Controllers\ContrapartidasCEController::class, 'Buscar_CP_CE'])->name('Buscar_CP_CE');
+
+    //danger wey
+    Route::get('/borrarconceptos', [\App\Http\Controllers\ContrapartidasCIController::class, 'BorrarConceptos'])->name('BorrarConceptos');
+    Route::get('/borraraj', [\App\Http\Controllers\ContrapartidasCIController::class, 'BorrarAjustes'])->name('BorrarAjustes');
 //    Route::get('/downloadAnexos', [UserController::class,'downloadAnexos'])->name('downloadAnexos');
 //    Route::get('/downClaro',function(){
 //        return Excel::download(new FormExport, 'BaseDatosInspecciones.xlsx');

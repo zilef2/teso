@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Log;
 use JetBrains\PhpStorm\NoReturn;
 use function Psy\debug;
 
-class ContrapartidasCICEController extends Controller
+class ContrapartidasCIController extends Controller
 {
     //todo: falta traer y configurar "Buscar_CP_CI" que esta en transaccionController
 
@@ -115,21 +115,6 @@ class ContrapartidasCICEController extends Controller
         return "No se encontro concepto en $codigo";
     }
 
-    public function LaContraPartidaNoSumaCeroFirst($lasContrapartidas, $transa): bool
-    {
-
-        $transaValor = intval($transa->valor_debito) === 0 ? intval($transa->valor_credito) : intval($transa->valor_debito);
-        $contraValor = intval($lasContrapartidas->valor_debito) === 0 ? intval($lasContrapartidas->valor_credito) : intval($lasContrapartidas->valor_debito);
-        $elCero = abs($transaValor) !== abs($contraValor);
-        if ($elCero) {
-            $transa->update([
-                'contrapartida' => "No se encontro un Debito y credito igual. Principal = $transaValor",
-                'concepto_flujo_homologación' => "Contrapartida = $contraValor",
-            ]);
-        }
-        return $elCero;
-    }
-
     public function LaContraPartidaNoSumaCeroGet($lasContrapartidas, $transa, $principal): bool
     {
         $crediODebi = intval($transa->valor_debito) == 0 ? 'valor_credito' : 'valor_debito';
@@ -144,12 +129,6 @@ class ContrapartidasCICEController extends Controller
             ]);
         }
         return $elCero;
-    }
-
-    public function ComprobantesSinCodigoCuentaContable($principales): bool
-    {
-        //todo: verificar que solo exista uno, pueden haber mas comprobantes con ese codigo_cuenta
-        return (!isset($principales[0]));
     }
 
     public function NoHayComprobantes($comprobantes, $transa): bool
