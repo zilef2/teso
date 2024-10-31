@@ -19,11 +19,13 @@ php artisan make:import CuentaImport --model=cuenta
 php artisan make:import TransaccionesImport --model=transaccion
 php artisan make:import ComprobanteImport --model=Comprobante
 php artisan make:import BancoImport --model=Banco // desuso
+php artisan make:import PreAfectacionImport
+php artisan make:import afectacionImport --model=afectacion
 
 # Comandos
 php artisan make:command LanguageCopyU
 
-# Primera notificacion (intento fallido)
+# Primera notificacion (fallido)
 php artisan make:controller JobController
 php artisan make:notification JobCompleted (unused)
 

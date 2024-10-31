@@ -9,7 +9,8 @@ use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Maatwebsite\Excel\Concerns\WithStartRow;
 
-class AsientoImport implements ToModel,WithStartRow, WithChunkReading
+class AsientoImport implements ToModel,WithStartRow
+//    , WithChunkReading
 {
 
     public int $ContarFilasAbsolutas;
@@ -40,16 +41,12 @@ class AsientoImport implements ToModel,WithStartRow, WithChunkReading
 
 
     public function startRow(): int{return 2;}
-    public function chunkSize(): int{
-        return 1000;
-    }
+//    public function chunkSize(): int{return 1000;}
 
     public function model(array $row)
     {
-
         try {
-            $this->ContarFilasAbsolutas++;
-
+            $this->ContarFilasAbsolutas++; //filas del excel
             if ($this->validarNull($row)) return null;
             $this->Requeridos($row); //this has dd function
 
@@ -61,28 +58,19 @@ class AsientoImport implements ToModel,WithStartRow, WithChunkReading
             }
 
             $result = $this->TheNewObject($row);
-            $this->ContarFilas++;
+            $this->ContarFilas++; //filas que se registraron en el aplicativo
             return $result;
         } catch (\Throwable $th) {
             $mensajeError = (new \App\helpers\Myhelp)->mensajesErrorBD($th, 'AsientoImport', 0, '_');
-            ZilefLogs::EscribirEnLog($this, 'IMPORT:comprobante', $mensajeError, false);
-
-            if (str_starts_with($th->getMessage(), '|')) {
-                throw new \Exception(
-                    $th->getMessage()
-                );
-            } else {
-                throw new \Exception(
-                    $mensajeError
-                );
-            }
+            ZilefLogs::EscribirEnLog($this, 'IMPORT:asiento ', $mensajeError, false);
+            throw new \Exception($mensajeError);
         }
     }
 
     /**
      * @throws \Exception
      */
-    public function Requeridos($theRow)
+    public function Requeridos($theRow): bool
     {
         /*
         0 a codigo_cuenta
@@ -174,7 +162,7 @@ class AsientoImport implements ToModel,WithStartRow, WithChunkReading
         ]);
     }
 
-    private function validarNull($row)
+    private function validarNull($row): bool
     {
         session(['larow' => $row]);
         return (
@@ -183,7 +171,7 @@ class AsientoImport implements ToModel,WithStartRow, WithChunkReading
         );
     }
 
-    private function HaSidoGuardadoAnteriormente($therow)
+    private function HaSidoGuardadoAnteriormente($therow): array
     {
         $laFecha = HelpExcel::getFechaExcel($therow[4]); //la fecha
         $mes = $laFecha->format('m'); // Obtiene el mes (en formato numérico)

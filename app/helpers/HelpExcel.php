@@ -80,7 +80,9 @@ class HelpExcel
 
         foreach ($contares as $key => $value) {
             $$value = $personalImp->{$value};
-            $bandera = $bandera || $$value > 0;
+            if($$value){
+                $bandera = $bandera || $$value > 0;
+            }
         }
 
         $mensaje = '';

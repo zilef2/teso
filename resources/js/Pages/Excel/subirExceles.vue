@@ -12,9 +12,7 @@ import '@vuepic/vue-datepicker/dist/main.css'
 const {_, debounce, pickBy} = pkg
 const props = defineProps({
     title: String,
-    nComprobante: Number,
     ntransaccion: Number,
-    ncuenta: Number,
 })
 const data = reactive({
     UniversidadSelect: null,
@@ -22,23 +20,14 @@ const data = reactive({
     mensajeAviso:[
       '',
       'El excel debe contar con el formato aprobado',
-      'El excel debe contar con el formato aprobado (CI,AJ, AN)',
-      '',
-      '',
+      'El excel debe contar con el formato aprobado (CI,AJ, AN)', //comprobantes
+      'El excel debe contar con el formato aprobado', //asientos
+      '', //cuentas
+      'El excel debe contar con el formato aprobado (CE)',//afe
     ],
 
     //tailwind
-    RangeCantidadBotones: [0, 1, 2, 3],
-    DisponibleONo: [
-        0, //nada
-        1,//transacciones
-        1,//comprobantes
-        1,//asientos
-        0,//cuentas
-    ],
-    CantidadBotones: 4,
-    ClassCantidadDeBotonesPorPagina: 'p-4 md:w-1/3',
-    // ClassCantidadDeBotonesPorPagina:'p-4 md:w-1/'.data.CantidadBotones
+    ClassCantidadDeBotonesPorPagina: 'p-4 w-full md:w-1/2 xl:w-1/3 4xl:w-1/6',
 })
 
 const form = useForm({
@@ -96,9 +85,9 @@ function uploadFileGeneric(contado) {
         'uploadFileComprobantes',
         'uploadFileAsientos',
         'upExCuentas',
+        'uploadFileAfe',
     ];
 
-    // console.log("=>(subirExceles.vue:85) form.archivo", form.archivo);
     form.Contador = contado
     form.post(route(rutas[contado]), {
         preserveScroll: true,
@@ -118,7 +107,7 @@ let NombresEntidades = [
     'Comprobantes',
     'Asientos',
     'cuentas',
-    '',
+    'CE sin Afectacion',
 ];
 let formatoNecesita = [];
 
@@ -229,10 +218,10 @@ formatoNecesita[5] = [
     'nombre_dependencia',
 
 ]
-// <!--</editor-fold>-->
 
 // data.UniversidadSelect = vectorSelect(data.UniversidadSelect,props.UniversidadSelect,'una')
 // const downloadExcel = () => { window.open('users/export/' + form.quincena + '/' + (form.fecha_ini.month) + '/' + form.fecha_ini.year, '_blank') }
+// <!--</editor-fold>-->
 
 // <!--<editor-fold desc="fin script">-->
 const Abecedario = Array.from({length: 26}, (_, i) => String.fromCharCode(97 + i));
@@ -274,7 +263,7 @@ const handleFileUpload = (event, numeroArchivo) => {
             </div>
             <div class="relative bg-white dark:bg-gray-800 shadow sm:rounded-lg">
                 <section class="text-gray-600 body-font">
-                    <div class="container px-5 py-24 mx-auto">
+                    <div class="container px-5 4xl:px-1 py-6 mx-auto">
                         <!--                        v-if="can(['create user'])"-->
                         <div class="flex flex-wrap -m-4">
                             <div v-for="numeroArchivo in NombresEntidades.length"
@@ -291,7 +280,7 @@ const handleFileUpload = (event, numeroArchivo) => {
                                         </p>
                                         <!--                                        uploadFileGeneric-->
                                         <!--                                        NombresEntidades-->
-                                        <form v-if="data.DisponibleONo[numeroArchivo]" @submit.prevent="uploadFileGeneric(numeroArchivo)" id="upload">
+                                        <form v-if="data.mensajeAviso[numeroArchivo] !== ''" @submit.prevent="uploadFileGeneric(numeroArchivo)" id="upload">
                                             <!--                                                   @input="form.archivo[numeroArchivo] = $event.target.files[numeroArchivo]"-->
                                             <input type="file"
                                                    @change="handleFileUpload($event, numeroArchivo)"
@@ -314,7 +303,7 @@ const handleFileUpload = (event, numeroArchivo) => {
                                                 </PrimaryButton>
                                             </div>
                                         </form>
-                                        <div v-if="data.DisponibleONo[numeroArchivo]">
+                                        <div v-if="data.mensajeAviso[numeroArchivo] !== ''">
 
                                             <h2 class="text-xl text-gray-900 dark:text-white mt-12">El formato necesita
                                                 las siguientes columnas</h2>
@@ -326,18 +315,15 @@ const handleFileUpload = (event, numeroArchivo) => {
                                             </ul>
 
                                             <div class="flex items-center flex-wrap my-6">
-                                                <!--                                            <a class="text-gray-500 inline-flex items-center md:mb-2 lg:mb-0">Numero de formularios enviados: </a>-->
                                                 <span
-                                                    class="text-gray-400 mr-3 inline-flex items-center lg:ml-auto md:ml-0 ml-auto leading-none text-sm pr-3 py-1 border-r-2 border-gray-200">
+                                                    class="text-gray-600 mr-3 inline-flex items-center lg:ml-auto md:ml-0 ml-auto leading-none text-sm pr-3 py-1 border-r-2 border-gray-200">
                                                 <svg class="w-1 h-4 mr-1" stroke="currentColor" stroke-width="2"
                                                      fill="none"
                                                      stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
                                                     <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                                                     <circle cx="12" cy="12" r="3"></circle>
                                                 </svg>
-                                                <p class="text-lg">{{
-                                                        NombresEntidades[numeroArchivo]
-                                                    }}: {{ props.ntransaccion }}</p>
+                                                <p class="text-lg">{{ NombresEntidades[numeroArchivo] }}: {{ props.ntransaccion[numeroArchivo] }}</p>
                                             </span>
                                             </div>
                                         </div>

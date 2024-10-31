@@ -22,7 +22,7 @@ class afectacion extends Model
         'codigo_banco',
         'otros',
         'taquilla',
-        'consecutivo',
+        'consecutivo2', //todo:ask: preguntar
         'nombre_empresa',
         'nombre_dependencia',
     ];

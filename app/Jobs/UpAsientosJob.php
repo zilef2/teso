@@ -34,22 +34,17 @@ class UpAsientosJob implements ShouldQueue
      */
     public function handle(): void
     {
-//        try {
-//        $elImport = new AsientoImport();
-//        Excel::import($elImport, storage_path('app/' . $this->filePath));
-            Log::info('UpAsientosJob 2222222222222222222222222222222222.');
-        Parametro::create([
-            "Fecha_creacion_parametro" => date('Y-m-d'),
-            "nombre" => "Testing",
-            "valor" => date('Y-m-d H:i') . '',
-        ]);
-//            $destinatario = $this->userMail;
-//            $mensaje = $this->mensajeEmail;
-//            Mail::raw($mensaje, function ($message) use ($destinatario, $mensaje) {
-//                $message->to($destinatario)->subject($mensaje);
-//            });
-//        } catch (\Throwable $th) {
-//            Log::error(ZilefErrors::RastroError($th));
-//        }
+        try {
+            $elImport = new AsientoImport();
+            Excel::import($elImport, storage_path('app/' . $this->path));
+            $destinatario = $this->userMail;
+            $mensaje = $this->mensajeEmail;
+            Mail::raw($mensaje, function ($message) use ($destinatario, $mensaje) {
+                $message->to($destinatario)->subject($mensaje);
+            });
+            log::info('Operacion subri asientos exitosa');
+        } catch (\Throwable $th) {
+            Log::error(ZilefErrors::RastroError($th));
+        }
     }
 }

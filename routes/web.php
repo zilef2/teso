@@ -69,6 +69,7 @@ Route::middleware(['auth'])->group(callback: function () {
     Route::post('/upExTransacciones', [SubiExcelController::class, 'upExTransacciones'])->name('upExTransacciones');
     Route::post('/uploadFileComprobantes', [SubiExcelController::class, 'uploadFileComprobantes'])->name('uploadFileComprobantes');
     Route::post('/uploadFileAsientos', [SubiExcelController::class, 'uploadFileAsientos'])->name('uploadFileAsientos');
+    Route::post('/uploadFileAfe', [SubiExcelController::class, 'uploadFileAfe'])->name('uploadFileAfe');
 
     Route::get('/jobs', [\App\Http\Controllers\JobController::class, 'index'])->name('jobs');
     Route::get('/jo', function() {

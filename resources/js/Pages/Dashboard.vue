@@ -284,13 +284,13 @@ const changeChar = (numeracion) => {
         </PrimaryButton>
 
         <div class="grid grid-cols-1 3xl:grid-cols-2">
-            <div class="mb-20 h-full "><canvas ref="chart12"></canvas></div>
-            <div class="mb-20 h-full "><canvas ref="chart13"></canvas></div>
-            <div class="mb-20 w-full md:w-5/6"><canvas ref="char10"></canvas></div>
-            <div class="mb-20 w-full md:w-5/6"><canvas ref="chartCanvasEfec"></canvas></div>
+            <div class="mb-20 w-4/6 2xl:w-5/6 3xl:w-full "><canvas ref="chart12"></canvas></div>
+            <div class="mb-20 w-4/6 2xl:w-5/6 3xl:w-full "><canvas ref="chart13"></canvas></div>
+            <div class="mb-20 w-full md:w-3/6 3xl:w-full"><canvas ref="char10"></canvas></div>
+<!--            <div class="mb-20 w-full md:w-4/6 3xl:w-full"><canvas ref="chartCanvasEfec"></canvas></div>-->
 <!--            <div class="my-20 w-full md:w-5/6"><canvas ref="chartCanvas1"></canvas></div>-->
-            <div class="my-20 w-full md:w-5/6"><canvas ref="chartCanvas2"></canvas></div>
-            <div class="my-20 w-1/3 "><canvas ref="chart11"></canvas></div>
+            <div class="my-20 w-full md:w-4/6 3xl:w-full"><canvas ref="chartCanvas2"></canvas></div>
+            <div class="my-20 w-1/2 "><canvas ref="chart11"></canvas></div>
         </div>
     </AuthenticatedLayout>
 </template>
