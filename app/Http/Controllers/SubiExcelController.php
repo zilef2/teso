@@ -14,6 +14,7 @@ use App\Imports\TransaccionesImport;
 use App\Jobs\BC_AnulacionesJob;
 use App\Jobs\testingAndDoubs;
 use App\Jobs\UpAsientosJob;
+use App\Jobs\UpComprobantesJob;
 use App\Models\afectacion;
 use App\Models\asiento;
 use App\Models\Comprobante;
@@ -32,7 +33,7 @@ class SubiExcelController extends Controller
     { //just  a view
         ZilefLogs::EscribirEnLog($this, 'subirexceles', ' ingreso a la vista subir excel');
         $ntransaccion = [
-          0,
+            0,
             transaccion::count(),
             Comprobante::count(),
             asiento::count(),
@@ -196,6 +197,8 @@ class SubiExcelController extends Controller
 
     public function uploadFileComprobantes(Request $request)
     {
+        ini_set('memory_limit', '40000M');
+
         ZilefLogs::EscribirEnLog($this, get_called_class(), 'importando comprobantes ', false);
         $countfilas = 0;
         try {
@@ -212,25 +215,34 @@ class SubiExcelController extends Controller
 
                 $personalImp = new ComprobanteImport();
                 Excel::import($personalImp, $thefile);
-
                 $countfilas = $personalImp->ContarFilasAbsolutas;
-
-                $MensajeWarning = HelpExcel::MensajeWarComprobante($personalImp);
-                if ($MensajeWarning !== '') { //exito
-
-                    return back()->with('success', 'Formularios nuevos: ' . $countfilas)
-                        ->with('warning2', $MensajeWarning);
-                }
-
-                ZilefLogs::EscribirEnLog($this, 'IMPORT:users', ' finalizo con exito', false);
+                $user = Myhelp::AuthU();
+                $path = $thefile->store('ComprobantesJob');
+                dispatch(new UpComprobantesJob($user->email, "Carga de archivo de comprobantes, finalizada con exito", $path))->delay(now()->addSeconds());
                 DB::commit();
-                if ($countfilas == 0) {
-                    return back()->with('success', __('app.label.op_successfully') . ' No hubo cambios');
-                } else {
-//                    cuenta::where('user_id', $personalImp->usuario->id)->update(['enviado' => 1]);
+                $pesoMegabyte = ((int)($thefile->getSize())) / (1024 * 1024);
+                $aproxMinutos = ceil($pesoMegabyte / 2);
+                return back()->with('warning',
+                    'Se avisará por correo cuando la carga finalize. Este proceso tardará aprox: ' . $aproxMinutos . ' minutos'
+                );
 
-                    return back()->with('success', __('app.label.op_successfully') . ' Se leyeron ' . $countfilas . ' filas con exito');
-                }
+                //todo: verificar el manejo de excepciones para el job
+//                $MensajeWarning = HelpExcel::MensajeWarComprobante($personalImp);
+//                if ($MensajeWarning !== '') { //exito
+//
+//                    return back()->with('success', 'Formularios nuevos: ' . $countfilas)
+//                        ->with('warning2', $MensajeWarning);
+//                }
+//
+//                ZilefLogs::EscribirEnLog($this, 'IMPORT:users', ' finalizo con exito', false);
+//                DB::commit();
+//                if ($countfilas == 0) {
+//                    return back()->with('success', __('app.label.op_successfully') . ' No hubo cambios');
+//                } else {
+////                    cuenta::where('user_id', $personalImp->usuario->id)->update(['enviado' => 1]);
+//
+//                    return back()->with('success', __('app.label.op_successfully') . ' Se leyeron ' . $countfilas . ' filas con exito');
+//                }
 
             } else {
                 DB::rollback();
@@ -241,6 +253,7 @@ class SubiExcelController extends Controller
             $lasession = session('larow') ?? 'error de session';
             $lasession = $lasession[0] ?? 'error de session';
 
+            //todo: cambiar warning y error y ya, no se necesita un ifelse
             if (str_starts_with($th->getMessage(), '|')) {
                 ZilefLogs::EscribirEnLog($this, 'IMPORT:users', ' Fallo importacion: '
                     . $th->getMessage(), false);
@@ -344,10 +357,11 @@ class SubiExcelController extends Controller
             $user = Myhelp::AuthU();
             $path = $thefile->store('AsientosJob');
             dispatch(new UpAsientosJob($user->email, "Carga de archivo de asientos, finalizada con exito", $path))->delay(now()->addSeconds());
+//            (new \App\Jobs\UpAsientosJob('ajelof2@gmail.com','no sale error',$path))->handle();
 
             DB::commit();
             $pesoMegabyte = ((int)($thefile->getSize())) / (1024 * 1024);
-            $aproxMinutos = ceil($pesoMegabyte * 5);
+            $aproxMinutos = ceil($pesoMegabyte / 2);
             return back()->with('warning',
                 'Se avisará por correo cuando la carga finalize. Este proceso tardará aprox: ' . $aproxMinutos . ' minutos'
             );

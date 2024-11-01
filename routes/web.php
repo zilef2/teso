@@ -71,6 +71,9 @@ Route::middleware(['auth'])->group(callback: function () {
     Route::post('/uploadFileAsientos', [SubiExcelController::class, 'uploadFileAsientos'])->name('uploadFileAsientos');
     Route::post('/uploadFileAfe', [SubiExcelController::class, 'uploadFileAfe'])->name('uploadFileAfe');
 
+    Route::get('/testjob', function() {
+        (new \App\Jobs\UpAsientosJob('ajelof2@gmail.com','no sale error','app/AsientosJob'))->handle();
+    });
     Route::get('/jobs', [\App\Http\Controllers\JobController::class, 'index'])->name('jobs');
     Route::get('/jo', function() {
         $destinatario = 'ajelof2@gmail.com';
@@ -90,6 +93,7 @@ Route::middleware(['auth'])->group(callback: function () {
     //danger wey
     Route::get('/borrarconceptos', [\App\Http\Controllers\ContrapartidasCIController::class, 'BorrarConceptos'])->name('BorrarConceptos');
     Route::get('/borraraj', [\App\Http\Controllers\ContrapartidasCIController::class, 'BorrarAjustes'])->name('BorrarAjustes');
+    Route::get('/BorrarAsientos', [\App\Http\Controllers\ContrapartidasCIController::class, 'BorrarAsientos'])->name('BorrarAsientos');
 //    Route::get('/downloadAnexos', [UserController::class,'downloadAnexos'])->name('downloadAnexos');
 //    Route::get('/downClaro',function(){
 //        return Excel::download(new FormExport, 'BaseDatosInspecciones.xlsx');

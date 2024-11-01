@@ -75,16 +75,6 @@ class TransaccionesImport implements ToModel, WithStartRow
         return 2;
     }
 
-    private function validarNull($row)
-    {
-        session(['larow' => $row]);
-        return (
-            !isset($row[0])
-            || mb_strtolower($row[0]) == 'codigo_cuenta_contable'
-            || mb_strtolower($row[0]) == 'nombre_cuenta'
-        );
-    }
-
     /**
      * @throws \Exception
      */

@@ -6,6 +6,7 @@ use App\helpers\Myhelp;
 use App\helpers\ZilefErrors;
 use App\Jobs\BC_AnulacionesJob;
 use App\Jobs\BusquedaConceptoCI_AJJob;
+use App\Models\asiento;
 use App\Models\Comprobante;
 use App\Models\concepto_flujo;
 use App\Models\Parametro;
@@ -166,5 +167,11 @@ class ContrapartidasCIController extends Controller
         $conteo = $ajustes->count();
         $tranListas = $ajustes->delete();
         echo "Result $tranListas. - $conteo Eliminadas";
+    }
+    public function BorrarAsientos(): void
+    {
+        $conteo = asiento::count();
+        $asientos = asiento::where('id','>',0)->delete();
+        echo "$conteo asientos eliminados";
     }
 }

@@ -38,3 +38,4 @@ php artisan make:controller BusquedaIndependienteController
 # Subiendo exceles con jobs
 php artisan make:job UpAsientosJob
 php artisan make:job testingAndDoubs
+php artisan make:job UpComprobantesJob

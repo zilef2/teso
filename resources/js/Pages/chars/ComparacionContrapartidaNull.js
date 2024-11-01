@@ -1,7 +1,7 @@
 import {ref} from "vue";
 import {Chart} from 'chart.js';
 
-export let chart11 = ref(null);
+export let verificadorCP = ref(null);
 let ctx_entidades
 let charInstance = []
 let tipoVar = 'doughnut'
@@ -14,7 +14,7 @@ export async function buildCharCPnull(ComparacionCP) {
     let transaccion2024concp = parseInt(ComparacionCP.Comprobanteci2024concp)
 
     await new Promise(resolve => setTimeout(resolve, 10));
-    ctx_entidades = chart11.value.getContext('2d');
+    ctx_entidades = verificadorCP.value.getContext('2d');
     charInstance = new Chart(ctx_entidades, {
         type: tipoVar,
         data: {

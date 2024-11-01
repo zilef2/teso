@@ -7,7 +7,8 @@ import Chart from 'chart.js/auto';
 import {ref, onMounted, watchEffect, reactive} from 'vue';
 import EfeActOperacion from "@/Pages/EfeActOperacion.vue";
 import {buildCharEnti, chart10} from "@/Pages/chars/numeroEntidades.js";
-import {buildCharCPnull, chart11} from "@/Pages/chars/ComparacionContrapartidaNull.js";
+import {buildMini, charConteomini} from "@/Pages/chars/numeroEntidadesmini.js";
+import {buildCharCPnull, verificadorCP} from "@/Pages/chars/ComparacionContrapartidaNull.js";
 import {ResumenCI,ResumenCI2, chart12,chart13} from "@/Pages/chars/ResumenCI.js";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import {Link} from '@inertiajs/vue3';
@@ -37,23 +38,22 @@ const data = reactive({
     tipoVar: ['bar', 'bar', 'bar'],
 })
 // <!--</editor-fold>-->
-
-
 const chartCanvas1 = ref(null);
 const chartCanvas2 = ref(null);
 const chartCanvasEfec = ref(null);
 const char10 = chart10;
+const charConteomin = charConteomini;
 let ctx_a, ctx_b, ctx_c
 let charInstance = []
 onMounted(async () => {
-    await buildCharEnti(props.ConteoEntidades)
+    await buildCharEnti(props.ConteoEntidades[0])
+    await buildMini(props.ConteoEntidades[1])
     await buildCharCPnull(props.ComparacionCP)
     await ResumenCI(props.ResumenCI,props.conceptos)
     await ResumenCI2(props.ResumenCI2,props.conceptos2)
 
     // ctx_b = chartCanvas1.value.getContext('2d');
     // buildChar2(1)//la2
-
     ctx_c = chartCanvas2.value.getContext('2d'); // la3
     new Chart(ctx_c, {
         data: {
@@ -115,86 +115,88 @@ onMounted(async () => {
             }
         }
     });
-
-
-    ctx_a = chartCanvasEfec.value.getContext('2d');
-    buildChar1(0)
+    // ctx_a = chartCanvasEfec.value.getContext('2d');
+    // buildChar1(0)
 });
-const buildChar1 = (numeracio) => charInstance[numeracio] = new Chart(ctx_a, {
-    type: data.tipoVar[numeracio],
-    data: {
-        labels: ['2023', '2024'],
+const buildChar1 = async (numeracio) => {
 
-        datasets: [
-            {
-                label: 'Saldo Inicial de la Vigencia',
-                data: [93358379599, 92351501438],
-                borderWidth: 1,
-                borderColor: 'rgb(0,14,14)',
-                backgroundColor: 'rgb(0, 86, 82)',
-                yAxisID: 'y',
-            },
-            {
-                label: 'Entradas',
-                data: [12903980072, 9468610942],
-                borderWidth: 0,
-                borderColor: 'rgb(0,5,5)',
-                backgroundColor: 'rgb(0,0,122)',
-                yAxisID: 'y',
-            },
-            {
-                label: 'Salidas',
-                data: [16180065448, 10961269262],
-                borderWidth: 0,
-                borderColor: 'rgb(0, 86, 82)',
-                backgroundColor: 'rgb(246, 167, 0)',
-            },
-            {
-                label: 'Disminucion Del Efectivo Agosto',
-                data: [3276085376, 1492658320],
-                borderWidth: 0,
-                borderColor: 'rgba(4,12,0,0.63)',
-                backgroundColor: 'rgb(135,118,4)',
-            },
-            {
-                label: 'Saldo de efectivo al fin de la vigencia',
-                data: [90082294223, 90858843118],
-                borderWidth: 2,
-                borderColor: 'rgba(18,0,2,0.98)',
-                backgroundColor: 'rgb(25,182,2)',
-            },
-        ],
-    },
-    options: {
-        plugins: {
-            legend: {
-                position: 'top',
-            },
-            title: {
-                display: true,
-                text: 'Efectivo en actividades de operación'
-            }
+    await new Promise(resolve => setTimeout(resolve, 101));
+    charInstance[numeracio] = new Chart(ctx_a, {
+        type: data.tipoVar[numeracio],
+        data: {
+            labels: ['2023', '2024'],
+
+            datasets: [
+                {
+                    label: 'Saldo Inicial de la Vigencia',
+                    data: [93358379599, 92351501438],
+                    borderWidth: 1,
+                    borderColor: 'rgb(0,14,14)',
+                    backgroundColor: 'rgb(0, 86, 82)',
+                    yAxisID: 'y',
+                },
+                {
+                    label: 'Entradas',
+                    data: [12903980072, 9468610942],
+                    borderWidth: 0,
+                    borderColor: 'rgb(0,5,5)',
+                    backgroundColor: 'rgb(0,0,122)',
+                    yAxisID: 'y',
+                },
+                {
+                    label: 'Salidas',
+                    data: [16180065448, 10961269262],
+                    borderWidth: 0,
+                    borderColor: 'rgb(0, 86, 82)',
+                    backgroundColor: 'rgb(246, 167, 0)',
+                },
+                {
+                    label: 'Disminucion Del Efectivo Agosto',
+                    data: [3276085376, 1492658320],
+                    borderWidth: 0,
+                    borderColor: 'rgba(4,12,0,0.63)',
+                    backgroundColor: 'rgb(135,118,4)',
+                },
+                {
+                    label: 'Saldo de efectivo al fin de la vigencia',
+                    data: [90082294223, 90858843118],
+                    borderWidth: 2,
+                    borderColor: 'rgba(18,0,2,0.98)',
+                    backgroundColor: 'rgb(25,182,2)',
+                },
+            ],
         },
-        scales: {
-            y: {
-                type: 'linear',
-                display: true,
-                position: 'left',
-                beginAtZero: true,  // Eje Y para Dataset 1
+        options: {
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+                title: {
+                    display: true,
+                    text: 'Efectivo en actividades de operación'
+                }
             },
-            // y1: {
-            //     type: 'linear',
-            //     display: true,
-            //     position: 'right',
-            //     beginAtZero: true,  // Eje Y para Dataset 2
-            //     grid: {
-            //         drawOnChartArea: false,  // Esto evita que el grid de y1 se superponga con el de y
-            //     },
-            // }
-        },
-        responsive: true,
-    }
-});
+            scales: {
+                y: {
+                    type: 'linear',
+                    display: true,
+                    position: 'left',
+                    beginAtZero: true,  // Eje Y para Dataset 1
+                },
+                // y1: {
+                //     type: 'linear',
+                //     display: true,
+                //     position: 'right',
+                //     beginAtZero: true,  // Eje Y para Dataset 2
+                //     grid: {
+                //         drawOnChartArea: false,  // Esto evita que el grid de y1 se superponga con el de y
+                //     },
+                // }
+            },
+            responsive: true,
+        }
+    });
+}
 
 const buildChar2 = (numeracio) => charInstance[numeracio] = new Chart(ctx_b, {
     type: data.tipoVar[numeracio],
@@ -250,7 +252,6 @@ const buildChar2 = (numeracio) => charInstance[numeracio] = new Chart(ctx_b, {
     }
 });
 
-
 const changeChar = (numeracion) => {
     if (charInstance[numeracion])
         charInstance[numeracion].destroy()
@@ -284,13 +285,14 @@ const changeChar = (numeracion) => {
         </PrimaryButton>
 
         <div class="grid grid-cols-1 3xl:grid-cols-2">
+            <div class="mb-20 w-full md:w-3/6 3xl:w-full"><canvas ref="charConteomin"></canvas></div>
+            <div class="mb-20 w-full md:w-3/6 3xl:w-full"><canvas ref="char10"></canvas></div>
             <div class="mb-20 w-4/6 2xl:w-5/6 3xl:w-full "><canvas ref="chart12"></canvas></div>
             <div class="mb-20 w-4/6 2xl:w-5/6 3xl:w-full "><canvas ref="chart13"></canvas></div>
-            <div class="mb-20 w-full md:w-3/6 3xl:w-full"><canvas ref="char10"></canvas></div>
 <!--            <div class="mb-20 w-full md:w-4/6 3xl:w-full"><canvas ref="chartCanvasEfec"></canvas></div>-->
 <!--            <div class="my-20 w-full md:w-5/6"><canvas ref="chartCanvas1"></canvas></div>-->
             <div class="my-20 w-full md:w-4/6 3xl:w-full"><canvas ref="chartCanvas2"></canvas></div>
-            <div class="my-20 w-1/2 "><canvas ref="chart11"></canvas></div>
+            <div class="my-20 w-1/2 "><canvas ref="verificadorCP"></canvas></div>
         </div>
     </AuthenticatedLayout>
 </template>
