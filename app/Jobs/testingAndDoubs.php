@@ -26,6 +26,6 @@ class testingAndDoubs implements ShouldQueue
      */
     public function handle(): void
     {
-        Log::info('UpAsientosJob 33333333333333333333333333333333333.');
+        Log::info('UpAsientosJb 33333333333333333333333333333333333.');
     }
 }

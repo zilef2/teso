@@ -4,7 +4,7 @@ namespace App\Jobs;
 
 use App\helpers\ZilefErrors;
 use App\Imports\AsientoImport;
-use App\Models\Parametro;
+use App\Imports\ComprobanteImport;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Mail;
 use Maatwebsite\Excel\Facades\Excel;
 use Throwable;
 
-class UpAsientosJob implements ShouldQueue
+class UpComprobantesJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -34,21 +34,23 @@ class UpAsientosJob implements ShouldQueue
 
     public function failed(?Throwable $exception): void
     {
-        Log::error("UpAsientosJob falló: " . $exception->getMessage(), [
+        Log::error("UpComprobantesJob falló: " . $exception->getMessage(), [
             'trace' => $exception->getTraceAsString(),
             'job' => $this->job->getRawBody(),
         ]);
         Mail::raw('error', function ($message){
-            $message->to('ajelof2@gmail.com')->subject('Ha fallado el proceso upasientos. Ojala no sea que revento el servidor');
+            $message->to('ajelof2@gmail.com')->subject('Ha fallado el proceso UpComprobantesJob. Ojala no sea que revento el servidor');
         });
     }
     public function handle(): void
     {
         try {
-            Log::info(" 1 Inicio de UpAsientosJob");
-            $elImport = new AsientoImport();
+            Log::info(" 1 Inicio de UpComprobantesJob");
+            $elImport = new ComprobanteImport();
             Excel::import($elImport, storage_path('app/' . $this->path));
-            Log::info("el import se ha completado UpAsientosJob");
+            Log::info("el import se ha completado UpComprobantesJob");
+
+            //ahora mandamos un correo
             $destinatario = $this->userMail;
             $mensaje = $this->mensajeEmail;
             Mail::raw($mensaje, function ($message) use ($destinatario, $mensaje) {

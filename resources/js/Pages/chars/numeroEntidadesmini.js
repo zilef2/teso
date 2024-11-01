@@ -1,48 +1,37 @@
 import {ref} from "vue";
 import {Chart} from 'chart.js';
 
-export let chart10 = ref(null);
+export let charConteomini = ref(null);
 let ctx_entidades
 let charInstance = []
 let tipoVar = 'bar'
 
-export async function buildCharEnti(numeroEntidades) {
+export async function buildMini(numeroEntidades) {
 
-    let transaccion2023 = numeroEntidades.transaccion2023
-    let transaccion2024 = numeroEntidades.transaccion2024
-    let Comprobanteci2023 = numeroEntidades.Comprobanteci2023
-    let Comprobanteci2024 = numeroEntidades.Comprobanteci2024
-    let Comprobantece2023 = numeroEntidades.Comprobantece2023
-    let Comprobantece2024 = numeroEntidades.Comprobantece2024
+    let Comprobanteaj2023 = numeroEntidades.Comprobanteaj2023
+    let Comprobanteaj2024 = numeroEntidades.Comprobanteaj2024
+    let Comprobantean2023 = numeroEntidades.Comprobantean2023
+    let Comprobantean2024 = numeroEntidades.Comprobantean2024
+    let Comprobanteca2023 = numeroEntidades.Comprobanteca2023
+    let Comprobanteca2024 = numeroEntidades.Comprobanteca2024
 
-    let afectacion2023 = numeroEntidades.afectacion2023
-    let afectacion2024 = numeroEntidades.afectacion2024
-
-    let asientos2023 = numeroEntidades.asientos2023
-    let asientos2024 = numeroEntidades.asientos2024
-
-    await new Promise(resolve => setTimeout(resolve, 101));
-
-    ctx_entidades = chart10.value.getContext('2d');
+    await new Promise(resolve => setTimeout(resolve, 10));
+    ctx_entidades = charConteomini.value.getContext('2d');
     charInstance = new Chart(ctx_entidades, {
         type: tipoVar,
         data: {
             labels: [
-                'transacciones',
-                'CI',
-                'CE',
-                'Afectacion',
-                'Asientos',
+                'AJ',
+                'AN',
+                'CA',
             ],
             datasets: [
                 {
                     label: '2023',
                     data: [
-                        transaccion2023,
-                        Comprobanteci2023,
-                        Comprobantece2023,
-                        afectacion2023,
-                        asientos2023
+                        Comprobanteaj2023,
+                        Comprobantean2023,
+                        Comprobanteca2023,
                     ],
                     borderWidth: 1,
                     borderColor: 'rgb(0,14,14)',
@@ -52,11 +41,9 @@ export async function buildCharEnti(numeroEntidades) {
                 {
                     label: '2024',
                     data: [
-                        transaccion2024,
-                        Comprobanteci2024,
-                        Comprobantece2024,
-                        afectacion2024,
-                        asientos2024,
+                        Comprobanteaj2024,
+                        Comprobantean2024,
+                        Comprobanteca2024
                     ],
                     borderWidth: 1,
                     borderColor: 'rgb(0,14,14)',
@@ -72,7 +59,7 @@ export async function buildCharEnti(numeroEntidades) {
                 },
                 title: {
                     display: true,
-                    text: 'Conteo de entidades'
+                    text: 'Conteo de entidades menores'
                 }
             },
             scales: {

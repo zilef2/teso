@@ -33,6 +33,7 @@ class asiento extends Model
         'consecutivo',
         'periodo',
         'plan_cuentas',
+        'numerounico',
     ];
 
 }

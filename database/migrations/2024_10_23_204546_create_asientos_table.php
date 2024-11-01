@@ -36,6 +36,7 @@ return new class extends Migration {
             $table->string('consecutivo');
             $table->string('periodo');
             $table->string('plan_cuentas');
+            $table->integer('numerounico')->nullable();
             $table->timestamps();
         });
     }

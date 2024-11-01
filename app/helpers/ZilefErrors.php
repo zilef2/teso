@@ -51,8 +51,5 @@ class ZilefErrors
             . ' en el archivo: ' . $filePath
             . ' | ' . $files;
     }
-
 }
-
 ?>
-

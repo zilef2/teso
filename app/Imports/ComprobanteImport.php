@@ -7,9 +7,11 @@ use App\helpers\Myhelp;
 use App\helpers\ZilefLogs;
 use App\Models\Comprobante;
 use Maatwebsite\Excel\Concerns\ToModel;
+use Maatwebsite\Excel\Concerns\WithChunkReading;
+use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithStartRow;
 
-class ComprobanteImport implements ToModel, WithStartRow
+class ComprobanteImport implements ToModel, WithStartRow, WithMapping, WithChunkReading
 {
 
     public int $ContarFilasAbsolutas;
@@ -23,7 +25,6 @@ class ComprobanteImport implements ToModel, WithStartRow
     public int $contarVacios;
     public string $contarVaciosstring;
     public string $nombrePropio;
-
 
     /**
      * @throws \Exception
@@ -63,14 +64,11 @@ class ComprobanteImport implements ToModel, WithStartRow
             'plan_cuentas',
         ];
     }
-
-
-    public function startRow(): int
-    {
-        return 2;
+    public function startRow(): int{return 2;}
+    public function chunkSize(): int{return 2000;}
+    public function map($row): array{
+        return array_slice($row, 0, 19);
     }
-
-
     private function validarNull($row)
     {
         session(['larow' => $row]);
@@ -95,13 +93,13 @@ class ComprobanteImport implements ToModel, WithStartRow
                 continue;
             }
             if (is_null($value) || $value === ''){
-                dd($theRow,$value,'VALOR VACIO EN LA FILA '.$this->ContarFilasAbsolutas);
-                throw new \Exception('VALOR VACIO EN LA FILA '.$this->ContarFilasAbsolutas);
+                dd($theRow,$value,'VALOR VACIO EN LA FILA '.$this->ContarFilasAbsolutas. ' columna '.$key);
+                throw new \Exception('VALOR VACIO EN LA FILA '.$this->ContarFilasAbsolutas. ' columna '.$key);
             }
         }
         if (!is_string(($theRow[0]))){ //intval
-            $mensajesito = 'TIPO DE VALOR INCORRECTO (deberia ser un texto) EN LA FILA ';
-            dd($theRow,$theRow[0],$mensajesito.$this->ContarFilasAbsolutas);
+            $mensajesito = 'TIPO DE VALOR INCORRECTO (deberia ser un texto) EN LA FILA '.$this->ContarFilasAbsolutas. ' columna '.$key;
+            dd($theRow,$theRow[0],$mensajesito);
 //                throw new Exception($mensajesito.$this->ContarFilasAbsolutas);
         }
 
@@ -172,7 +170,7 @@ class ComprobanteImport implements ToModel, WithStartRow
     private function TheNewObject($therow)
     {
         return new Comprobante([
-         'codigo' => $therow[0],
+        'codigo' => $therow[0],
         'descripcion' => $therow[1],
         'comprobante' => $therow[2],
         'descripcion2' => $therow[3],

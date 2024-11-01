@@ -21,14 +21,18 @@ class Comprobante extends Model
         'codigo_cuenta',
         'nombre_cuenta',
         'ccostos',
-        'nit',
+        'nit',  //factor NU
         'nombre',
         'valor_debito',
         'valor_credito',
         'codigo_asiento',
-        'documento_ref',
+        'documento_ref', //factor NU
         'plan_cuentas',
 
+        'resultado',
+        'sin_afectacion',
+        'cuenta_contrapartida',
+        'numerounico',
     ];
 
 }

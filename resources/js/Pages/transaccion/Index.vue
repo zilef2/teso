@@ -60,9 +60,12 @@ const data = reactive({
     deleteOpen: false,
     // deleteBulkOpen: false,
     dataSet: usePage().props.app.perpage,
+    //ci
     procensandoCPCI: false,
     procensandAJCI: false,
     procensandANCI: false,
+    //ce
+    procensandCE: false,
 })
 
 // <!--<editor-fold desc="order, watchclone, select">-->
@@ -128,6 +131,12 @@ const Buscar_AN_CI = () => {
         onFinish: () => data.procensandANCI = false,
     });
 }
+const Buscar_CP_CE = () => {
+    data.procensandCE = true
+    form.post(route('Buscar_CP_CE'), {
+        onFinish: () => data.procensandCE = false,
+    });
+}
 </script>
 
 <template>
@@ -159,9 +168,8 @@ const Buscar_AN_CI = () => {
                         <PrimaryButton v-if="!form.processing || !data.procensandAJCI" class="rounded-lg"
                                        @click="Buscar_AJ_CI">
                             Ajustes de CI
-                            <!--                            de {{OnlyMonthAndYear(Date.now())}}-->
-                            <!--                            de {{OnlyMonthAndYear(Date.now().getFullYear)}}-->
                         </PrimaryButton>
+
                         <div v-else class="text-sky-600">
                             <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                             Procesando la asignacion de concepto (AJ)...
@@ -179,11 +187,16 @@ const Buscar_AN_CI = () => {
                         </div>
                     </div>
 
+                    <div class="mx-4 mb-1"> | </div>
                     <div class="mx-2 mb-1">
-                        <Button class="ml-4 bg-gray-200 rounded-lg p-2">
-                            Contrapartidas CE (pendiente)
-                            <!--                            de {{OnlyMonthAndYear(Date.now())}}-->
-                        </Button>
+                        <PrimaryButton v-if="!form.processing || !data.procensandCE" class="rounded-lg"
+                                       @click="Buscar_CP_CE">
+                            Ajustes de CE
+                        </PrimaryButton>
+                        <div v-else class="text-sky-600">
+                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                            Procesando CE...
+                        </div>
                     </div>
 
 
@@ -304,8 +317,8 @@ const Buscar_AN_CI = () => {
                             <!--                                <td v-for="titulo in titulos" class="whitespace-nowrap py-4 px-2 sm:py-3">-->
                             <td v-for="titulo in props.thisAtributos" class="whitespace-wrap py-4 px-2 sm:py-3">
                                 <span v-if="titulo === 'documento'"
-                                      @click="data.params.searchDocumento = claseFromController[titulo]"
-                                class="underline text-blue-500 cursor-pointer">
+                                    @click="data.params.searchDocumento = claseFromController[titulo]"
+                                    class="underline text-blue-500 cursor-pointer">
                                     {{ claseFromController[titulo] }}
                                 </span>
                                 <span v-else> {{ claseFromController[titulo] }} </span>

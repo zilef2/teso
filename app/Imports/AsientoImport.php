@@ -5,18 +5,18 @@ namespace App\Imports;
 use App\helpers\HelpExcel;
 use App\helpers\ZilefLogs;
 use App\Models\asiento;
+use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Maatwebsite\Excel\Concerns\WithStartRow;
 
 class AsientoImport implements ToModel,WithStartRow
-//    , WithChunkReading
+    , WithChunkReading
 {
-
     public int $ContarFilasAbsolutas;
     public int $ContarFilas;
-
     public int $SoloUnaVez = 0;
+
 
     //manejo de errores
     public int $contarVacios;
@@ -37,11 +37,12 @@ class AsientoImport implements ToModel,WithStartRow
         //errores
         $this->contarVacios = 0;
         $this->contarVaciosstring = "";
+        Log::info(" 2 Se construyo el asientoimport");
     }
 
 
     public function startRow(): int{return 2;}
-//    public function chunkSize(): int{return 1000;}
+    public function chunkSize(): int{return 12000;}
 
     public function model(array $row)
     {
@@ -61,6 +62,8 @@ class AsientoImport implements ToModel,WithStartRow
             $this->ContarFilas++; //filas que se registraron en el aplicativo
             return $result;
         } catch (\Throwable $th) {
+            Log::info("errorrrrrrrrrrrrrrrrrr");
+            Log::error("errorrrrrrrrrrrrrrrrrr");
             $mensajeError = (new \App\helpers\Myhelp)->mensajesErrorBD($th, 'AsientoImport', 0, '_');
             ZilefLogs::EscribirEnLog($this, 'IMPORT:asiento ', $mensajeError, false);
             throw new \Exception($mensajeError);
@@ -139,7 +142,7 @@ class AsientoImport implements ToModel,WithStartRow
             'nombre_cuenta'=> $therow[1],
             'codigo'=> $therow[2],
             'documento'=> $therow[3],
-            'fecha_elaboracion'=> $therow[4],
+            'fecha_elaboracion' => HelpExcel::getFechaExcel($therow[4]),
             'descripcion'=> $therow[5],
             'comprobante'=> $therow[6],
             'valor_debito'=> $therow[7],

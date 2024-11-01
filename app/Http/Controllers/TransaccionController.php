@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\helpers\CPhelp;
 use App\helpers\Myhelp;
 use App\helpers\MyModels;
 use App\helpers\ZilefLogs;
@@ -167,10 +168,7 @@ class TransaccionController extends Controller
 
 
     //<editor-fold desc="no index">
-    public function create()
-    {
-    }
-
+    public function create(){}
     //! STORE - UPDATE - DELETE
     //! STORE functions
 
@@ -245,67 +243,18 @@ class TransaccionController extends Controller
     {
         try {
             $codigo = "CI";
-            if (Comprobante::Where('codigo', $codigo)->count() === 0)
-                return back()->with('error', 'No se encontro ningun comprobante con código: ' . $codigo);
-
-            DB::beginTransaction();
-            [$Transacciones, $valor_debito_credito, $opuesto_debito_credito] = $this->TransaccionesCI($codigo);
-
-
-            foreach ($Transacciones as $index => $transa) {
-                $comprobantes = Comprobante::Where('numero_documento', $transa->documento)
-                    ->Where('codigo', $codigo);
-
-                $HayComprobantes = clone $comprobantes;
-                $HayComprobantes = $HayComprobantes->count();
-                if ($HayComprobantes === 0) {
-                    $transa->update([
-                        'contrapartida' => 'No se encontro ningun comprobante para el documento ' . $transa->documento,
-                        'concepto_flujo_homologación' => 'No se encontro ningun comprobante para el documento ' . $transa->documento,
-                    ]);
-                    continue;
-                }
-
-                $lasContrapartidas = clone $comprobantes;
-                $principales = $comprobantes->where($valor_debito_credito, '>', 0)->get(); //todo: no es asi, debe ser mayor a cero
-                $lasContrapartidas = $lasContrapartidas->where("valor_credito", '>', 0)->get();
-
-                $justdebug = clone $comprobantes;
-                $justdebug = $justdebug->first()->numero_documento;
-
-
-                //validacion de credito - debito
-                $sumprincipales = $principales->sum($valor_debito_credito); //todo: hacer mas dinamica
-                $sumlasContrapartidas = $lasContrapartidas->sum($opuesto_debito_credito); //todo: hacer mas dinamica
-
-
-                if ($sumprincipales !== $sumlasContrapartidas) {
-                    $transa->update([
-                        'contrapartida' => "No se encontro debitos y creditos no concuerdan, principales suman: $sumprincipales",
-                        'concepto_flujo_homologación' => "contrapartidas suman: $sumlasContrapartidas",
-                    ]);
-                    continue;
-                }
-
-
-                //va y busca los demas
-                foreach ($principales as $principal) {
-                    $FirstMaxContraPartida = $lasContrapartidas->sortByDesc($valor_debito_credito)->first();
-                    $cuentaCP = $FirstMaxContraPartida->codigo_cuenta;
-
-                    //buscamos el concepto
-                    $concepto = $this->hallarConcepto($cuentaCP);
-                    $transa->update([
-                        'n_contrapartidas' => count($lasContrapartidas),
-                        'contrapartida' => $cuentaCP,
-                        'concepto_flujo_homologación' => $concepto,
-                    ]);
-                }
+            $frase_reservada = "No se encontro";
+            if(!CPhelp::Val_Exista_CI_auxiliar($codigo)){
+                return back()->with('error', 'Faltan archivos');
             }
+            DB::beginTransaction();
+            //debito para CI? 30oct2024
+            $INT_TransaccionesOperadas = CPhelp::BuscarContrapartidaGeneral($codigo,$frase_reservada);
             DB::commit();
 
-            return redirect()->route('transaccion.index')->with('success',
-                'Operación exitosa. ' . $Transacciones->count() . ' transacciones ' . $codigo . ' de agosto fueron revisadas'
+//            return redirect()->route('transaccion.index')->with('success',
+            return back()->with('success',
+                'Operación exitosa. ' . $INT_TransaccionesOperadas . ' transacciones ' . $codigo . ' de agosto fueron revisadas'
             );
         } catch (\Throwable $th) {
             DB::rollback();
@@ -315,32 +264,7 @@ class TransaccionController extends Controller
     }
 
     //FIN : STORE - UPDATE - DELETE
-    private function hallarConcepto($cuentaCP)
-    {
-        $cf = concepto_flujo::Where('cuenta_contable', $cuentaCP)->first();
-        if ($cf) {
-            return $cf->concepto_flujo;
-        }
-        return 'Buscar en AJ o AN';
-    }
 
-    private function TransaccionesCI($codigo)
-    {
-        $valor_debito_credito = (strcmp($codigo, "CI") === 0) ? "valor_debito" : "valor_credito";
-        $opuesto_debito_credito = (strcmp($valor_debito_credito, "valor_credito") === 0) ? "valor_debito" : "valor_credito";
-        $paraMes = Parametro::Where("nombre" ,"Mes transaccional")->first();
-        if($paraMes){
-            $mes = intval($paraMes->valor);
-        }
 
-        $Transacciones = transaccion::Where('codigo', $codigo)
-//            ->WhereNull('concepto_flujo_homologación')
-//            ->WhereYear('fecha_elaboracion', $anio)
-            ->whereMonth('fecha_elaboracion', $mes)
-            ->get();
-        //validar que tanto el Comprobante como la transsacion exista
-//        dd($Transacciones[0]);
-        return [$Transacciones, $valor_debito_credito, $opuesto_debito_credito];
-    }
 
 }

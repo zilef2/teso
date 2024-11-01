@@ -19,7 +19,7 @@ class BusquedaIndependienteController extends Controller
             $inicioicrotime = microtime(true);
             $codigo = "AJ";
 
-            $CPController = new ContrapartidasCICEController();
+            $CPController = new ContrapartidasCIController();
             DB::beginTransaction();
             foreach ($Transacciones as $index => $transa) {
                 $comprobantes = Comprobante::Where('numero_documento', $transa->documento)
@@ -177,4 +177,22 @@ class BusquedaIndependienteController extends Controller
             return 'Operacion fallida... ' . $error;
         }
     }
+
+
+    /*helps*/
+    public function LaContraPartidaNoSumaCeroFirst($lasContrapartidas, $transa): bool
+    {
+
+        $transaValor = intval($transa->valor_debito) === 0 ? intval($transa->valor_credito) : intval($transa->valor_debito);
+        $contraValor = intval($lasContrapartidas->valor_debito) === 0 ? intval($lasContrapartidas->valor_credito) : intval($lasContrapartidas->valor_debito);
+        $elCero = abs($transaValor) !== abs($contraValor);
+        if ($elCero) {
+            $transa->update([
+                'contrapartida' => "No se encontro un Debito y credito igual. Principal = $transaValor",
+                'concepto_flujo_homologación' => "Contrapartida = $contraValor",
+            ]);
+        }
+        return $elCero;
+    }
+
 }
