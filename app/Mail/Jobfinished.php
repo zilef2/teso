@@ -2,6 +2,7 @@
 
 namespace App\Mail;
 
+use AllowDynamicProperties;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
@@ -9,14 +10,16 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class Jobfinished extends Mailable{
+#[AllowDynamicProperties] class Jobfinished extends Mailable{
     use Queueable, SerializesModels;
+
+    public string $codigo;
     /**
      * Create a new message instance.
      */
-    public function __construct()
+    public function __construct($codigo)
     {
-        //
+        $this->codigo = $codigo;
     }
     /**
      * Get the message envelope.
@@ -27,19 +30,10 @@ class Jobfinished extends Mailable{
             subject: 'Jobfinished',
         );
     }
-    /**
-     * Get the message content definition.
-     */
-//    public function content(): Content
-//    {
-//        return new Content(
-//            view: 'views.jobs.index',
-//        );
-//    }
-
     public function build()
     {
-        return $this->view('mails.jobfinish');
+        return $this->view('mails.jobfinish')
+            ->subject('Trabajo Finalizado - Código: ' . $this->codigo);
     }
     /**
      * Get the attachments for the message.

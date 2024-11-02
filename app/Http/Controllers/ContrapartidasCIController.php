@@ -174,4 +174,10 @@ class ContrapartidasCIController extends Controller
         $asientos = asiento::where('id','>',0)->delete();
         echo "$conteo asientos eliminados";
     }
+    public function Borrarcomprobantesce(): void
+    {
+        $conteo = Comprobante::where('codigo', 'ce')->count();
+        $Comprobantes = Comprobante::where('codigo','ce')->delete();
+        echo "$conteo comprobantes ce eliminados";
+    }
 }

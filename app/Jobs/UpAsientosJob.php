@@ -59,7 +59,7 @@ class UpAsientosJob implements ShouldQueue
             $error = ZilefErrors::RastroError($th);
             Log::error($error);
             Mail::raw('error', function ($message) use($error){
-                $message->to('ajelof2@gmail.com')->subject('Ha fallado el proceso upasientos:  '.$error);
+                $message->to('ajelof2@gmail.com')->subject('Ha fallado el proceso upasientos');
             });
             $this->fail('Something went wrong.');
         }

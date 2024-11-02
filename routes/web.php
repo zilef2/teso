@@ -77,10 +77,13 @@ Route::middleware(['auth'])->group(callback: function () {
     Route::get('/jobs', [\App\Http\Controllers\JobController::class, 'index'])->name('jobs');
     Route::get('/jo', function() {
         $destinatario = 'ajelof2@gmail.com';
-        $mensaje = 'Proceso finalizado';
-        Mail::raw($mensaje, function ($message) use ($destinatario) {
-            $message->to($destinatario)->subject('Cruce AJ esta listo');
-        });
+//        $mensaje = 'Proceso finalizado';
+//        Mail::raw($mensaje, function ($message) use ($destinatario) {
+//            $message->to($destinatario)->subject('Cruce AJ esta listo');
+//        });
+
+        Mail::to($destinatario)->send(new \App\Mail\Jobfinished('CE'));
+
         return 'Mensaje enviado a '.$destinatario;
     });
 
@@ -94,6 +97,7 @@ Route::middleware(['auth'])->group(callback: function () {
     Route::get('/borrarconceptos', [\App\Http\Controllers\ContrapartidasCIController::class, 'BorrarConceptos'])->name('BorrarConceptos');
     Route::get('/borraraj', [\App\Http\Controllers\ContrapartidasCIController::class, 'BorrarAjustes'])->name('BorrarAjustes');
     Route::get('/BorrarAsientos', [\App\Http\Controllers\ContrapartidasCIController::class, 'BorrarAsientos'])->name('BorrarAsientos');
+    Route::get('/Borrarcomprobantesce', [\App\Http\Controllers\ContrapartidasCIController::class, 'Borrarcomprobantesce'])->name('Borrarcomprobantesce');
 //    Route::get('/downloadAnexos', [UserController::class,'downloadAnexos'])->name('downloadAnexos');
 //    Route::get('/downClaro',function(){
 //        return Excel::download(new FormExport, 'BaseDatosInspecciones.xlsx');

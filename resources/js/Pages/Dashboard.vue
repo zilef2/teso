@@ -43,10 +43,12 @@ const chartCanvas1 = ref(null);
 const chartCanvas2 = ref(null);
 const chartCanvasEfec = ref(null);
 const char10 = chart10;
+const charConteomin = charConteomini;
 let ctx_a, ctx_b, ctx_c
 let charInstance = []
 onMounted(async () => {
     await buildCharEnti(props.ConteoEntidades)
+    await buildMini(props.ConteoEntidades)
     await buildCharCPnull(props.ComparacionCP)
     await ResumenCI(props.ResumenCI,props.conceptos)
     await ResumenCI2(props.ResumenCI2,props.conceptos2)
