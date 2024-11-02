@@ -27,13 +27,12 @@ use Illuminate\Queue\SerializesModels;
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Jobfinished',
+            subject: 'Trabajo Finalizado - Código: ' . $this->codigo
         );
     }
     public function build()
     {
-        return $this->view('mails.jobfinish')
-            ->subject('Trabajo Finalizado - Código: ' . $this->codigo);
+        return $this->view('mails.jobfinish');
     }
     /**
      * Get the attachments for the message.

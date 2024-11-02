@@ -56,7 +56,6 @@ class PreComprobanteImport implements ToCollection, WithStartRow
         $this->chunkSize = 100;
         $this->contarVaciosstring = "";
         $this->MensajeMortal = '';
-        ini_set('memory_limit', '2048M'); // 2GB
 
     }
 

@@ -211,7 +211,8 @@ class SubiExcelController extends Controller
                 $path = $thefile->store('ComprobantesJob');
                 $pesoMegabyte = ((int)($thefile->getSize())) / (1024 * 1024);
                 $aproxMinutos = ceil($pesoMegabyte * 2);
-                ini_set('memory_limit', $pesoMegabyte.'G');
+                $limitMemory = $pesoMegabyte < 1 ? 1 : $pesoMegabyte;
+                ini_set('memory_limit', $limitMemory.'G');
 
                 $helpExcel = new HelpExcel();
                 $mensageWarning = $helpExcel->NewValidarArchivoExcel($request);
@@ -223,10 +224,10 @@ class SubiExcelController extends Controller
                 if ($pesoMegabyte > 1) {
                     [$tipoReturn,$mensajesin] = $this->encolarCruce($user, $path, $aproxMinutos);
                 } else {
-                    [$tipoReturn, $mensajesin] = $this->realizarCruce($thefile);
-
+//                    [$tipoReturn, $mensajesin] = $this->realizarCruce($thefile);
+                    $tipoReturn = 'success';
+                    $mensajesin = 'success';
                 }
-
                 return back()->with($tipoReturn,$mensajesin);
             } else {
                 DB::rollback();
@@ -262,7 +263,7 @@ class SubiExcelController extends Controller
         return ['warning', 'Este proceso tardará aprox: ' . $aproxMinutos . ' minutos'];
     }
 
-    private function realizarCruce($thefile): array|RedirectResponse
+    private function realizarCruce($thefile): array
     {
         $PrepersonalImp = new PreComprobanteImport();
         Excel::import($PrepersonalImp, $thefile);
