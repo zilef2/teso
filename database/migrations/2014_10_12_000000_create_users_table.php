@@ -29,7 +29,9 @@ return new class extends Migration {
             $table->string('tipo_user')->nullable();
 
             $table->timestamp('email_verified_at')->nullable();
+            $table->dateTime('last_login')->nullable();
             $table->timestamps();
+
             $table->rememberToken();
         });
     }
@@ -39,6 +41,8 @@ return new class extends Migration {
      *
      * @return void
      */
+
+
     public function down()
     {
         Schema::dropIfExists('users');

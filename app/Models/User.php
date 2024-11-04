@@ -22,15 +22,16 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        
+
         'identificacion',
         'sexo',
         'fecha_nacimiento',
         'celular',
-        
+
         'cargo',
         'tipo_user',
         'firma',
+        'last_login',
     ];
     protected $dates = ['deleted_at'];
     /**
@@ -68,12 +69,12 @@ class User extends Authenticatable
         return $this->Where('id','>',1)->get();
     }
 
-    
+
     // relationships
     public function inspeccionUsers(){
         return $this->hasMany(inspeccion_user::class);
     }
-    
+
     public function inspeccions(){return $this->belongsToMany(Inspeccion::class,'inspeccion_user');}
 
 
@@ -81,7 +82,7 @@ class User extends Authenticatable
         return $this->firma != null;
     }
 
-    
+
 
 //    public function formularios(): HasMany {
 //        return $this->HasMany(formulario::class,'operario_id');
@@ -92,7 +93,7 @@ class User extends Authenticatable
 
     // //# belongs to many
 
-   
+
 }
 
 

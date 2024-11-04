@@ -39,3 +39,5 @@ php artisan make:controller BusquedaIndependienteController
 php artisan make:job UpAsientosJob
 php artisan make:job testingAndDoubs
 php artisan make:job UpComprobantesJob
+# lisenerMailLogin
+php artisan make:Mail NewSession

@@ -56,7 +56,7 @@ class UpComprobantesJob implements ShouldQueue
             Mail::raw($mensaje, function ($message) use ($destinatario, $mensaje) {
                 $message->to($destinatario)->subject($mensaje);
             });
-            log::info('4 Operacion subir asientos exitosa');
+            Log::info('4 Operacion subir asientos exitosa');
         } catch (\Throwable $th) {
             $error = ZilefErrors::RastroError($th);
             Log::error($error);

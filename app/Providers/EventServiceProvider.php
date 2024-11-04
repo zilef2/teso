@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use App\Listeners\EventListener;
 use App\Listeners\LogFailedJob;
+use Illuminate\Auth\Events\Login;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -21,6 +23,12 @@ class EventServiceProvider extends ServiceProvider
         ],
         JobFailed::class => [
             LogFailedJob::class
+        ],
+        'Illuminate\Auth\Events\Login' => [
+            'App\Listeners\SuccessfulLogin',
+        ],
+        Login::class => [
+            EventListener::class
         ]
     ];
 
