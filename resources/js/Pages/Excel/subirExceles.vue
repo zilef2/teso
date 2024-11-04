@@ -108,6 +108,7 @@ let NombresEntidades = [
     'Asientos',
     'cuentas',
     'CE sin Afectacion',
+    'CE sin ',
 ];
 let formatoNecesita = [];
 

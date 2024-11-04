@@ -29,7 +29,7 @@ class Comprobante extends Model
         'documento_ref', //factor NU
         'plan_cuentas',
 
-        'resultado',
+        'resultado_asientos',
         'sin_afectacion',
         'cuenta_contrapartida',
         'numerounico',

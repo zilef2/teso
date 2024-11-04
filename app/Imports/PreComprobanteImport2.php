@@ -7,27 +7,18 @@ use App\helpers\Myhelp;
 use App\helpers\ZilefLogs;
 use App\Models\Comprobante;
 use Exception;
-use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
-use Maatwebsite\Excel\Concerns\Importable;
-use Maatwebsite\Excel\Concerns\SkipsFailures;
-use Maatwebsite\Excel\Concerns\SkipsOnFailure;
-use Maatwebsite\Excel\Concerns\ToModel;
+use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
-use Maatwebsite\Excel\Concerns\WithLimit;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithStartRow;
-use Maatwebsite\Excel\Validators\Failure;
 use Maatwebsite\Excel\Validators\ValidationException;
 
-class ComprobanteImport implements ToModel, WithStartRow, WithMapping
+class PreComprobanteImport2 implements ToCollection, WithStartRow
+//    , WithMapping
     , WithChunkReading
-    , SkipsOnFailure
-//    , ShouldQueue
-//    , WithLimit
 {
-
-    use Importable, SkipsFailures;
 
     public int $ContarFilasAbsolutas;
     public int $ContarFilas;
@@ -42,15 +33,13 @@ class ComprobanteImport implements ToModel, WithStartRow, WithMapping
     public string $nombrePropio;
     public string $MensajeMortal;
 
+    //<editor-fold desc="Hasta model function">
+
     /**
      * @throws \Exception
      */
     function __construct()
     {
-//        if ($valor < 0) {
-//            throw new \Exception("El valor no puede ser negativo.");
-//        }
-
         $this->nombrePropio = 'comprobante';
         //contares
         $this->ContarFilasAbsolutas = 1;
@@ -67,19 +56,20 @@ class ComprobanteImport implements ToModel, WithStartRow, WithMapping
         return 2;
     }
 
-    public function chunkSize(): int
-    {
-        return 5200;
+    public function chunkSize(): int{
+        return 10000;
     }
 
-    public function map($row): array
-    {
-        return array_slice($row, 0, 19);
-    }
-//    public function limit(): int
+//    public function map($row): array
 //    {
-//        return 1;
+//        Log::info('esto es una ' . $this->ContarFilasAbsolutas);
+//        return array_slice($row, 0, 19);
 //    }
+
+    public function limit(): int
+    {
+        return 1;
+    }
 
     public function Requeridos($theRow)
     {
@@ -91,11 +81,13 @@ class ComprobanteImport implements ToModel, WithStartRow, WithMapping
             13 //nombre
         ];
         foreach ($theRow as $key => $value) {
+
             if (in_array($key, $columnasPermitidasVacias)) {
                 continue;
             }
-            if (is_null($value) || $value === '') {
-                $mensajesito = implode($theRow) . ' ||\n ' . $value . ' || VALOR VACIO EN LA FILA ' . $this->ContarFilasAbsolutas . ' columna ' . $key;
+            if(is_null($value))continue;
+            if ($value === '') {
+                $mensajesito =  "\n $value || VALOR VACIO EN LA FILA  $this->ContarFilasAbsolutas  columna  $key";
                 $this->MensajeMortal = $mensajesito;
                 Log::info($mensajesito);
                 throw new Exception('VALOR VACIO EN LA FILA ' . $this->ContarFilasAbsolutas . ' columna ' . $key);
@@ -123,33 +115,45 @@ class ComprobanteImport implements ToModel, WithStartRow, WithMapping
 
         return true;
     }
+    //</editor-fold>
 
     /**
      * @param array $row
      *
      * @throws Exception
      */
-    public function model(array $row)
+    public function collection(Collection $rows): void
     {
         try {
-            $this->ContarFilasAbsolutas++;
-
-            $result = $this->TheNewObject($row);
-            $this->ContarFilas++;
-            return $result;
+            Log::info('Inicio absoluto. Comprobantes');
+            $totalRows = count($rows);
+            $this->ContarFilasAbsolutas = $totalRows;
+            Log::info("Iniciando procesamiento de $totalRows filas");
+            if ($this->SoloUnaVez === 0) {
+                [$cuantaVeces, $mesYanio] = $this->HaSidoGuardadoAnteriormente($rows[0]);
+                if ($cuantaVeces > 0) {
+                    $mensajesito = '|Comprobantes ya cargados del mes: ' . $mesYanio;
+                    $this->MensajeMortal = $mensajesito;
+                    throw new \Exception($mensajesito);
+                }
+            }
+            Log::info('Los comprobantes pasaron la 1 validacion');
+            foreach ($rows as $row) {
+                $this->ContarFilasAbsolutas++;
+                $this->Requeridos($row); //this has dd function
+                Log::info('validacion '.$this->ContarFilasAbsolutas);
+                if($this->ContarFilasAbsolutas === 3) break;
+//            if(strcmp($row[0],'AN') === 0){throw new \Exception('|Comprobantes de AN no son aceptados');}
+            }
+            Log::info('validacion de comprobantes finalizada');
+        } catch (ValidationException $e) {
+            Log::error('Error en la importación: ' . $e->getMessage() . ' En la linea: ' . $e->getLine());
+            throw new \Exception($e->getMessage());
         } catch (\Throwable $th) {
-            Log::info('que mierda');
             $mensajeError = '  ' . $th->getMessage() . '. Informar al desarrollador - L:' . $th->getLine() . ' Ubi: ' . $th->getFile();
             ZilefLogs::EscribirEnLog($this, 'IMPORT:comprobante ', $mensajeError, false);
             throw new \Exception($mensajeError);
         }
-    }
-
-    public function onFailure(Failure ...$failures)
-    {
-        Log::info('que mierda2 onfailure');
-        $mensajeError = implode($failures);
-        ZilefLogs::EscribirEnLog($this, 'IMPORT:comprobante fallo en la fila '.$this->ContarFilasAbsolutas.' | ', $mensajeError, false);
     }
 
     /**
@@ -172,8 +176,7 @@ class ComprobanteImport implements ToModel, WithStartRow, WithMapping
 
     private function TheNewObject($therow)
     {
-
-         $compro = new Comprobante([
+        return new Comprobante([
             'codigo' => $therow[0],
             'descripcion' => $therow[1],
             'comprobante' => $therow[2],
@@ -195,7 +198,6 @@ class ComprobanteImport implements ToModel, WithStartRow, WithMapping
             'plan_cuentas' => $therow[18],
         ]);
 
-        return $compro;
     }
 
 }
