@@ -41,17 +41,7 @@ class ComprobanteController extends Controller
 
     private function Mapear($clase)
     {
-//        $valorTotal = clone $clase;
-//        $valorTotal =  $valorTotal->sum('valor_total_solicitatdo_por_necesidad');
-
         $Result = $clase->map(function ($clas) {
-//            $clas->cuenta = $clas->cuenta();
-//            $clas->Categori = $clas->categoria();
-//            $clas->proceso_que_solicita_presupuest = $clas->proceso_que_solicita_presupuesto();
-
-//            $clas->procesos_involucrado = $clas->BDToString('procesos_involucrados');
-//            $clas->plan_de_mejoramiento_al_que_apunta_la_necesida = $clas->BDToString('plan_de_mejoramiento_al_que_apunta_la_necesidad');
-//            $clas->linea_del_plan_desarrollo_al_que_apunta_la_necesida = $clas->BDToString('linea_del_plan_desarrollo_al_que_apunta_la_necesidad');
             return $clas;
         });
 

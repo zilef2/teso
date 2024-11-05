@@ -180,4 +180,7 @@ class ContrapartidasCIController extends Controller
         $Comprobantes = Comprobante::where('codigo','ce')->delete();
         echo "$conteo comprobantes ce eliminados";
     }
+
+
+IndexCE
 }

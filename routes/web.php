@@ -71,27 +71,15 @@ Route::middleware(['auth'])->group(callback: function () {
     Route::post('/uploadFileAsientos', [SubiExcelController::class, 'uploadFileAsientos'])->name('uploadFileAsientos');
     Route::post('/uploadFileAfe', [SubiExcelController::class, 'uploadFileAfe'])->name('uploadFileAfe');
 
-    Route::get('/testjob', function() {
-        (new \App\Jobs\UpAsientosJob('ajelof2@gmail.com','no sale error','app/AsientosJob'))->handle();
-    });
     Route::get('/jobs', [\App\Http\Controllers\JobController::class, 'index'])->name('jobs');
-    Route::get('/jo', function() {
-        $destinatario = 'ajelof2@gmail.com';
-//        $mensaje = 'Proceso finalizado';
-//        Mail::raw($mensaje, function ($message) use ($destinatario) {
-//            $message->to($destinatario)->subject('Cruce AJ esta listo');
-//        });
-
-        Mail::to($destinatario)->send(new \App\Mail\Jobfinished('CE'));
-
-        return 'Mensaje enviado a '.$destinatario;
-    });
 
     Route::post('/Buscar_CP_CI', [TransaccionController::class, 'Buscar_CP_CI'])->name('Buscar_CP_CI');
     Route::post('/Buscar_CP_CE', [TransaccionController::class, 'Buscar_CP_CE'])->name('Buscar_CP_CE');
     Route::post('/Buscar_AJ_CI', [\App\Http\Controllers\ContrapartidasCIController::class, 'Buscar_AJ_CI'])->name('Buscar_AJ_CI');
     Route::post('/Buscar_AN_CI', [\App\Http\Controllers\ContrapartidasCIController::class, 'Buscar_AN_CI'])->name('Buscar_AN_CI');
     Route::post('/Buscar_CP_CE', [\App\Http\Controllers\ContrapartidasCEController::class, 'Buscar_CP_CE'])->name('Buscar_CP_CE');
+
+    Route::get('/IndexCE', [ComprobanteController::class, 'IndexCE'])->name('IndexCE');
 
     //danger wey
     Route::get('/borrarconceptos', [\App\Http\Controllers\ContrapartidasCIController::class, 'BorrarConceptos'])->name('BorrarConceptos');
