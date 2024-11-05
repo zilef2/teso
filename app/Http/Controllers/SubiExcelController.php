@@ -211,8 +211,9 @@ class SubiExcelController extends Controller
                 $path = $thefile->store('ComprobantesJob');
                 $pesoMegabyte = ((int)($thefile->getSize())) / (1024 * 1024);
                 $aproxMinutos = ceil($pesoMegabyte * 2);
-                $limitMemory = $pesoMegabyte < 1 ? 1 : $pesoMegabyte;
-                ini_set('memory_limit', $limitMemory.'G');
+                $limitMemory = intval($pesoMegabyte < 1 ? 1 : $pesoMegabyte) *4;
+//                ini_set('memory_limit', $limitMemory.'G');
+                ini_set('memory_limit', '3G');
 
                 $helpExcel = new HelpExcel();
                 $mensageWarning = $helpExcel->NewValidarArchivoExcel($request);
@@ -224,9 +225,7 @@ class SubiExcelController extends Controller
                 if ($pesoMegabyte > 1) {
                     [$tipoReturn,$mensajesin] = $this->encolarCruce($user, $path, $aproxMinutos);
                 } else {
-//                    [$tipoReturn, $mensajesin] = $this->realizarCruce($thefile);
-                    $tipoReturn = 'success';
-                    $mensajesin = 'success';
+                    [$tipoReturn, $mensajesin] = $this->realizarCruce($thefile);
                 }
                 return back()->with($tipoReturn,$mensajesin);
             } else {
@@ -244,7 +243,7 @@ class SubiExcelController extends Controller
             $mensajeError = $th->getMessage() . ' L:' . $th->getLine() . ' Ubi: ' . $th->getFile();
             ZilefLogs::EscribirEnLog($this, 'IMPORT:users', ' Fallo importacion: '
                 . $mensajeError, false);
-            $countfilas = $countfilas ?? 0;
+
             return back()->with($messagetype, __('app.label.op_not_successfully')
                 . ' Comprobante del error: ' . $lasession
                 . ' error en la iteracion ' . $countfilas . ' ' . $mensajeError

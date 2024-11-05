@@ -2,12 +2,14 @@
 
 namespace App\Imports;
 
+use App\helpers\BytesHelp;
 use App\helpers\HelpExcel;
 use App\helpers\Myhelp;
 use App\helpers\ZilefLogs;
 use App\Models\Comprobante;
 use Exception;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Concerns\Importable;
 use Maatwebsite\Excel\Concerns\SkipsFailures;
@@ -41,6 +43,7 @@ class ComprobanteImport implements ToModel, WithStartRow, WithMapping
     public string $contarVaciosstring;
     public string $nombrePropio;
     public string $MensajeMortal;
+    private $pruebaMap = 0;
 
     /**
      * @throws \Exception
@@ -69,11 +72,19 @@ class ComprobanteImport implements ToModel, WithStartRow, WithMapping
 
     public function chunkSize(): int
     {
-        return 5200;
+        if (App::environment('local')) {
+           return 1500;
+        } else {
+           return 4500;
+        }
     }
 
     public function map($row): array
     {
+        $this->pruebaMap++;
+        if ($this->pruebaMap % 100 === 0) {
+            Log::info('Prueba Real mapeo = ' . $this->pruebaMap);
+        }
         return array_slice($row, 0, 19);
     }
 //    public function limit(): int
@@ -138,7 +149,16 @@ class ComprobanteImport implements ToModel, WithStartRow, WithMapping
             $this->ContarFilas++;
             return $result;
         } catch (\Throwable $th) {
-            Log::info('que mierda');
+            // Capturar información detallada del error
+            $errorDetails = [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'memory_current' => BytesHelp::formatBytes(memory_get_usage(true)),
+                'memory_peak' => BytesHelp::formatBytes(memory_get_peak_usage(true)),
+                'available_memory' => BytesHelp::formatBytes(BytesHelp::getAvailableMemory())
+            ];
+            Log::error("Error en UpComprobantesJob: " . print_r($errorDetails, true));
             $mensajeError = '  ' . $th->getMessage() . '. Informar al desarrollador - L:' . $th->getLine() . ' Ubi: ' . $th->getFile();
             ZilefLogs::EscribirEnLog($this, 'IMPORT:comprobante ', $mensajeError, false);
             throw new \Exception($mensajeError);

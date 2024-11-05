@@ -53,7 +53,7 @@ class PreComprobanteImport implements ToCollection, WithStartRow
         $this->contarVacios = 0;
         $this->currentRow = 0;
         $this->pruebaMap = 0;
-        $this->chunkSize = 100;
+        $this->chunkSize = 1500;
         $this->contarVaciosstring = "";
         $this->MensajeMortal = '';
 
@@ -71,7 +71,7 @@ class PreComprobanteImport implements ToCollection, WithStartRow
     public function map($row): array
     {
         $this->pruebaMap++;
-        if ($this->pruebaMap % 50 === 0) {
+        if ($this->pruebaMap % 100 === 0) {
             Log::info('Prueba mapeo = ' . $this->pruebaMap);
         }
         return array_slice($row, 0, 19);
@@ -145,12 +145,14 @@ class PreComprobanteImport implements ToCollection, WithStartRow
     {
         try {
             $totalRows = count($rows);
+
             $this->ContarFilasAbsolutas = $totalRows;
             Log::info("Iniciando procesamiento de $totalRows filas");
 
             $this->HaSidoGuardadoAnteriormente($rows[0]);
             if($rows[1]) $this->HaSidoGuardadoAnteriormente($rows[1]);
             foreach ($rows->chunk($this->chunkSize) as $index => $chunk) {
+
                 $chunkStart = $index * $this->chunkSize;
                 $memoryBefore = memory_get_usage(true);
 
@@ -167,8 +169,7 @@ class PreComprobanteImport implements ToCollection, WithStartRow
                         $this->checkMemory();
                     }
 
-                    // Aquí va tu lógica de procesamiento de cada fila
-                    $this->procesarFila($row);
+//                    $this->procesarFila($row);
                 }
 
                 $memoryAfter = memory_get_usage(true);
@@ -181,6 +182,7 @@ class PreComprobanteImport implements ToCollection, WithStartRow
 
                 // Limpiar memoria después de cada chunk
                 gc_collect_cycles();
+
             }
 
         } catch (\Throwable $th) {

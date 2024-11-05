@@ -51,9 +51,8 @@ class UpComprobantesJob implements ShouldQueue
 
         try {
             // Configuraciones iniciales
-            ini_set('memory_limit', '2G');
+            ini_set('memory_limit', '4G');
             set_time_limit(3600); // 1 hora
-
             // Registrar inicio con información detallada
             Log::info("1) Inicio de UpComprobantesJob", [
                 'job_id' => $jobId,
@@ -62,55 +61,14 @@ class UpComprobantesJob implements ShouldQueue
                 'max_execution_time' => ini_get('max_execution_time'),
                 'php_version' => phpversion()
             ]);
-
-            // Registrar errores fatales
-            register_shutdown_function(function () use ($jobId, $startTime) {
-                $error = error_get_last();
-                if ($error !== null && in_array($error['type'], [E_ERROR, E_CORE_ERROR, E_COMPILE_ERROR, E_USER_ERROR])) {
-                    $duration = microtime(true) - $startTime;
-                    $errorInfo = [
-                        'error_type' => $error['type'],
-                        'error_message' => $error['message'],
-                        'error_file' => $error['file'],
-                        'error_line' => $error['line'],
-                        'duration' => $duration,
-                        'memory_peak' => $this->formatBytes(memory_get_peak_usage(true))
-                    ];
-
-                    Log::error("Error fatal en UpComprobantesJob: " . print_r($errorInfo, true));
-
-                    // Intentar enviar correo de error fatal
-                    try {
-                        Mail::raw(
-                            "Error fatal en UpComprobantesJob:\n" . print_r($errorInfo, true),
-                            function ($message) {
-                                $message->to('ajelof2@gmail.com')
-                                    ->subject('Error fatal en proceso upasientos');
-                            }
-                        );
-                    } catch (\Exception $e) {
-                        Log::error("No se pudo enviar correo de error fatal: " . $e->getMessage());
-                    }
-                }
-            });
-
             // Verificar archivo antes de importar
             $filePath = storage_path('app/' . $this->path);
             if (!file_exists($filePath)) {
                 throw new \Exception("El archivo no existe: " . $this->path);
             }
 
-            $fileSize = filesize($filePath);
-            Log::info("2) Verificación pre-importación", [
-                'file_exists' => true,
-                'file_size' => $this->formatBytes($fileSize),
-                'memory_before' => $this->formatBytes(memory_get_usage(true))
-            ]);
-
-            // Realizar la importación con verificación de memoria
             $memoryStart = memory_get_usage(true);
             $elImport = new ComprobanteImport();
-            Log::info("3) Iniciando importación de Excel");
             Excel::import($elImport, $filePath);
 
             $memoryEnd = memory_get_usage(true);
@@ -137,7 +95,6 @@ class UpComprobantesJob implements ShouldQueue
                 'duration' => microtime(true) - $startTime,
                 'available_memory' => $this->formatBytes($this->getAvailableMemory())
             ];
-
             Log::error("Error en UpComprobantesJob: " . print_r($errorDetails, true));
             Log::error("Stack trace completo:\n" . $th->getTraceAsString());
 
