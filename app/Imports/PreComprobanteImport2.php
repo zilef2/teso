@@ -174,31 +174,6 @@ class PreComprobanteImport2 implements ToCollection, WithStartRow
         return [$ExisteUnComprobante, $mesYanio];
     }
 
-    private function TheNewObject($therow)
-    {
-        return new Comprobante([
-            'codigo' => $therow[0],
-            'descripcion' => $therow[1],
-            'comprobante' => $therow[2],
-            'descripcion2' => $therow[3],
-            'notas' => $therow[4],
-            'numero_documento' => $therow[5],
-            'numero_cheque' => $therow[6],
-            'fecha_elaboracion' => HelpExcel::getFechaExcel($therow[7]),
-            'consecutivo' => $therow[8],
-            'codigo_cuenta' => $therow[9],
-            'nombre_cuenta' => $therow[10],
-            'ccostos' => $therow[11],
-            'nit' => $therow[12],
-            'nombre' => $therow[13],
-            'valor_debito' => doubleval($therow[14]),
-            'valor_credito' => doubleval($therow[15]),
-            'codigo_asiento' => $therow[16],
-            'documento_ref' => $therow[17],
-            'plan_cuentas' => $therow[18],
-        ]);
-
-    }
 
 }
 

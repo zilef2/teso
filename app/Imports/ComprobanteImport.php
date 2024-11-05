@@ -73,9 +73,9 @@ class ComprobanteImport implements ToModel, WithStartRow, WithMapping
     public function chunkSize(): int
     {
         if (App::environment('local')) {
-           return 1500;
+            return 400;
         } else {
-           return 4500;
+            return 2000;
         }
     }
 
@@ -165,17 +165,17 @@ class ComprobanteImport implements ToModel, WithStartRow, WithMapping
         }
     }
 
-    public function onFailure(Failure ...$failures)
+    public function onFailure(Failure ...$failures): void
     {
         Log::info('que mierda2 onfailure');
         $mensajeError = implode($failures);
-        ZilefLogs::EscribirEnLog($this, 'IMPORT:comprobante fallo en la fila '.$this->ContarFilasAbsolutas.' | ', $mensajeError, false);
+        ZilefLogs::EscribirEnLog($this, 'IMPORT:comprobante fallo en la fila ' . $this->ContarFilasAbsolutas . ' | ', $mensajeError, false);
     }
 
     /**
      * @throws \Exception
      */
-    private function HaSidoGuardadoAnteriormente($therow)
+    private function HaSidoGuardadoAnteriormente($therow): array
     {
         $laFecha = HelpExcel::getFechaExcel($therow[7]);
         $mes = $laFecha->format('m'); // Obtiene el mes (en formato numérico)
@@ -192,30 +192,39 @@ class ComprobanteImport implements ToModel, WithStartRow, WithMapping
 
     private function TheNewObject($therow)
     {
+        try {
+            $compro = new Comprobante([
+                'codigo' => $therow[0],
+                'descripcion' => $therow[1],
+                'comprobante' => $therow[2],
+                'descripcion2' => $therow[3],
+                'notas' => $therow[4],
+                'numero_documento' => $therow[5],
+                'numero_cheque' => $therow[6],
+                'fecha_elaboracion' => HelpExcel::getFechaExcel($therow[7]),
+                'consecutivo' => $therow[8],
+                'codigo_cuenta' => $therow[9],
+                'nombre_cuenta' => $therow[10],
+                'ccostos' => $therow[11],
+                'nit' => $therow[12],
+                'nombre' => $therow[13],
+                'valor_debito' => doubleval($therow[14]),
+                'valor_credito' => doubleval($therow[15]),
+                'codigo_asiento' => $therow[16],
+                'documento_ref' => $therow[17],
+                'plan_cuentas' => $therow[18],
+            ]);
 
-         $compro = new Comprobante([
-            'codigo' => $therow[0],
-            'descripcion' => $therow[1],
-            'comprobante' => $therow[2],
-            'descripcion2' => $therow[3],
-            'notas' => $therow[4],
-            'numero_documento' => $therow[5],
-            'numero_cheque' => $therow[6],
-            'fecha_elaboracion' => HelpExcel::getFechaExcel($therow[7]),
-            'consecutivo' => $therow[8],
-            'codigo_cuenta' => $therow[9],
-            'nombre_cuenta' => $therow[10],
-            'ccostos' => $therow[11],
-            'nit' => $therow[12],
-            'nombre' => $therow[13],
-            'valor_debito' => doubleval($therow[14]),
-            'valor_credito' => doubleval($therow[15]),
-            'codigo_asiento' => $therow[16],
-            'documento_ref' => $therow[17],
-            'plan_cuentas' => $therow[18],
-        ]);
-
-        return $compro;
+            return $compro;
+        } catch (\Throwable $th) {
+            Log::error('Error al procesar una fila en ComprobanteImport', ['error' => $th->getMessage(),
+                'trace' => $th->getTraceAsString(),
+                'row0' => $therow[0],
+                'row1' => $therow[1],
+            ]);
+            // Aquí puedes decidir cómo manejar el error en la fila, como saltarla, enviar una notificación, etc.
+            throw $th;
+        }
     }
 
 }
