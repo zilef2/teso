@@ -25,6 +25,22 @@ const data = reactive({
       '', //cuentas
       'El excel debe contar con el formato aprobado (CE)',//afe
     ],
+    rutas:[
+        '',
+        'upExTransacciones',
+        'uploadFileComprobantes',
+        'uploadFileAsientos',
+        'upExCuentas',
+        'uploadFileAfe',
+    ],
+    NombresEntidades: [
+        '',
+        'Transacciones',
+        'Comprobantes',
+        'Asientos',
+        'cuentas',
+        'CE sin Afectacion',
+    ],
 
     //tailwind
     ClassCantidadDeBotonesPorPagina: 'p-4 w-full md:w-1/2 xl:w-1/3 4xl:w-1/6',
@@ -78,18 +94,11 @@ function uploadFileComprobantes() {
     });
 }
 
-function uploadFileGeneric(contado) {
-    let rutas = [
-        '',
-        'upExTransacciones',
-        'uploadFileComprobantes',
-        'uploadFileAsientos',
-        'upExCuentas',
-        'uploadFileAfe',
-    ];
+// <!--</editor-fold>-->
 
+function uploadFileGeneric(contado) {
     form.Contador = contado
-    form.post(route(rutas[contado]), {
+    form.post(route(data.rutas[contado]), {
         preserveScroll: true,
         onSuccess: () => {
         },
@@ -98,18 +107,9 @@ function uploadFileGeneric(contado) {
     });
 }
 
-// <!--</editor-fold>-->
 
 // <!--<editor-fold desc="formatoNecesit">-->
-let NombresEntidades = [
-    '',
-    'Transacciones',
-    'Comprobantes',
-    'Asientos',
-    'cuentas',
-    'CE sin Afectacion',
-    'CE sin ',
-];
+
 let formatoNecesita = [];
 
 //transacciones o auxiliar
@@ -267,20 +267,20 @@ const handleFileUpload = (event, numeroArchivo) => {
                     <div class="container px-5 4xl:px-1 py-6 mx-auto">
                         <!--                        v-if="can(['create user'])"-->
                         <div class="flex flex-wrap -m-4">
-                            <div v-for="numeroArchivo in NombresEntidades.length"
+                            <div v-for="numeroArchivo in data.NombresEntidades.length"
                                  :class="data.ClassCantidadDeBotonesPorPagina">
-                                <div v-if="NombresEntidades[numeroArchivo] !== '' && NombresEntidades[numeroArchivo]"
+                                <div v-if="data.NombresEntidades[numeroArchivo] !== '' && data.NombresEntidades[numeroArchivo]"
                                      class="h-full border-2 border-gray-200 border-opacity-60 rounded-lg overflow-hidden">
                                     <TableCellsIcon class=" h-24 lg:h-48 md:h-36 w-full object-cover object-center"/>
                                     <div class="p-6">
                                         <h3 class="title-font text-lg font-medium text-gray-900 mb-3">
-                                            Subir {{ NombresEntidades[numeroArchivo] }}
+                                            Subir {{ data.NombresEntidades[numeroArchivo] }}
                                         </h3>
                                         <p class="leading-relaxed mb-3">
                                             {{data.mensajeAviso[numeroArchivo]}}
                                         </p>
                                         <!--                                        uploadFileGeneric-->
-                                        <!--                                        NombresEntidades-->
+                                        <!--                                        data.NombresEntidades-->
                                         <form v-if="data.mensajeAviso[numeroArchivo] !== ''" @submit.prevent="uploadFileGeneric(numeroArchivo)" id="upload">
                                             <!--                                                   @input="form.archivo[numeroArchivo] = $event.target.files[numeroArchivo]"-->
                                             <input type="file"
@@ -324,7 +324,7 @@ const handleFileUpload = (event, numeroArchivo) => {
                                                     <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                                                     <circle cx="12" cy="12" r="3"></circle>
                                                 </svg>
-                                                <p class="text-lg">{{ NombresEntidades[numeroArchivo] }}: {{ props.ntransaccion[numeroArchivo] }}</p>
+                                                <p class="text-lg">{{ data.NombresEntidades[numeroArchivo] }}: {{ props.ntransaccion[numeroArchivo] }}</p>
                                             </span>
                                             </div>
                                         </div>

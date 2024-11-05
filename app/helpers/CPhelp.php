@@ -50,7 +50,7 @@ class CPhelp {
                 $cuentaCP = $FirstMaxContraPartida->codigo_cuenta;
 
                 //buscamos el concepto
-                $concepto = self::hallarConcepto($cuentaCP);
+                $concepto = self::hallarConcepto($cuentaCP, $frase_reservada);
                 $transa->update([
                     'n_contrapartidas' => count($lasContrapartidas),
                     'contrapartida' => $cuentaCP,
@@ -60,13 +60,13 @@ class CPhelp {
         }
         return $returnV;
     }
-    private static function hallarConcepto($cuentaCP)
+    private static function hallarConcepto($cuentaCP, $frase_reservada)
     {
         $cf = concepto_flujo::Where('cuenta_contable', $cuentaCP)->first();
         if ($cf) {
             return $cf->concepto_flujo;
         }
-        return 'Buscar en AJ o AN';
+        return $frase_reservada.' en la tabla de Conceto de flujo';
     }
 
     public static function TransaccionesCICE($codigo): array

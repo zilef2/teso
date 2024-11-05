@@ -42,8 +42,9 @@ class HelpExcel
     {
         $file = $request->archivo[$request->Contador];
         $exten = $file->getClientOriginalExtension();
-        if ($exten != 'xlsx' && $exten != 'xls') {
-            return 'El archivo debe ser de Excel';
+        if ($exten != 'xlsx') {
+//        if ($exten != 'xlsx' && $exten != 'xls') {
+            return 'El archivo debe ser de Excel. Nuevo formato XLSX';
         }
         $Maxmegas = 12;
         $pesoKilobyte = ((int)($file->getSize())) / (1024);

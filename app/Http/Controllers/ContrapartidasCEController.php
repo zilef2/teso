@@ -14,6 +14,7 @@ use App\Models\concepto_flujo;
 use App\Models\Parametro;
 use App\Models\transaccion;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -29,12 +30,12 @@ class ContrapartidasCEController extends Controller
             $codigo = "CE";
             $frase_reservada = "No se encontro";
             if(!CPhelp::Val_Exista_CE_auxiliar($codigo)){
-                return back()->with('error', 'Faltan archivos. Auxiliar, CE,AS,AF');
+                return back()->with('error', 'Faltan archivos. Auxiliar, CE,AS,AF');//comprobantes de egreso, asientos, sin afectacion
             }
             DB::beginTransaction();
 
             $MesTransaccional = Parametro::Where("nombre" ,"Mes transaccional")->first();
-            $asientos = asiento::WhereMonth('fecha_elaboracion',$MesTransaccional)->get();
+            $asientos = asiento::WhereMonth('fecha_elaboracion',$MesTransaccional->valor)->get();
             foreach ($asientos as $index => $asiento) {
                 $numero_unico1 = intval($asiento->nit);
                 $numero_unico2 = intval($asiento->documento_ref);
@@ -43,7 +44,7 @@ class ContrapartidasCEController extends Controller
                     'numerounico' => $numerounico,
                 ]);
             }
-            //todo: debito para CI? 30oct2024
+            //todo:toask: debito para CI? 30oct2024
             [$comprobantes, $valor_debito_credito, $opuesto_debito_credito] = $this->ComprobantesCE($codigo);
 
             foreach ($comprobantes as $index => $compro) {
@@ -87,7 +88,7 @@ class ContrapartidasCEController extends Controller
             $INT_TransaccionesOperadas = CPhelp::BuscarContrapartidaGeneral($codigo,$frase_reservada);
             DB::commit();
             return back()->with('success',
-                'Éxito.\n CE: ' . $comprobantes->count() . ' Transacciones: ' . $INT_TransaccionesOperadas . ' revisadas'
+                'Éxito. CE: ' . $comprobantes->count() . ' Transacciones: ' . $INT_TransaccionesOperadas . ' revisadas'
             );
         } catch (\Throwable $th) {
             DB::rollback();
@@ -111,16 +112,19 @@ class ContrapartidasCEController extends Controller
             ->get();
         return [$comprocciones, $valor_debito_credito, $opuesto_debito_credito];
     }
-    public static function AfectacionesCE($codigo,$documentoBuscado): afectacion
+    public static function AfectacionesCE($codigo,$documentoBuscado): Collection
     {
         $valor_debito_credito = (strcmp($codigo, "CI") === 0) ? "valor_debito" : "valor_credito";
         $opuesto_debito_credito = (strcmp($valor_debito_credito, "valor_credito") === 0) ? "valor_debito" : "valor_credito";
         $paraMes = Parametro::Where("nombre" ,"Mes transaccional")->first();
+        $mes = 8;
         if($paraMes){//TODO: doubt
             $mes = intval($paraMes->valor);
         }
 
-        return afectacion::Where('codigo_cuenta', $documentoBuscado)->get();
+        return afectacion::Where('codigo_cuenta', $documentoBuscado)
+            ->whereMonth('fecha_elaboracion', $mes)
+            ->get();
     }
     public function hallarConcepto($cuentaCP, $codigo)
     {

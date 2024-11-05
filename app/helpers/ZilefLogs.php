@@ -16,9 +16,11 @@ use Inertia\Inertia;
 //dateFunctions
 //arrayFunctions
 
-class ZilefLogs {
+class ZilefLogs
+{
 
-    public function erroresExcel($errorFeo) {
+    public function erroresExcel($errorFeo)
+    {
         // $fila = session('ultimaPalabra');
         $error1 = "PDOException: SQLSTATE[22007]: Invalid datetime format: 1292 Incorrect date";
         if ($errorFeo == $error1) {
@@ -26,7 +28,9 @@ class ZilefLogs {
         }
         return 'Error desconocido';
     }
-    public static function EscribirEnLog($thiis, $clase = '', $mensaje = '', $returnPermission = true, $critico = false) {
+
+    public static function EscribirEnLog($thiis, $clase = '', $mensaje = '', $returnPermission = true, $critico = false)
+    {
         $permissions = $returnPermission ? auth()->user()->roles->pluck('name')[0] : null;
         $ListaControladoresYnombreClase = (explode('\\', get_class($thiis)));
         $nombreC = end($ListaControladoresYnombreClase);
@@ -38,9 +42,8 @@ class ZilefLogs {
                 $ElMensaje = $mensaje != '' ? ' Mensaje: ' . $mensaje : ' mensaje Null desde EscribirEnLog';
 
                 Log::info('Vista:' . $nombreC . ' Padre: ' . $nombreP . '|  U:' . Auth::user()->name . $ElMensaje);
-                //Log::channel('soloadmin')->info('Vista:' . $nombreC . ' Padre: ' . $nombreP . '|  U:' . Auth::user()->name . $ElMensaje);
             } else {
-                Log::info('Vista: ' . $nombreC . ' Padre: ' . $nombreP . '||  U:' . Auth::user()->name ?? 'us desconocido'.' | '. $clase . '| ' . $mensaje);
+                Log::info('Vista: ' . $nombreC . ' Padre: ' . $nombreP . '||  U:' . Auth::user()->name ?? 'us desconocido' . ' | ' . $clase . '| ' . $mensaje);
             }
         } else {
             Log::critical('Vista: ' . $nombreC . ' ||| U:' . Auth::user()->name . ' ||' . $clase . '|| ' . $mensaje);
@@ -48,7 +51,41 @@ class ZilefLogs {
         return $permissions;
     }
 
-    public static function NoAuthLog($thiis, $clase = '', $mensaje = '', $returnPermission = true, $critico = false) {
+    public static function EscribirEnLogParaJobs($thiis, $clase = '', $mensaje = '', $userName = 'NU'): void
+    {
+        $nombreC = (new ZilefLogs)->FileAndClass($mensaje);
+        $ElMensaje = $mensaje != '' ? ' Mensaje: ' . $mensaje : ' mensaje Null desde EscribirEnLog';
+        Log::info('FileAndClas:' . $nombreC . '|  U:' . $userName . $ElMensaje);
+    }
+
+    public function FileAndClass($message): string
+    {
+        $backtrace = debug_backtrace();
+        $caller = array_shift($backtrace); // Get caller information
+        $className = $caller['class'] ?? 'Global';
+        $fileName = $caller['file'] ?? 'Unknown file';
+        $lineNumber = $caller['line'] ?? 'Unknown line';
+
+        // Create a formatted error message
+        $errorMessage = sprintf(
+            "[%s] Error in %s::%s() (File: %s, Line: %d): %s",
+            date(DATE_RFC822),
+            $className,
+            $caller['function'],
+            $fileName,
+            $lineNumber,
+            $message
+        );
+
+        // Log the error message
+        fwrite($this->handle, $errorMessage . "\n");
+
+        // Return the formatted error message
+        return $errorMessage;
+    }
+
+    public static function NoAuthLog($thiis, $clase = '', $mensaje = '', $returnPermission = true, $critico = false)
+    {
         $permissions = $returnPermission ? auth()->user()->roles->pluck('name')[0] : null;
         $ListaControladoresYnombreClase = (explode('\\', get_class($thiis)));
         $nombreC = end($ListaControladoresYnombreClase);
@@ -61,7 +98,7 @@ class ZilefLogs {
                 $ElMensaje = $mensaje != '' ? ' Mensaje: ' . $mensaje : '';
                 Log::channel('soloadmin')->info('Vista:' . $nombreC . ' Padre: ' . $nombreP . '|  U:' . Auth::user()->name . $ElMensaje);
             } else {
-                Log::info('Vista: ' . $nombreC . ' Padre: ' . $nombreP .' | '. $clase . '| ' . ' Mensaje: ' . $mensaje);
+                Log::info('Vista: ' . $nombreC . ' Padre: ' . $nombreP . ' | ' . $clase . '| ' . ' Mensaje: ' . $mensaje);
             }
             return $permissions;
         } else {
@@ -71,5 +108,6 @@ class ZilefLogs {
         return $permissions;
     }
 }
+
 ?>
 

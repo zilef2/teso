@@ -211,11 +211,12 @@ class SubiExcelController extends Controller
                 $path = $thefile->store('ComprobantesJob');
                 $pesoMegabyte = ((int)($thefile->getSize())) / (1024 * 1024);
                 $aproxMinutos = ceil($pesoMegabyte * 2);
-                $limitMemory = intval($pesoMegabyte < 1 ? 1 : $pesoMegabyte) *4;
+//                $limitMemory = intval($pesoMegabyte < 1 ? 1 : $pesoMegabyte) *4;
 //                ini_set('memory_limit', $limitMemory.'G');
                 ini_set('memory_limit', '3G');
 
                 $helpExcel = new HelpExcel();
+                Log::info('Validacion de archivo uploadFileComprobantes');
                 $mensageWarning = $helpExcel->NewValidarArchivoExcel($request);
                 if ($mensageWarning != '') {
                     DB::rollback();
@@ -223,11 +224,11 @@ class SubiExcelController extends Controller
                 }
 
                 if ($pesoMegabyte > 1) {
-                    [$tipoReturn,$mensajesin] = $this->encolarCruce($user, $path, $aproxMinutos);
+                    [$tipoReturn, $mensajesin] = $this->encolarCruce($user, $path, $aproxMinutos);
                 } else {
                     [$tipoReturn, $mensajesin] = $this->realizarCruce($thefile);
                 }
-                return back()->with($tipoReturn,$mensajesin);
+                return back()->with($tipoReturn, $mensajesin);
             } else {
                 DB::rollback();
                 return back()->with('error', __('app.label.op_not_successfully') . ' Archivo no seleccionado');
@@ -264,22 +265,29 @@ class SubiExcelController extends Controller
 
     private function realizarCruce($thefile): array
     {
-        $PrepersonalImp = new PreComprobanteImport();
-        Excel::import($PrepersonalImp, $thefile);
+        try {
+//        $PrepersonalImp = new PreComprobanteImport();
+//        Excel::import($PrepersonalImp, $thefile);
 
-        $personalImp = new ComprobanteImport();
-        Excel::Import($personalImp, $thefile);
-        $countfilas = $personalImp->ContarFilasAbsolutas;
+            $personalImp = new ComprobanteImport();
+            Excel::import($personalImp, $thefile);
+//            Excel::import($personalImp, $thefile, null, \Maatwebsite\Excel\Excel::XLSX, [
+//                'input_encoding' => 'UTF-8',
+//            ]);
+            $countfilas = $personalImp->ContarFilasAbsolutas;
 
-        $MensajeWarning = HelpExcel::MensajeWarComprobante($personalImp);
-        if ($MensajeWarning !== '') {
-            return ['warning2', $MensajeWarning];
-        }
-        $mensajetype = 'success';
-        if ($countfilas == 0) {
-            return [$mensajetype, __('app.label.op_successfully') . ' No hubo cambios'];
-        } else {
-            return [$mensajetype, __('app.label.op_successfully') . ' Se leyeron ' . $countfilas . ' filas con exito'];
+            $MensajeWarning = HelpExcel::MensajeWarComprobante($personalImp);
+            if ($MensajeWarning !== '') {
+                return ['warning2', $MensajeWarning];
+            }
+            $mensajetype = 'success';
+            if ($countfilas == 0) {
+                return [$mensajetype, __('app.label.op_successfully') . ' No hubo cambios'];
+            } else {
+                return [$mensajetype, __('app.label.op_successfully') . ' Se leyeron ' . $countfilas . ' filas con exito'];
+            }
+        } catch (\Exception $e) {
+            dd($e->getMessage(), $e->getFile(), $e->getLine());
         }
     }
 

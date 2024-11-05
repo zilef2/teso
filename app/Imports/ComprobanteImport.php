@@ -160,7 +160,7 @@ class ComprobanteImport implements ToModel, WithStartRow, WithMapping
             ];
             Log::error("Error en UpComprobantesJob: " . print_r($errorDetails, true));
             $mensajeError = '  ' . $th->getMessage() . '. Informar al desarrollador - L:' . $th->getLine() . ' Ubi: ' . $th->getFile();
-            ZilefLogs::EscribirEnLog($this, 'IMPORT:comprobante ', $mensajeError, false);
+            ZilefLogs::EscribirEnLogParaJobs($this, 'IMPORT:comprobante ', $mensajeError);
             throw new \Exception($mensajeError);
         }
     }
@@ -169,7 +169,7 @@ class ComprobanteImport implements ToModel, WithStartRow, WithMapping
     {
         Log::info('que mierda2 onfailure');
         $mensajeError = implode($failures);
-        ZilefLogs::EscribirEnLog($this, 'IMPORT:comprobante fallo en la fila ' . $this->ContarFilasAbsolutas . ' | ', $mensajeError, false);
+        ZilefLogs::EscribirEnLogParaJobs($this, 'IMPORT:comprobante fallo en la fila ' . $this->ContarFilasAbsolutas . ' | ', $mensajeError);
     }
 
     /**

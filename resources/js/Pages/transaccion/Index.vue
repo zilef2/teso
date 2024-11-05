@@ -35,6 +35,8 @@ const props = defineProps({
     losSelect: Object,//normally used by headlessui
     thisAtributos: Object,
     Indicadores: Object,
+    resultadosCFH: Object,
+    resultadosCFHCount: Number,
 })
 
 const data = reactive({
@@ -47,6 +49,7 @@ const data = reactive({
         searchDocRef: props.filters.searchDocRef,
         OnlyCP: props.filters.OnlyCP,
         OnlyEmptyCP: props.filters.OnlyEmptyCP,
+        concepto_flujo_omologaci: props.filters.concepto_flujo_omologaci,
         field: props.filters.field,
         order: props.filters.order,
         perPage: props.perPage,
@@ -220,6 +223,7 @@ const Buscar_CP_CE = () => {
                 </div>
 
             </div>
+
             <div class="relative bg-white dark:bg-gray-800 shadow sm:rounded-xl">
                 <div class="flex justify-items-end p-3 gap-6">
                     <div class="flex space-x-2">
@@ -255,7 +259,24 @@ const Buscar_CP_CE = () => {
                         <input v-model="data.params.OnlyCP" value="allcp" type="radio" id="rbutton3" class="my-2"/>
                         <label class="mt-1">Todas</label>
                     </div>
+                </div><div class="flex justify-items-end p-3 gap-6">
+<!--                    <TextInput v-model="data.params.search" type="text"-->
+<!--                               class="block w-1/6 xl:w-1/12 rounded-lg" placeholder="Código cuenta contable"/>-->
+                    <div class="my-2 flex gap-2">
+                        <div v-for="(cfh,index2) in props.resultadosCFH" class="">
+
+                            <input
+                                v-model="data.params.concepto_flujo_omologaci"
+                                :value="cfh"
+                                type="radio"
+                                :id="'rbutton' + index2"
+                                class="m-2 px-1"
+                            />
+                        <label class="mt-1">{{ cfh }}</label>
+                        </div>
+                    </div>
                 </div>
+                <p class="m-6">{{props.resultadosCFHCount}} Conceptos de CE encontrados. Solo se muestran {{ props.resultadosCFH.length}}</p>
 
                 <div class="overflow-x-auto scrollbar-table">
                     <table v-if="props.total > 0" class="w-full">
@@ -352,18 +373,18 @@ const Buscar_CP_CE = () => {
                             :Total="props.Indicadores.Transacciones"
                             class="text-center"
                         />
-                        <Indicadores
-                            :nombre="'Ajustes'"
-                            :Indicador="props.Indicadores.AJCount"
-                            :Total="props.Indicadores.Transacciones"
-                            class="text-center"
-                        />
-                        <Indicadores
-                            :nombre="'Anulaciones'"
-                            :Indicador="props.Indicadores.ANCount"
-                            :Total="props.Indicadores.Transacciones"
-                            class="text-center"
-                        />
+<!--                        <Indicadores-->
+<!--                            :nombre="'Ajustes'"-->
+<!--                            :Indicador="props.Indicadores.AJCount"-->
+<!--                            :Total="props.Indicadores.Transacciones"-->
+<!--                            class="text-center"-->
+<!--                        />-->
+<!--                        <Indicadores-->
+<!--                            :nombre="'Anulaciones'"-->
+<!--                            :Indicador="props.Indicadores.ANCount"-->
+<!--                            :Total="props.Indicadores.Transacciones"-->
+<!--                            class="text-center"-->
+<!--                        />-->
                     </div>
                 </div>
 

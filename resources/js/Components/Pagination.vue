@@ -26,7 +26,8 @@ const data = reactive({
         searchDocRef: props.filters?.searchDocRef,
         OnlyCP: props.filters?.OnlyCP,
         OnlyEmptyCP: props.filters?.OnlyEmptyCP,
-        
+        concepto_flujo_omologaci: props.filters?.concepto_flujo_omologaci,
+
         codigo: props.filters?.codigo,
         numero_documento: props.filters?.numero_documento,
         valor_debito: props.filters?.valor_debito,
@@ -50,11 +51,11 @@ watchEffect(() => {
     data.params.search2 = props.filters?.search2
     data.params.search3 = props.filters?.search3
     data.params.search4 = props.filters?.search4
-    
+
     data.params.searchNumCuenta = props.filters?.searchNumCuenta
     data.params.searchBanco = props.filters?.searchBanco
     data.params.searchtipo = props.filters?.searchtipo
-    
+
     data.params.searchContrapartida = props.filters?.searchContrapartida
     data.params.searchDocumento = props.filters?.searchDocumento
     data.params.searchCodigo = props.filters?.searchCodigo
@@ -62,12 +63,12 @@ watchEffect(() => {
     data.params.searchDocRef = props.filters?.searchDocRef
     data.params.OnlyCP = props.filters?.OnlyCP
     data.params.OnlyEmptyCP = props.filters?.OnlyEmptyCP
-    
+
     data.params.codigo = props.filters?.codigo
     data.params.numero_documento = props.filters?.numero_documento
     data.params.valor_debito = props.filters?.valor_debito
     data.params.valor_credito = props.filters?.valor_credito
-    
+
     data.params.field = props.filters?.field
     data.params.order = props.filters?.order
     data.params.perPage = props.filters?.perPage

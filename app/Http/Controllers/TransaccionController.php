@@ -10,6 +10,7 @@ use App\Models\Comprobante;
 use App\Models\concepto_flujo;
 use App\Models\Parametro;
 use App\Models\transaccion;
+use Composer\DependencyResolver\Transaction;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -37,6 +38,7 @@ class TransaccionController extends Controller
             'searchCodigo',
             'searchConcepto',
             'searchDocRef',
+            'concepto_flujo_omologaci',
         ];
 
         $this->arrayFillableSearch = [
@@ -46,6 +48,7 @@ class TransaccionController extends Controller
             'codigo',
             'concepto_flujo_homologación',
             'documento_ref',
+            'concepto_flujo_homologación',
         ];
     }
 
@@ -127,7 +130,7 @@ class TransaccionController extends Controller
         $laclase = $this->Mapear($this->Filtros($request));
 //        $losSelect = $this->losSelect();
 
-        $perPage = $request->has('perPage') ? $request->perPage : 50;
+        $perPage = $request->has('perPage') ? $request->perPage : 100;
         $total = $laclase->count();
         $page = request('page', 1);
         $fromController = new LengthAwarePaginator(
@@ -147,6 +150,17 @@ class TransaccionController extends Controller
             'AJCount' => transaccion::Where('codigo', "AJ")->count(),
             'ANCount' => transaccion::Where('codigo', "AN")->count(),
         ];
+
+        //solo para el filtro de CE
+        $resultadosCFH = Transaccion::whereNotNull('concepto_flujo_homologación')->distinct()
+            ->pluck('concepto_flujo_homologación')
+            ->take(8);
+        $resultadosCFHCount = Transaccion::whereNotNull('concepto_flujo_homologación')
+            ->Where('codigo','CE')
+            ->distinct()
+            ->pluck('concepto_flujo_homologación')
+            ->count();
+        //return final
         return Inertia::render($this->FromController . '/Index', [
             'fromController' => $fromController,
             'total' => $total,
@@ -158,6 +172,8 @@ class TransaccionController extends Controller
 
             'numberPermissions' => $numberPermissions,
             'Indicadores' => $Indicadores,
+            'resultadosCFH' => $resultadosCFH,
+            'resultadosCFHCount' => $resultadosCFHCount,
             'thisAtributos' => array_values(array_diff($this->thisAtributos, [
                 'nombre_cuenta',
                 'nit',
@@ -239,7 +255,7 @@ class TransaccionController extends Controller
     {
     }
 
-    public function Buscar_CP_CI(Request $request)
+    public function Buscar_CP_CI(Request $request)//todo: this function shouldnt be here
     {
         try {
             $codigo = "CI";
