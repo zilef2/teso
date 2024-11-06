@@ -17,7 +17,8 @@ use Inertia\Inertia;
 class CPhelp {
 
 
-    public static function BuscarContrapartidaGeneral($codigo,$frase_reservada){
+    public static function BuscarContrapartidaGeneral($codigo,$frase_reservada): int
+    {
         [$Transacciones, $valor_debito_credito, $opuesto_debito_credito] = self::TransaccionesCICE($codigo);
 
         $returnV = 0;
@@ -118,6 +119,34 @@ class CPhelp {
         return $Auxiliar > 0 && $CE > 0 && $asiento > 0 && $afectacion > 0;
     }
 
+    public static function VerificarDuplicados(int $numerounico,asiento $asiento, $intentos = 0): bool
+    {
+        $duplicado = asiento::Where('numerounico', $numerounico)
+            ->where('id', '!=', $asiento->id)
+            ->first();
+
+        if ($duplicado) {
+            Log::warning('Número único duplicado detectado', [
+                'numero_unico' => $numerounico,
+                'asiento_actual' => [
+                    'id' => $asiento->id,
+                    'nit' => $asiento->nit,
+                    'documento_ref' => $asiento->documento_ref
+                ],
+                'asiento_duplicado' => [
+                    'id' => $duplicado->id,
+                    'nit' => $duplicado->nit,
+                    'documento_ref' => $duplicado->documento_ref
+                ]
+            ]);
+            throw new \Exception("Se detectó un número único duplicado: {$numerounico}.
+                               Asiento codigo_cuenta: {$asiento->codigo_cuenta},
+                               Asiento duplicado: {$duplicado->codigo_cuenta}");
+
+        }else{
+            return false;
+        }
+    }
 
 
 }

@@ -34,14 +34,20 @@ class ContrapartidasCEController extends Controller
             if(!CPhelp::Val_Exista_CE_auxiliar($codigo)){
                 return back()->with('error', 'Faltan archivos. Auxiliar, CE,AS,AF');//comprobantes de egreso, asientos, sin afectacion
             }
+            if(Comprobante::WhereNull('nit')->count() === 0){
+                return back()->with('error', 'Existen comprobantes con NIT vacio');
+            }
             DB::beginTransaction();
 
             $MesTransaccional = Parametro::Where("nombre" ,"Mes transaccional")->first();
             $asientos = asiento::WhereMonth('fecha_elaboracion',$MesTransaccional->valor)->get();
-            foreach ($asientos as $index => $asiento) {
+            foreach ($asientos as $asiento) {
                 $numero_unico1 = intval($asiento->nit);
                 $numero_unico2 = intval($asiento->documento_ref);
-                $numerounico = (($numero_unico1 * 2) + ($numero_unico2 * 10)); //nit documento_ref
+                $numerounico = (($numero_unico1 * 11) + ($numero_unico2 * 13)); //nit documento_ref
+
+                CPhelp::VerificarDuplicados($numerounico, $asiento); //throw exception
+
                 $asiento->update([
                     'numerounico' => $numerounico,
                 ]);
@@ -51,8 +57,6 @@ class ContrapartidasCEController extends Controller
             foreach ($comprobantes as $index => $compro) {
                 //BUSCAR LA AFECTACION
                 $afectas = $this->AfectacionesCE($codigo, $compro->codigo_cuenta);
-                //CE
-
                 if ($afectas->count() === 0) {
                     $compro->update([
                         'resultado_asientos' => $fraseExito,
@@ -65,7 +69,7 @@ class ContrapartidasCEController extends Controller
                 //CALCULAR NU
                 $numero_unico1 = intval($compro->nit);
                 $numero_unico2 = intval($compro->documento_ref);
-                $numerounico = $numero_unico1 * $numero_unico2; //nit documento_ref
+                $numerounico = ($numero_unico1 * 11) + ($numero_unico2 * 13); //nit documento_ref
 
                 //BUSCAR EL ASIENTO CON NU
                 $asientoNU = asiento::Where('numerounico',$numerounico)->first();
@@ -91,7 +95,7 @@ class ContrapartidasCEController extends Controller
             $INT_TransaccionesOperadas = CPhelp::BuscarContrapartidaGeneral($codigo,$frase_reservada);
             DB::commit();
             return back()->with('success',
-                'Éxito. CE: ' . $comprobantes->count() . ' Transacciones: ' . $INT_TransaccionesOperadas . ' revisadas'
+                'Éxito. Comprobantes cruzados: ' . $comprobantes->count() . '. Transacciones: ' . $INT_TransaccionesOperadas
             );
         } catch (\Throwable $th) {
             DB::rollback();

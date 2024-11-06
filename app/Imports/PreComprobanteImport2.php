@@ -159,7 +159,7 @@ class PreComprobanteImport2 implements ToCollection, WithStartRow
     /**
      * @throws \Exception
      */
-    private function HaSidoGuardadoAnteriormente($therow)
+    private function HaSidoGuardadoAnteriormente($therow): array
     {
         $laFecha = HelpExcel::getFechaExcel($therow[7]);
         $mes = $laFecha->format('m'); // Obtiene el mes (en formato numérico)

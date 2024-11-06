@@ -72,7 +72,7 @@ class ComprobanteImport implements ToModel, WithStartRow, WithMapping, WithChunk
     public function chunkSize(): int
     {
         if (App::environment('local')) {
-            return 1500;
+            return 1000;
         } else {
             return 2500;
         }
@@ -83,6 +83,7 @@ class ComprobanteImport implements ToModel, WithStartRow, WithMapping, WithChunk
         $this->pruebaMap++;
         if ($this->pruebaMap % 100 === 0) {
             Log::info('Prueba Real mapeo = ' . $this->pruebaMap);
+//            gc_collect_cycles();
         }
         return array_slice($row, 0, 19);
     }
