@@ -7,6 +7,7 @@ let charInstance = []
 let tipoVar = 'bar'
 
 export async function buildCharEnti(numeroEntidades) {
+    console.log(numeroEntidades)
 
     let transaccion2023 = numeroEntidades.transaccion2023
     let transaccion2024 = numeroEntidades.transaccion2024

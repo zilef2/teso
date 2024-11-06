@@ -47,8 +47,8 @@ const charConteomin = charConteomini;
 let ctx_a, ctx_b, ctx_c
 let charInstance = []
 onMounted(async () => {
-    await buildCharEnti(props.ConteoEntidades)
-    await buildMini(props.ConteoEntidades)
+    await buildCharEnti(props.ConteoEntidades[0])
+    await buildMini(props.ConteoEntidades[1])
     await buildCharCPnull(props.ComparacionCP)
     await ResumenCI(props.ResumenCI,props.conceptos)
     await ResumenCI2(props.ResumenCI2,props.conceptos2)
@@ -140,11 +140,13 @@ onMounted(async () => {
             Entradas
         </PrimaryButton>
 
+        <div class="grid grid-cols-1 4xl:grid-cols-2">
+            <div class="mb-20 w-4/6 2xl:w-5/6"><canvas ref="chart12"></canvas></div>
+            <div class="mb-20 w-4/6 2xl:w-5/6"><canvas ref="chart13"></canvas></div>
+        </div>
         <div class="grid grid-cols-1 3xl:grid-cols-2">
-            <div class="mb-20 w-full md:w-3/6 3xl:w-full"><canvas ref="charConteomin"></canvas></div>
-            <div class="mb-20 w-full md:w-3/6 3xl:w-full"><canvas ref="char10"></canvas></div>
-            <div class="mb-20 w-4/6 2xl:w-5/6 3xl:w-full "><canvas ref="chart12"></canvas></div>
-            <div class="mb-20 w-4/6 2xl:w-5/6 3xl:w-full "><canvas ref="chart13"></canvas></div>
+            <div class="mb-20 w-full md:w-5/6 3xl:w-full"><canvas ref="charConteomin"></canvas></div>
+            <div class="mb-20 w-full md:w-5/6 3xl:w-full"><canvas ref="char10"></canvas></div>
 <!--            <div class="mb-20 w-full md:w-4/6 3xl:w-full"><canvas ref="chartCanvasEfec"></canvas></div>-->
 <!--            <div class="my-20 w-full md:w-5/6"><canvas ref="chartCanvas1"></canvas></div>-->
             <div class="my-20 w-full md:w-4/6 3xl:w-full"><canvas ref="chartCanvas2"></canvas></div>

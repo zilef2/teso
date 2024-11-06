@@ -27,6 +27,7 @@ class dashboardController extends Controller
         $yearPast = $yearnow - 1;
 
         for ($i = $yearnow; $i >= $yearPast; $i--) {
+
             $ConteoEntidades[0]['transaccion' . $i] = transaccion::WhereYear('fecha_elaboracion', $i)->count();
             $ConteoEntidades[0]['Comprobanteci' . $i] = Comprobante::Where('codigo', 'ci')->WhereYear('fecha_elaboracion', $i)->count();
             $ConteoEntidades[0]['Comprobantece' . $i] = Comprobante::Where('codigo', 'ce')->WhereYear('fecha_elaboracion', $i)->count();
@@ -39,15 +40,16 @@ class dashboardController extends Controller
 
             //file2
             $ComparacionCP['Comprobanteci' . $i . 'sincp'] = transaccion::Where('codigo', 'ci')
-                ->WhereYear('fecha_elaboracion', $i)
+//                ->WhereYear('fecha_elaboracion', $i)
                 ->Where('contrapartida', 'LIKE', "%No se encontro%")->count();
             $comprobanteResta = transaccion::Where('codigo', 'ci')
-                ->WhereYear('fecha_elaboracion', $i)->count();
+//                ->WhereYear('fecha_elaboracion', $i)
+                ->WhereNot('contrapartida', 'LIKE', "%No se encontro%")
+                ->count();
             $comprabanteResta = $comprobanteResta - $ComparacionCP['Comprobanteci' . $i . 'sincp'];
             $ComparacionCP['Comprobanteci' . $i . 'concp'] = max($comprabanteResta, 0);
-
+//            dd($ComparacionCP            );
         }
-
 
         //ResumenCI.js
         [$conceptos, $ResumenCI] = $this->ResumenCI($yearnow, $yearPast);
@@ -86,6 +88,7 @@ class dashboardController extends Controller
                     && !str_starts_with($concepto, "No se encontro")
                     && !str_starts_with($concepto, "Buscar")
                     && !str_starts_with($concepto, "Ingreso para")
+                    && !str_starts_with($concepto, "contrapartidas")
                 ) {
                     // si el concepto ya existe en el arreglo, suma el valor; si no se crea
                     if (isset($ResumenCI[$i][$concepto])) {
@@ -117,6 +120,7 @@ class dashboardController extends Controller
                 if ($concepto != '' && $concepto != null
                     && !str_starts_with($concepto, "No se encontro")
                     && !str_starts_with($concepto, "Buscar")
+                    && !str_starts_with($concepto, "contrapartidas")
                 ) {
                     // si el concepto ya existe en el arreglo, suma el valor; si no se crea
                     if (isset($ResumenCI[$i][$concepto])) {
