@@ -47,7 +47,7 @@ export async function ResumenCI(ObjetoJson,conceptos) {
                 },
                 title: {
                     display: true,
-                    text: 'Resumen CI'
+                    text: 'Resumen CI - Sin ingreso para ejecucion de convenios'
                 }
             },
             scales: {

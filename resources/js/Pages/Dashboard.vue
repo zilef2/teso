@@ -144,7 +144,7 @@ onMounted(async () => {
             <div class="mb-20 w-4/6 2xl:w-5/6"><canvas ref="chart12"></canvas></div>
             <div class="mb-20 w-4/6 2xl:w-5/6"><canvas ref="chart13"></canvas></div>
         </div>
-        <div class="grid grid-cols-1 3xl:grid-cols-2">
+        <div class="grid grid-cols-1 2xl:grid-cols-2">
             <div class="mb-20 w-full md:w-5/6 3xl:w-full"><canvas ref="charConteomin"></canvas></div>
             <div class="mb-20 w-full md:w-5/6 3xl:w-full"><canvas ref="char10"></canvas></div>
 <!--            <div class="mb-20 w-full md:w-4/6 3xl:w-full"><canvas ref="chartCanvasEfec"></canvas></div>-->
