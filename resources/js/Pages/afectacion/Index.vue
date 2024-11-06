@@ -94,8 +94,22 @@ const select = () => {
 // text // number // dinero // date // datetime // foreign
 const titulos = [
     // { order: 'codigo', label: 'codigo', type: 'text' },
-    { order: 'nombre', label: 'nombre', type: 'text' },
-  // { order: 'inventario', label: 'inventario', type: 'foreign',nameid:'nombre'},
+    { order: 'valor_debito', label: 'valor_debito', type: 'text' },
+    { order: 'valor_credito', label: 'valor_credito', type: 'text' },
+    { order: 'codigo_cuenta', label: 'codigo_cuenta', type: 'text' },
+    { order: 'codigo_asiento', label: 'codigo_asiento', type: 'text' },
+    { order: 'tipo', label: 'tipo', type: 'text' },
+    { order: 'codigo', label: 'codigo', type: 'text' },
+    { order: 'fecha_elaboracion', label: 'fecha_elaboracion', type: 'text' },
+    { order: 'consecutivo', label: 'consecutivo', type: 'text' },
+    { order: 'descripcion', label: 'descripcion', type: 'text' },
+    { order: 'descripcion_concepto', label: 'descripcion_concepto', type: 'text' },
+    { order: 'codigo_banco', label: 'codigo_banco', type: 'text' },
+    { order: 'otros', label: 'otros', type: 'text' },
+    { order: 'taquilla', label: 'taquilla', type: 'text' },
+    { order: 'consecutivo2', label: 'consecutivo2', type: 'text' },
+    { order: 'nombre_empresa', label: 'nombre_empresa', type: 'text' },
+    { order: 'nombre_dependencia', label: 'nombre_dependencia', type: 'text' },
 ];
 
 </script>

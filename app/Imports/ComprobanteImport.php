@@ -22,9 +22,8 @@ use Maatwebsite\Excel\Concerns\WithStartRow;
 use Maatwebsite\Excel\Validators\Failure;
 use Maatwebsite\Excel\Validators\ValidationException;
 
-class ComprobanteImport implements ToModel, WithStartRow, WithMapping
-    , WithChunkReading
-    , SkipsOnFailure
+class ComprobanteImport implements ToModel, WithStartRow, WithMapping, WithChunkReading
+//    , SkipsOnFailure
 //    , ShouldQueue
 //    , WithLimit
 {
@@ -73,9 +72,9 @@ class ComprobanteImport implements ToModel, WithStartRow, WithMapping
     public function chunkSize(): int
     {
         if (App::environment('local')) {
-            return 400;
+            return 1500;
         } else {
-            return 2000;
+            return 2500;
         }
     }
 
@@ -214,6 +213,7 @@ class ComprobanteImport implements ToModel, WithStartRow, WithMapping
                 'documento_ref' => $therow[17],
                 'plan_cuentas' => $therow[18],
             ]);
+
 
             return $compro;
         } catch (\Throwable $th) {

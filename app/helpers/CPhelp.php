@@ -29,8 +29,14 @@ class CPhelp {
             if(CPhelp::ValidacionNumComprobantes($comprobantes,$transa,$frase_reservada)) continue;
 
             $lasContrapartidas = clone $comprobantes;
-            $principales = $comprobantes->where($valor_debito_credito, '>', 0)->get();
-            $lasContrapartidas = $lasContrapartidas->where($opuesto_debito_credito, '>', 0)->get();
+
+
+            //antes se buscaba por debito y credito
+            $principales = $comprobantes->where('codigo_cuenta', $transa->codigo_cuenta_contable)->get();
+            $lasContrapartidas = $lasContrapartidas->WhereNot('codigo_cuenta', $transa->codigo_cuenta_contable)->get();
+//            $principales = $comprobantes->where($valor_debito_credito, '>', 0)->get();
+//            $lasContrapartidas = $lasContrapartidas->where($opuesto_debito_credito, '>', 0)->get();
+
 
             //validacion de credito - debito
             $sumprincipales = $principales->sum($valor_debito_credito);

@@ -42,6 +42,7 @@ const data = reactive({
         numero_documento: props.filters.numero_documento,
         valor_debito: props.filters.valor_debito,
         valor_credito: props.filters.valor_credito,
+        resultado_asientos: props.filters.resultado_asientos,
 
         field: props.filters.field,
         order: props.filters.order,
@@ -65,7 +66,7 @@ const order = (field) => {
 
 watch(() => _.cloneDeep(data.params), debounce(() => {
     let params = pickBy(data.params)
-    router.get(route("Comprobante.index"), params, {
+    router.get(route("IndexCE"), params, {
         replace: true,
         preserveState: true,
         preserveScroll: true,
@@ -93,8 +94,9 @@ const select = () => data.multipleSelect = props.fromController?.data.length ===
 // text // number // dinero // date // datetime // foreign
 const titulos = [
     { order: 'codigo', label: 'codigo', type: 'text' },
-    // { order: 'descripcion', label: 'descripcion', type: 'text' },
-    // { order: 'comprobante', label: 'comprobante', type: 'text' },
+    { order: 'resultado_asientos', label: 'resultado_asientos', type: 'text' },
+    { order: 'sin_afectacion', label: 'sin_afectacion', type: 'bool_afectacion' },
+    { order: 'cuenta_contrapartida', label: 'cuenta_contrapartida', type: 'text' },
     { order: 'notas', label: 'notas', type: 'longtext' },
     { order: 'numero_documento', label: 'numero_documento', type: 'text' },
     // { order: 'numero_cheque', label: 'numero_cheque', type: 'text' },
@@ -114,12 +116,11 @@ const titulos = [
 ];
 </script>
 <template>
-    <Head :title="props.title" />
+    <Head :title="'CE'" />
 
     <AuthenticatedLayout>
-        <Breadcrumb :title="title" :breadcrumbs="breadcrumbs" class="capitalize text-xl font-bold"/>
+        <Breadcrumb :title="'CE'" :breadcrumbs="breadcrumbs" class="capitalize text-xl font-bold"/>
         <div class="space-y-4">
-            <!-- {{ props.fromController.data[2] }} -->
             <div class="px-4 sm:px-0">
                 <div class="rounded-lg overflow-hidden w-fit">
                     <PrimaryButton class="rounded-none" @click="data.createOpen = true"
@@ -150,9 +151,8 @@ const titulos = [
                             <TrashIcon class="w-5 h-5" />
                         </DangerButton> -->
                     </div>
-<!--                    v-if="props.numberPermissions > 1"-->
-                    <TextInput  v-model="data.params.codigo" type="text"
-                        class="block w-4/6 md:w-3/6 lg:w-2/6 mx-4 rounded-lg" placeholder="codigo" />
+                    <TextInput  v-model="data.params.resultado_asientos" type="text"
+                        class="block w-4/6 md:w-3/6 lg:w-2/6 mx-4 rounded-lg" placeholder="resultados" />
                     <TextInput  v-model="data.params.numero_documento" type="text"
                         class="block w-4/6 md:w-3/6 lg:w-2/6 mx-4 rounded-lg" placeholder="numero_documento" />
                     <TextInput  v-model="data.params.valor_debito" type="text"
@@ -216,6 +216,10 @@ const titulos = [
                                     <span v-if="titulo['type'] === 'text'" class="whitespace-nowrap"> {{ claseFromController[titulo['order']] }} </span>
                                     <p v-if="titulo['type'] === 'longtext'" class="whitespace-wrap md:w-96"> {{ claseFromController[titulo['order']] }} </p>
                                     <span v-if="titulo['type'] === 'number'" class="whitespace-nowrap"> {{ number_format(claseFromController[titulo['order']], 0, false) }} </span>
+                                    <span v-if="titulo['type'] === 'bool_afectacion'" class="whitespace-nowrap"> {{
+                                            claseFromController[titulo['order']] === 1 ? 'Sin afectación' :
+                                            claseFromController[titulo['order']] === 0 ? 'Con afectación' : 'Sin revisar'
+                                        }} </span>
                                     <span v-if="titulo['type'] === 'dinero'" class="whitespace-nowrap"> {{ number_format(claseFromController[titulo['order']], 0, true) }} </span>
                                     <span v-if="titulo['type'] === 'date'" class="whitespace-nowrap"> {{ formatDate(claseFromController[titulo['order']], false) }} </span>
                                     <span v-if="titulo['type'] === 'datetime'" class="whitespace-nowrap"> {{ formatDate(claseFromController[titulo['order']], true) }} </span>

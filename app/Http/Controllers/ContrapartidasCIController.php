@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use AllowDynamicProperties;
 use App\helpers\Myhelp;
+use App\helpers\MyModels;
 use App\helpers\ZilefErrors;
+use App\helpers\ZilefLogs;
 use App\Jobs\BC_AnulacionesJob;
 use App\Jobs\BusquedaConceptoCI_AJJob;
 use App\Models\asiento;
@@ -11,18 +14,33 @@ use App\Models\Comprobante;
 use App\Models\concepto_flujo;
 use App\Models\Parametro;
 use App\Models\transaccion;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Inertia\Inertia;
+use Inertia\Response;
 use JetBrains\PhpStorm\NoReturn;
 use function Psy\debug;
 
-class ContrapartidasCIController extends Controller
+#[AllowDynamicProperties] class ContrapartidasCIController extends Controller
 {
     //todo: falta traer y configurar "Buscar_CP_CI" que esta en transaccionController
+    public string $FromController = 'Comprobante';
+    public function __construct()
+    {
+        $this->arrayFillableSearch = [
+            'codigo',
+            'numero_documento',
+            'valor_debito',
+            'valor_credito',
+            'resultado_asientos',
+        ];
+    }
 
-    public function Buscar_AJ_CI(Request $request): \Illuminate\Http\RedirectResponse
+    public function Buscar_AJ_CI(Request $request): RedirectResponse
     {
         $codigo = "AJ";
         $bsuqeudaind = new BusquedaIndependienteController();
@@ -56,7 +74,7 @@ class ContrapartidasCIController extends Controller
     }
 
 
-    public function Buscar_AN_CI(Request $request): \Illuminate\Http\RedirectResponse
+    public function Buscar_AN_CI(Request $request): RedirectResponse
     {
         try {
             $codigo = "AN";
@@ -176,11 +194,81 @@ class ContrapartidasCIController extends Controller
     }
     public function Borrarcomprobantesce(): void
     {
-        $conteo = Comprobante::where('codigo', 'ce')->count();
-        $Comprobantes = Comprobante::where('codigo','ce')->delete();
+        $conteo = Comprobante::Where('codigo', 'ce')->count();
+        $Comprobantes = Comprobante::Where('codigo','ce')->delete();
         echo "$conteo comprobantes ce eliminados";
     }
 
+    //</editor-fold>
 
-IndexCE
+
+    //<editor-fold desc="IndexCE">
+    private function Mapear($clase)
+    {
+        $Result = $clase->map(function ($clas) {
+            return $clas;
+        });
+
+        return $Result;
+    }
+
+    public function BusquedasText($laclase, $request)
+    {
+        foreach ($this->arrayFillableSearch as $index => $busqueda) {
+            if ($request->has($busqueda)) {
+                $laclase = $laclase->where(function ($query) use ($request, $busqueda) {
+                    $query->where($busqueda, 'LIKE', "%" . $request->{$busqueda} . "%");
+                });
+            }
+        }
+        return $laclase->get();
+    }
+
+    public function Filtros($request)
+    {
+        $Comprobantes = Comprobante::Where('codigo','CE');
+
+        if ($request->has(['field', 'order'])) {
+            $Comprobantes = $Comprobantes->orderBy($request->field, $request->order);
+        } else {
+            $Comprobantes = $Comprobantes->orderBy('updated_at', 'DESC');
+        }
+        return $this->BusquedasText($Comprobantes, $request);
+    }
+
+
+    public function IndexCE(Request $request): Response
+    {
+        $numberPermissions = MyModels::getPermissionToNumber(ZilefLogs::EscribirEnLog($this, ' IndexCE '));
+        $laclase = $this->Mapear($this->Filtros($request));
+
+
+        $perPage = $request->has('perPage') ? $request->perPage : 10;
+        $total = $laclase->count();
+        $page = request('page', 1);
+        $fromController = new LengthAwarePaginator(
+            $laclase->forPage($page, $perPage),
+            $total,
+            $perPage,
+            $page,
+            ['path' => request()->url()]
+        );
+
+        return Inertia::render($this->FromController . '/IndexCE', [
+            'fromController' => $fromController,
+            'total' => $total,
+
+            'breadcrumbs' => [['label' => __('app.label.' . $this->FromController), 'href' => route($this->FromController . '.index')]],
+            'title' => __('app.label.' . $this->FromController),
+            'filters' => $request->all(['field', 'order',
+                'codigo',
+                'numero_documento',
+                'valor_debito',
+                'valor_credito',
+            ]),
+            'perPage' => (int)$perPage,
+            'numberPermissions' => $numberPermissions,
+        ]);
+    }
+    //</editor-fold>
 }

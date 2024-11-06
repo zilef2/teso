@@ -1,6 +1,6 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import {Head, router, usePage} from '@inertiajs/vue3';
+import {Head, Link, router, usePage} from '@inertiajs/vue3';
 import Breadcrumb from '@/Components/Breadcrumb.vue';
 import TextInput from '@/Components/TextInput.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
@@ -122,9 +122,10 @@ const titulos = [
             <!-- {{ props.fromController.data[2] }} -->
             <div class="px-4 sm:px-0">
                 <div class="rounded-lg overflow-hidden w-fit">
-                    <PrimaryButton class="rounded-none" @click="data.createOpen = true"
-                        v-if="can(['create Comprobante'])">
-                        {{ lang().button.new }}
+                    <PrimaryButton class="rounded-none" @click="data.createOpen = true">
+                        <Link :href="route('IndexCE')">
+                            Vista CE
+                        </Link>
                     </PrimaryButton>
 
                     <Create v-if="can(['create Comprobante'])" :numberPermissions="props.numberPermissions"

@@ -94,8 +94,31 @@ const select = () => {
 // text // number // dinero // date // datetime // foreign
 const titulos = [
     // { order: 'codigo', label: 'codigo', type: 'text' },
+    { order: 'codigo_cuenta', label: 'codigo_cuenta', type: 'text' },
+    { order: 'nombre_cuenta', label: 'nombre_cuenta', type: 'text' },
+    { order: 'codigo', label: 'codigo', type: 'text' },
+    { order: 'documento', label: 'documento', type: 'text' },
+    { order: 'fecha_elaboracion', label: 'fecha_elaboracion', type: 'text' },
+    { order: 'descripcion', label: 'descripcion', type: 'text' },
+    { order: 'comprobante', label: 'comprobante', type: 'text' },
+    { order: 'valor_debito', label: 'valor_debito', type: 'text' },
+    { order: 'valor_credito', label: 'valor_credito', type: 'text' },
+    { order: 'nit', label: 'nit', type: 'text' },
     { order: 'nombre', label: 'nombre', type: 'text' },
-  // { order: 'inventario', label: 'inventario', type: 'foreign',nameid:'nombre'},
+    { order: 'cod_costos', label: 'cod_costos', type: 'text' },
+    { order: 'desc_costos', label: 'desc_costos', type: 'text' },
+    { order: 'codigo_interno_cuenta', label: 'codigo_interno_cuenta', type: 'text' },
+    { order: 'codigo_tercero', label: 'codigo_tercero', type: 'text' },
+    { order: 'ccostos', label: 'ccostos', type: 'text' },
+    { order: 'saldo_inicial', label: 'saldo_inicial', type: 'text' },
+    { order: 'saldo_final', label: 'saldo_final', type: 'text' },
+    { order: 'nombre_empresa', label: 'nombre_empresa', type: 'text' },
+    { order: 'nit_empresa', label: 'nit_empresa', type: 'text' },
+    { order: 'documento_ref', label: 'documento_ref', type: 'text' },
+    { order: 'consecutivo', label: 'consecutivo', type: 'text' },
+    { order: 'periodo', label: 'periodo', type: 'text' },
+    { order: 'plan_cuentas', label: 'plan_cuentas', type: 'text' },
+    { order: 'numerounico', label: 'numerounico', type: 'text' },
 ];
 
 </script>

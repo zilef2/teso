@@ -2,6 +2,7 @@
 
 namespace App\Imports;
 
+use AllowDynamicProperties;
 use App\helpers\HelpExcel;
 use App\helpers\Myhelp;
 use App\helpers\ZilefLogs;
@@ -15,7 +16,7 @@ use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithStartRow;
 use Maatwebsite\Excel\Validators\ValidationException;
 
-class PreComprobanteImport implements ToCollection, WithStartRow
+#[AllowDynamicProperties] class PreComprobanteImport implements ToCollection, WithStartRow
     , WithMapping
     , WithChunkReading
 {
@@ -151,6 +152,7 @@ class PreComprobanteImport implements ToCollection, WithStartRow
 
             $this->HaSidoGuardadoAnteriormente($rows[0]);
             if($rows[1]) $this->HaSidoGuardadoAnteriormente($rows[1]);
+            $this->ConProblemas = 1;
             foreach ($rows->chunk($this->chunkSize) as $index => $chunk) {
 
                 $chunkStart = $index * $this->chunkSize;
@@ -182,8 +184,8 @@ class PreComprobanteImport implements ToCollection, WithStartRow
 
                 // Limpiar memoria después de cada chunk
                 gc_collect_cycles();
-
             }
+            $this->ConProblemas = 0;
 
         } catch (\Throwable $th) {
             $this->MensajeMortal = "Error en fila {$this->currentRow}: " . $th->getMessage();

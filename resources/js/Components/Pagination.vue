@@ -33,6 +33,8 @@ const data = reactive({
         valor_debito: props.filters?.valor_debito,
         valor_credito: props.filters?.valor_credito,
 
+        resultado_asientos: props.filters?.resultado_asientos,
+
         field: props.filters?.field,
         order: props.filters?.order,
         perPage: props.filters?.perPage,
@@ -63,11 +65,13 @@ watchEffect(() => {
     data.params.searchDocRef = props.filters?.searchDocRef
     data.params.OnlyCP = props.filters?.OnlyCP
     data.params.OnlyEmptyCP = props.filters?.OnlyEmptyCP
+    data.params.concepto_flujo_omologaci = props.filters?.concepto_flujo_omologaci
 
     data.params.codigo = props.filters?.codigo
     data.params.numero_documento = props.filters?.numero_documento
     data.params.valor_debito = props.filters?.valor_debito
     data.params.valor_credito = props.filters?.valor_credito
+    data.params.resultado_asientos = props.filters?.resultado_asientos
 
     data.params.field = props.filters?.field
     data.params.order = props.filters?.order

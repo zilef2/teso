@@ -15,9 +15,8 @@ return [
         'conceptoflujo' => 'Concepto de flujo',
         'concepto_flujo' => 'Concepto de flujo',
 		'asiento' => 'Asiento',
-		'parametro' => 'parametro',
+		'parametro' => 'Parametro',
 		'afectacion' => 'Afectacion',
-		'afectacion' => 'afectacion',
 		//aquipues
     ],
 
@@ -25,7 +24,9 @@ return [
 		'asiento' => 'Asiento',
         'parametro' => 'parametro',
 		'afectacion' => 'Afectacion',
-		'afectacion' => 'afectacion',
+		'resultado_asientos' => 'Resultado asientos',
+		'sin_afectacion' => 'Sin afectacion',
+		'cuenta_contrapartida' => 'Cuenta contrapartida',
 		//aquipues
 
         //transaccion

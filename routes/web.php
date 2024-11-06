@@ -1,6 +1,7 @@
 <?php
 
 use App\Exports\FormExport;
+use App\Http\Controllers\ContrapartidasCIController;
 use App\Http\Controllers\dashboardController;
 use App\Http\Controllers\EjemploController;
 use App\Http\Controllers\ParametrosController;
@@ -75,17 +76,17 @@ Route::middleware(['auth'])->group(callback: function () {
 
     Route::post('/Buscar_CP_CI', [TransaccionController::class, 'Buscar_CP_CI'])->name('Buscar_CP_CI');
     Route::post('/Buscar_CP_CE', [TransaccionController::class, 'Buscar_CP_CE'])->name('Buscar_CP_CE');
-    Route::post('/Buscar_AJ_CI', [\App\Http\Controllers\ContrapartidasCIController::class, 'Buscar_AJ_CI'])->name('Buscar_AJ_CI');
-    Route::post('/Buscar_AN_CI', [\App\Http\Controllers\ContrapartidasCIController::class, 'Buscar_AN_CI'])->name('Buscar_AN_CI');
+    Route::post('/Buscar_AJ_CI', [ContrapartidasCIController::class, 'Buscar_AJ_CI'])->name('Buscar_AJ_CI');
+    Route::post('/Buscar_AN_CI', [ContrapartidasCIController::class, 'Buscar_AN_CI'])->name('Buscar_AN_CI');
     Route::post('/Buscar_CP_CE', [\App\Http\Controllers\ContrapartidasCEController::class, 'Buscar_CP_CE'])->name('Buscar_CP_CE');
 
-    Route::get('/IndexCE', [ComprobanteController::class, 'IndexCE'])->name('IndexCE');
+    Route::get('/IndexCE', [ContrapartidasCIController::class, 'IndexCE'])->name('IndexCE');
 
     //danger wey
-    Route::get('/borrarconceptos', [\App\Http\Controllers\ContrapartidasCIController::class, 'BorrarConceptos'])->name('BorrarConceptos');
-    Route::get('/borraraj', [\App\Http\Controllers\ContrapartidasCIController::class, 'BorrarAjustes'])->name('BorrarAjustes');
-    Route::get('/BorrarAsientos', [\App\Http\Controllers\ContrapartidasCIController::class, 'BorrarAsientos'])->name('BorrarAsientos');
-    Route::get('/Borrarcomprobantesce', [\App\Http\Controllers\ContrapartidasCIController::class, 'Borrarcomprobantesce'])->name('Borrarcomprobantesce');
+    Route::get('/borrarconceptos', [ContrapartidasCIController::class, 'BorrarConceptos'])->name('BorrarConceptos');
+    Route::get('/borraraj', [ContrapartidasCIController::class, 'BorrarAjustes'])->name('BorrarAjustes');
+    Route::get('/BorrarAsientos', [ContrapartidasCIController::class, 'BorrarAsientos'])->name('BorrarAsientos');
+    Route::get('/Borrarcomprobantesce', [ContrapartidasCIController::class, 'Borrarcomprobantesce'])->name('Borrarcomprobantesce');
 //    Route::get('/downloadAnexos', [UserController::class,'downloadAnexos'])->name('downloadAnexos');
 //    Route::get('/downClaro',function(){
 //        return Excel::download(new FormExport, 'BaseDatosInspecciones.xlsx');

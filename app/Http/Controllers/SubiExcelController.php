@@ -43,7 +43,7 @@ class SubiExcelController extends Controller
             afectacion::count(),
         ];
         return Inertia::render('Excel/subirExceles', [
-            'title' => __('app.label.user'),
+            'title' => 'Importar datos',
             'ntransaccion' => $ntransaccion,
         ]);
     }
@@ -228,6 +228,7 @@ class SubiExcelController extends Controller
                 } else {
                     [$tipoReturn, $mensajesin] = $this->realizarCruce($thefile);
                 }
+                DB::commit();
                 return back()->with($tipoReturn, $mensajesin);
             } else {
                 DB::rollback();
@@ -266,22 +267,22 @@ class SubiExcelController extends Controller
     private function realizarCruce($thefile): array
     {
         try {
-//        $PrepersonalImp = new PreComprobanteImport();
-//        Excel::import($PrepersonalImp, $thefile);
+            $PrepersonalImp = new PreComprobanteImport();
+            Excel::import($PrepersonalImp, $thefile);
+            if($PrepersonalImp->ConProblemas)
+                return ['Error', 'Error'];
 
             $personalImp = new ComprobanteImport();
             Excel::import($personalImp, $thefile);
-//            Excel::import($personalImp, $thefile, null, \Maatwebsite\Excel\Excel::XLSX, [
-//                'input_encoding' => 'UTF-8',
-//            ]);
             $countfilas = $personalImp->ContarFilasAbsolutas;
 
             $MensajeWarning = HelpExcel::MensajeWarComprobante($personalImp);
             if ($MensajeWarning !== '') {
-                return ['warning2', $MensajeWarning];
+                return ['warning', $MensajeWarning];
             }
             $mensajetype = 'success';
             if ($countfilas == 0) {
+                $mensajetype = 'warning';
                 return [$mensajetype, __('app.label.op_successfully') . ' No hubo cambios'];
             } else {
                 return [$mensajetype, __('app.label.op_successfully') . ' Se leyeron ' . $countfilas . ' filas con exito'];

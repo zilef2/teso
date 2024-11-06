@@ -13,6 +13,7 @@ use App\Models\Comprobante;
 use App\Models\concepto_flujo;
 use App\Models\Parametro;
 use App\Models\transaccion;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
@@ -24,11 +25,12 @@ use function Psy\debug;
 class ContrapartidasCEController extends Controller
 {
 
-    public function Buscar_CP_CE(Request $request)
+    public function Buscar_CP_CE(Request $request): RedirectResponse
     {
         try {
             $codigo = "CE";
             $frase_reservada = "No se encontro";
+            $fraseExito = "Encontrado";
             if(!CPhelp::Val_Exista_CE_auxiliar($codigo)){
                 return back()->with('error', 'Faltan archivos. Auxiliar, CE,AS,AF');//comprobantes de egreso, asientos, sin afectacion
             }
@@ -39,23 +41,24 @@ class ContrapartidasCEController extends Controller
             foreach ($asientos as $index => $asiento) {
                 $numero_unico1 = intval($asiento->nit);
                 $numero_unico2 = intval($asiento->documento_ref);
-                $numerounico = $numero_unico1 * $numero_unico2; //nit documento_ref
+                $numerounico = (($numero_unico1 * 2) + ($numero_unico2 * 10)); //nit documento_ref
                 $asiento->update([
                     'numerounico' => $numerounico,
                 ]);
             }
-            //todo:toask: debito para CI? 30oct2024
             [$comprobantes, $valor_debito_credito, $opuesto_debito_credito] = $this->ComprobantesCE($codigo);
 
             foreach ($comprobantes as $index => $compro) {
                 //BUSCAR LA AFECTACION
-                $afectas = $this->AfectacionesCE($codigo, $compro->numero_documento);
+                $afectas = $this->AfectacionesCE($codigo, $compro->codigo_cuenta);
                 //CE
 
                 if ($afectas->count() === 0) {
                     $compro->update([
+                        'resultado_asientos' => $fraseExito,
                         'sin_afectacion' => 1,
-                        //aquiii con el codigo_cuenta del CE
+                        'cuenta_contrapartida' => $compro->cuenta_contrapartida,
+                        'numerounico' => 0,
                     ]);
                     continue;
                 }
@@ -70,18 +73,18 @@ class ContrapartidasCEController extends Controller
                 //! early return
                 if ($asientoNU === null) {
                     $compro->update([
-                        'sin_afectacion' => 0,
-                        'numerounico' => $numerounico,
                         'resultado_asientos' => $frase_reservada.' un asiento con el NU: '.$numerounico,
+                        'sin_afectacion' => -1,
+                        'numerounico' => $numerounico,
                     ]);
                     continue;
                 }
 
                 $compro->update([
+                    'resultado_asientos' => $fraseExito. ' NU = nit '. $numero_unico1 . ' * ref '. $numero_unico2,
                     'sin_afectacion' => 0,
                     'numerounico' => $numerounico,
                     'cuenta_contrapartida' => $asientoNU->codigo_cuenta,
-                    'resultado_asientos' => 'OK'
                 ]);
             }
 
@@ -112,7 +115,9 @@ class ContrapartidasCEController extends Controller
             ->get();
         return [$comprocciones, $valor_debito_credito, $opuesto_debito_credito];
     }
-    public static function AfectacionesCE($codigo,$documentoBuscado): Collection
+
+
+    public static function AfectacionesCE($codigo,$codigoCuentaBuscada): Collection
     {
         $valor_debito_credito = (strcmp($codigo, "CI") === 0) ? "valor_debito" : "valor_credito";
         $opuesto_debito_credito = (strcmp($valor_debito_credito, "valor_credito") === 0) ? "valor_debito" : "valor_credito";
@@ -122,7 +127,7 @@ class ContrapartidasCEController extends Controller
             $mes = intval($paraMes->valor);
         }
 
-        return afectacion::Where('codigo_cuenta', $documentoBuscado)
+        return afectacion::Where('codigo_cuenta', $codigoCuentaBuscada)
             ->whereMonth('fecha_elaboracion', $mes)
             ->get();
     }
