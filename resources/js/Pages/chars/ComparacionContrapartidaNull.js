@@ -29,7 +29,7 @@ export async function buildCharCPnull(ComparacionCP) {
             {
                 label: '2024',
                 data: [transaccion2024sincp, transaccion2024concp],
-                backgroundColor: ['rgb(193,139,0)','rgb(40,179,0)'],
+                backgroundColor: ['rgb(81,60,3)','rgb(27,113,3)'],
                 hoverOffset: 4
             },
             ]

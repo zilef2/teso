@@ -36,7 +36,8 @@ return new class extends Migration {
             $table->string('consecutivo');
             $table->string('periodo');
             $table->string('plan_cuentas');
-            $table->bigInteger('numerounico')->nullable();
+            $table->BigInteger('numerounico')->nullable();
+            $table->string('resultado_asiento')->nullable();
             $table->timestamps();
         });
     }

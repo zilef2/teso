@@ -34,6 +34,7 @@ class asiento extends Model
         'periodo',
         'plan_cuentas',
         'numerounico',
+        'resultado_asiento',
     ];
 
 }

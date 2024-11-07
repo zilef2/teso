@@ -145,8 +145,8 @@ onMounted(async () => {
             <div class="mb-20 w-4/6 2xl:w-5/6"><canvas ref="chart13"></canvas></div>
         </div>
         <div class="grid grid-cols-1 2xl:grid-cols-2">
-            <div class="mb-20 w-full md:w-5/6 3xl:w-full"><canvas ref="charConteomin"></canvas></div>
-            <div class="mb-20 w-full md:w-5/6 3xl:w-full"><canvas ref="char10"></canvas></div>
+            <div v-if="props.numberPermissions > 9000" class="mb-20 w-full md:w-5/6 3xl:w-full"><canvas ref="charConteomin"></canvas></div>
+            <div v-if="props.numberPermissions > 9000" class="mb-20 w-full md:w-5/6 3xl:w-full"><canvas ref="char10"></canvas></div>
 <!--            <div class="mb-20 w-full md:w-4/6 3xl:w-full"><canvas ref="chartCanvasEfec"></canvas></div>-->
 <!--            <div class="my-20 w-full md:w-5/6"><canvas ref="chartCanvas1"></canvas></div>-->
             <div class="my-20 w-full md:w-4/6 3xl:w-full"><canvas ref="chartCanvas2"></canvas></div>

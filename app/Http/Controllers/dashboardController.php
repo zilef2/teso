@@ -87,10 +87,10 @@ class dashboardController extends Controller
                 $concepto = $transaccion->concepto_flujo_homologación;
 
                 if ($concepto != '' && $concepto != null
-                    && !str_starts_with($concepto, "No se encontro")
-                    && !str_starts_with($concepto, "Buscar")
-                    && !str_starts_with($concepto, "Ingreso para")
-                    && !str_starts_with($concepto, "contrapartidas")
+//                    && !str_starts_with($concepto, "No se encontro")
+//                    && !str_starts_with($concepto, "Buscar")
+//                    && !str_starts_with($concepto, "Ingreso para")
+//                    && !str_starts_with($concepto, "contrapartidas")
                 ) {
                     // si el concepto ya existe en el arreglo, suma el valor; si no se crea
                     if (isset($ResumenCI[$i][$concepto])) {
@@ -119,9 +119,9 @@ class dashboardController extends Controller
                 $concepto = $transaccion->concepto_flujo_homologación;
 
                 if ($concepto != '' && $concepto != null
-                    && !str_starts_with($concepto, "No se encontro")
-                    && !str_starts_with($concepto, "Buscar")
-                    && !str_starts_with($concepto, "contrapartidas")
+//                    && !str_starts_with($concepto, "No se encontro")
+//                    && !str_starts_with($concepto, "Buscar")
+//                    && !str_starts_with($concepto, "contrapartidas")
                 ) {
                     // si el concepto ya existe en el arreglo, suma el valor; si no se crea
                     if (isset($ResumenCI[$i][$concepto])) {
