@@ -34,6 +34,7 @@ php artisan make:job BusquedaConceptoCI
 php artisan make:job BC_Anulaciones
 php artisan make:job BC_CIGeneral
 php artisan make:controller BusquedaIndependienteController
+php artisan make:job CruceCE
 
 # Subiendo exceles con jobs
 php artisan make:job UpAsientosJob

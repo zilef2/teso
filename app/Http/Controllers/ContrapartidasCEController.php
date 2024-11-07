@@ -7,6 +7,7 @@ use App\helpers\Myhelp;
 use App\helpers\ZilefErrors;
 use App\Jobs\BC_AnulacionesJob;
 use App\Jobs\BusquedaConceptoCI_AJJob;
+use App\Jobs\CruceCEJob;
 use App\Models\afectacion;
 use App\Models\asiento;
 use App\Models\Comprobante;
@@ -41,10 +42,12 @@ class ContrapartidasCEController extends Controller
 
             $MesTransaccional = Parametro::Where("nombre", "Mes transaccional")->first();
             $asientos = asiento::WhereMonth('fecha_elaboracion', $MesTransaccional->valor)->get();
-            $this->NUAsientos($asientos, $fraseExito);
 
-            $comprobantes = $this->ComprobantesCE($codigo);
 
+            $this->CalcularNUAsientos($asientos, $fraseExito);
+//            $this->validarCalculoNUasientos();
+
+            $comprobantes = $this->Comprobantes_CE_del_mes($codigo);
             foreach ($comprobantes as $index => $compro) {
                 //BUSCAR LA AFECTACION
                 $afectas = $this->AfectacionesCE($codigo, $compro->codigo_cuenta);
@@ -83,10 +86,12 @@ class ContrapartidasCEController extends Controller
                 ]);
             }
 
-            $INT_TransaccionesOperadas = CPhelp::BuscarContrapartidaGeneral($codigo, $frase_reservada);
+//            dispatch(new CruceCEJob($codigo,$frase_reservada))->delay(now());
+//            $INT_TransaccionesOperadas = CPhelp::BuscarContrapartidaGeneral($codigo, $frase_reservada);
             DB::commit();
             return back()->with('success',
-                'Éxito. Comprobantes cruzados: ' . $comprobantes->count() . '. Transacciones: ' . $INT_TransaccionesOperadas
+                'Éxito. Comprobantes cruzados: ' . $comprobantes->count() . '. Las Transacciones quedaron pendientes. Se enviará un correo avisando su finalización'
+//                'Éxito. Comprobantes cruzados: ' . $comprobantes->count() . '. Transacciones: ' . $INT_TransaccionesOperadas
             );
         } catch (\Throwable $th) {
             DB::rollback();
@@ -95,7 +100,7 @@ class ContrapartidasCEController extends Controller
         }
     }
 
-    public static function ComprobantesCE($codigo): Collection
+    public static function Comprobantes_CE_del_mes($codigo): Collection
     {
         $valor_debito_credito = (strcmp($codigo, "CI") === 0) ? "valor_debito" : "valor_credito";
         $opuesto_debito_credito = (strcmp($valor_debito_credito, "valor_credito") === 0) ? "valor_debito" : "valor_credito";
@@ -164,7 +169,10 @@ class ContrapartidasCEController extends Controller
         return $HayComprobantes === 0;
     }
 
-    private function NUAsientos($asientos, $fraseExito)
+    private function validarCalculoNUasientos($asientos, $fraseExito): void{
+
+    }
+    private function CalcularNUAsientos($asientos, $fraseExito): void
     {
         foreach ($asientos as $asiento) {
             $numero_unico1 = intval($asiento->nit);

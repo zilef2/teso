@@ -101,7 +101,6 @@ class dashboardController extends Controller
                     }
                 }
             }
-            ksort($ResumenCI[$i], SORT_NUMERIC);
         }
         return [$losconceptos, $ResumenCI];
     }

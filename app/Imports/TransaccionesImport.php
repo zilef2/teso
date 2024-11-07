@@ -8,10 +8,15 @@ use App\helpers\ZilefLogs;
 use App\Models\Comprobante;
 use App\Models\transaccion;
 use Exception;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Support\Facades\Mail;
 use Maatwebsite\Excel\Concerns\ToModel;
+use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Maatwebsite\Excel\Concerns\WithStartRow;
+use Maatwebsite\Excel\Events\ImportFailed;
+use Opcodes\LogViewer\Log;
 
-class TransaccionesImport implements ToModel, WithStartRow
+class TransaccionesImport implements ToModel, WithStartRow, ShouldQueue, WithChunkReading
 {
 
     public int $ContarFilasAbsolutas;
@@ -73,6 +78,11 @@ class TransaccionesImport implements ToModel, WithStartRow
 
     public function startRow(): int{
         return 2;
+    }
+
+    public function chunkSize(): int
+    {
+        return 4000;
     }
 
     /**
@@ -193,5 +203,28 @@ class TransaccionesImport implements ToModel, WithStartRow
         'periodo' => $therow[22],
         'plan_cuentas' => $therow[23],
         ]);
+    }
+
+    public function registerEvents(): array
+    {
+
+//        return [
+//            ImportFailed::class => function (ImportFailed $event) {
+//                Log::error($event);
+//            },
+//        ];
+
+        return [
+            ImportFailed::class => function (ImportFailed $event) {
+                Mail::raw('error', function ($message) {
+                    $message->to('ajelof2@gmail.com')->subject('Fallo TransaccionesImport');
+                });
+                $exception = $event->getException();
+                Log::error('Importación fallida', [
+                    'error' => $exception->getMessage(),
+                    'stack' => $exception->getTraceAsString(),
+                ]);
+            },
+        ];
     }
 }

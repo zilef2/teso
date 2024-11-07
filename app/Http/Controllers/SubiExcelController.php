@@ -48,44 +48,6 @@ class SubiExcelController extends Controller
         ]);
     }
 
-    // Duplicate entry '1152194566' for key 'users_identificacion_unique'
-    private function MensajeWar($personalImp)
-    {
-        $bandera = false;
-        $contares = [
-            'contarVacios',
-            'contarTotalIncongruente',
-            'contarIncongruencias',
-            'contarUsuariosInexistentes',
-        ];
-        $mensajesWarnings = [
-            '# Filas con celdas vacias: ',
-            '# Hay Filas: total con incongruencias: ',
-            '# Incongruencias: ',
-            '# Usuarios Inexistentes: ',
-        ];
-
-
-        foreach ($contares as $key => $value) {
-            if ($personalImp->{$value}) {
-                $$value = $personalImp->{$value};
-                $bandera = $bandera || $$value > 0;
-            }
-        }
-
-        $mensaje = '';
-        if ($bandera) {
-            foreach ($mensajesWarnings as $key => $value) {
-                if (${$contares[$key]} > 0) {
-                    $NombreVariable = $contares[$key] . 'string';
-                    $mensaje .= $value . '<b>' . ${$contares[$key]} . '</b>.<br><br> ' . $personalImp->{$NombreVariable} . '<br> ';
-                }
-            }
-        }
-
-        return $mensaje;
-    }
-
     public function upExCuentas(Request $request)
     {
         ZilefLogs::EscribirEnLog($this, get_called_class(), 'importando cuentas', false);
@@ -156,22 +118,29 @@ class SubiExcelController extends Controller
                 }
 
                 $personalImp = new TransaccionesImport();
-                Excel::import($personalImp, $thefile);
-
-                $countfilas = $personalImp->ContarFilasAbsolutas;
-                $MensajeWarning = HelpExcel::MensajeWarComprobante($personalImp);
-
-                if ($MensajeWarning !== '') { //exito
-                    return back()->with('success', 'Registros nuevos: ' . $countfilas)
-                        ->with('warning2', $MensajeWarning);
-                }
-
-                ZilefLogs::EscribirEnLog($this, 'IMPORT:' . $entidad, '. operacion con exito', false);
-                DB::commit();
-                if ($countfilas == 0) {
-                    return back()->with('warning', __('app.label.op_successfully') . ' No hubo cambios');
+                $pesoKilobyte = ((int)($thefile->getSize())) / (1024);
+                if ($pesoKilobyte > 500) {
+                    Excel::queueImport($personalImp, $thefile);
+                    $mensajesito = "La operacion no debera tardar mucho";
+                    return back()->with('warning', $mensajesito);
                 } else {
-                    return back()->with('success', __('app.label.op_successfully') . ' Se leyeron ' . $countfilas . ' filas con exito');
+                    Excel::import($personalImp, $thefile);
+
+                    $countfilas = $personalImp->ContarFilasAbsolutas;
+                    $MensajeWarning = HelpExcel::MensajeWarComprobante($personalImp);
+
+                    if ($MensajeWarning !== '') { //exito
+                        return back()->with('success', 'Registros nuevos: ' . $countfilas)
+                            ->with('warning2', $MensajeWarning);
+                    }
+
+                    ZilefLogs::EscribirEnLog($this, 'IMPORT:' . $entidad, '. operacion con exito', false);
+                    DB::commit();
+                    if ($countfilas == 0) {
+                        return back()->with('warning', __('app.label.op_successfully') . ' No hubo cambios');
+                    } else {
+                        return back()->with('success', __('app.label.op_successfully') . ' Se leyeron ' . $countfilas . ' filas con exito');
+                    }
                 }
             } else {
                 DB::rollback();
@@ -269,7 +238,7 @@ class SubiExcelController extends Controller
         try {
             $PrepersonalImp = new PreComprobanteImport();
             Excel::import($PrepersonalImp, $thefile);
-            if($PrepersonalImp->ConProblemas)
+            if ($PrepersonalImp->ConProblemas)
                 return ['Error', 'Error'];
 
             $personalImp = new ComprobanteImport();
