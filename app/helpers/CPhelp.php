@@ -119,7 +119,7 @@ class CPhelp {
         return $Auxiliar > 0 && $CE > 0 && $asiento > 0 && $afectacion > 0;
     }
 
-    public static function VerificarDuplicados(int $numerounico,asiento $asiento, $intentos = 0): bool
+    public static function VerificarDuplicados(int $numerounico,asiento $asiento, $intentos = 0)
     {
         $duplicado = asiento::Where('numerounico', $numerounico)
             ->where('id', '!=', $asiento->id)
@@ -139,9 +139,10 @@ class CPhelp {
                     'documento_ref' => $duplicado->documento_ref
                 ]
             ]);
-            throw new \Exception("Se detectó un número único duplicado: {$numerounico}.
-                               Asiento codigo_cuenta: {$asiento->codigo_cuenta},
-                               Asiento duplicado: {$duplicado->codigo_cuenta}");
+//            throw new \Exception("Se detectó un número único duplicado: {$numerounico}.
+//                               Asiento codigo_cuenta: {$asiento->codigo_cuenta},
+//                               Asiento duplicado: {$duplicado->codigo_cuenta}");
+            return $duplicado;
 
         }else{
             return false;

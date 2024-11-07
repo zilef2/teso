@@ -31,28 +31,19 @@ class ContrapartidasCEController extends Controller
             $codigo = "CE";
             $frase_reservada = "No se encontro";
             $fraseExito = "Encontrado";
-            if(!CPhelp::Val_Exista_CE_auxiliar($codigo)){
+            if (!CPhelp::Val_Exista_CE_auxiliar($codigo)) {
                 return back()->with('error', 'Faltan archivos. Auxiliar, CE,AS,AF');//comprobantes de egreso, asientos, sin afectacion
             }
-            if(Comprobante::WhereNull('nit')->count() === 0){
-                return back()->with('error', 'Existen comprobantes con NIT vacio');
-            }
+//            if(Comprobante::WhereNull('nit')->count() === 0){
+//                return back()->with('error', 'Existen comprobantes con NIT vacio');
+//            }
             DB::beginTransaction();
 
-            $MesTransaccional = Parametro::Where("nombre" ,"Mes transaccional")->first();
-            $asientos = asiento::WhereMonth('fecha_elaboracion',$MesTransaccional->valor)->get();
-            foreach ($asientos as $asiento) {
-                $numero_unico1 = intval($asiento->nit);
-                $numero_unico2 = intval($asiento->documento_ref);
-                $numerounico = (($numero_unico1 * 11) + ($numero_unico2 * 13)); //nit documento_ref
+            $MesTransaccional = Parametro::Where("nombre", "Mes transaccional")->first();
+            $asientos = asiento::WhereMonth('fecha_elaboracion', $MesTransaccional->valor)->get();
+            $this->NUAsientos($asientos, $fraseExito);
 
-                CPhelp::VerificarDuplicados($numerounico, $asiento); //throw exception
-
-                $asiento->update([
-                    'numerounico' => $numerounico,
-                ]);
-            }
-            [$comprobantes, $valor_debito_credito, $opuesto_debito_credito] = $this->ComprobantesCE($codigo);
+            $comprobantes = $this->ComprobantesCE($codigo);
 
             foreach ($comprobantes as $index => $compro) {
                 //BUSCAR LA AFECTACION
@@ -72,12 +63,12 @@ class ContrapartidasCEController extends Controller
                 $numerounico = ($numero_unico1 * 11) + ($numero_unico2 * 13); //nit documento_ref
 
                 //BUSCAR EL ASIENTO CON NU
-                $asientoNU = asiento::Where('numerounico',$numerounico)->first();
+                $asientoNU = asiento::Where('numerounico', $numerounico)->first();
 
                 //! early return
                 if ($asientoNU === null) {
                     $compro->update([
-                        'resultado_asientos' => $frase_reservada.' un asiento con el NU: '.$numerounico,
+                        'resultado_asientos' => $frase_reservada . ' un asiento con el NU: ' . $numerounico,
                         'sin_afectacion' => -1,
                         'numerounico' => $numerounico,
                     ]);
@@ -85,14 +76,14 @@ class ContrapartidasCEController extends Controller
                 }
 
                 $compro->update([
-                    'resultado_asientos' => $fraseExito. ' NU = nit '. $numero_unico1 . ' * ref '. $numero_unico2,
+                    'resultado_asientos' => $frase_reservada . ' NU = nit ' . $numero_unico1 . ' * ref ' . $numero_unico2,
                     'sin_afectacion' => 0,
                     'numerounico' => $numerounico,
                     'cuenta_contrapartida' => $asientoNU->codigo_cuenta,
                 ]);
             }
 
-            $INT_TransaccionesOperadas = CPhelp::BuscarContrapartidaGeneral($codigo,$frase_reservada);
+            $INT_TransaccionesOperadas = CPhelp::BuscarContrapartidaGeneral($codigo, $frase_reservada);
             DB::commit();
             return back()->with('success',
                 'Éxito. Comprobantes cruzados: ' . $comprobantes->count() . '. Transacciones: ' . $INT_TransaccionesOperadas
@@ -104,12 +95,12 @@ class ContrapartidasCEController extends Controller
         }
     }
 
-    public static function ComprobantesCE($codigo): array
+    public static function ComprobantesCE($codigo): Collection
     {
         $valor_debito_credito = (strcmp($codigo, "CI") === 0) ? "valor_debito" : "valor_credito";
         $opuesto_debito_credito = (strcmp($valor_debito_credito, "valor_credito") === 0) ? "valor_debito" : "valor_credito";
-        $paraMes = Parametro::Where("nombre" ,"Mes transaccional")->first();
-        if($paraMes){//TODO: doubt
+        $paraMes = Parametro::Where("nombre", "Mes transaccional")->first();
+        if ($paraMes) {//TODO: doubt
             $mes = intval($paraMes->valor);
         }
 
@@ -117,17 +108,17 @@ class ContrapartidasCEController extends Controller
 //            ->WhereYear('fecha_elaboracion', $anio)
             ->whereMonth('fecha_elaboracion', $mes)
             ->get();
-        return [$comprocciones, $valor_debito_credito, $opuesto_debito_credito];
+        return $comprocciones;
     }
 
 
-    public static function AfectacionesCE($codigo,$codigoCuentaBuscada): Collection
+    public static function AfectacionesCE($codigo, $codigoCuentaBuscada): Collection
     {
         $valor_debito_credito = (strcmp($codigo, "CI") === 0) ? "valor_debito" : "valor_credito";
         $opuesto_debito_credito = (strcmp($valor_debito_credito, "valor_credito") === 0) ? "valor_debito" : "valor_credito";
-        $paraMes = Parametro::Where("nombre" ,"Mes transaccional")->first();
+        $paraMes = Parametro::Where("nombre", "Mes transaccional")->first();
         $mes = 8;
-        if($paraMes){//TODO: doubt
+        if ($paraMes) {//TODO: doubt
             $mes = intval($paraMes->valor);
         }
 
@@ -135,6 +126,7 @@ class ContrapartidasCEController extends Controller
             ->whereMonth('fecha_elaboracion', $mes)
             ->get();
     }
+
     public function hallarConcepto($cuentaCP, $codigo)
     {
         $cf = concepto_flujo::Where('cuenta_contable', $cuentaCP)->first();
@@ -170,6 +162,35 @@ class ContrapartidasCEController extends Controller
             ]);
         }
         return $HayComprobantes === 0;
+    }
+
+    private function NUAsientos($asientos, $fraseExito)
+    {
+        foreach ($asientos as $asiento) {
+            $numero_unico1 = intval($asiento->nit);
+            $numero_unico2 = intval($asiento->documento_ref);
+            $numerounico = (($numero_unico1 * 11) + ($numero_unico2 * 13)); //nit documento_ref
+
+            $asientoDuplicado = CPhelp::VerificarDuplicados($numerounico, $asiento); //throw exception
+            if ($asientoDuplicado) {
+                if ($asiento === null || $asientoDuplicado === null) dd(
+                    $asiento,
+                    $asientoDuplicado
+                );
+                $asiento->update([
+                    'numerounico' => $numerounico,
+                    'resultado_asiento' => 'codigo_cuenta. Asiento: ' .
+                        $asiento->codigo_cuenta .
+                        ' Duplicado: ' .
+                        $asientoDuplicado->codigo_cuenta,
+                ]);
+            } else {
+                $asiento->update([
+                    'numerounico' => $numerounico,
+                    'resultado_asiento' => $fraseExito,
+                ]);
+            }
+        }
     }
 
 }

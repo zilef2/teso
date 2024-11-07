@@ -34,6 +34,7 @@ const props = defineProps({
 
     numberPermissions: Number,
     losSelect:Object,//normally used by headlessui
+    pluckResultados:Object,
 })
 
 const data = reactive({
@@ -43,6 +44,7 @@ const data = reactive({
         valor_debito: props.filters.valor_debito,
         valor_credito: props.filters.valor_credito,
         resultado_asientos: props.filters.resultado_asientos,
+        sin_afectacion: props.filters.sin_afectacion,
 
         field: props.filters.field,
         order: props.filters.order,
@@ -152,13 +154,26 @@ const titulos = [
                         </DangerButton> -->
                     </div>
                     <TextInput  v-model="data.params.resultado_asientos" type="text"
-                        class="block w-4/6 md:w-3/6 lg:w-2/6 mx-4 rounded-lg" placeholder="resultados" />
+                        class="block w-4/6 md:w-3/6 lg:w-2/6 mx-4 rounded-lg" placeholder="Resultados" />
+                    <TextInput  v-model="data.params.sin_afectacion" type="text"
+                        class="block w-4/6 md:w-3/6 lg:w-2/6 mx-4 rounded-lg" placeholder="Afectacion" />
                     <TextInput  v-model="data.params.numero_documento" type="text"
-                        class="block w-4/6 md:w-3/6 lg:w-2/6 mx-4 rounded-lg" placeholder="numero_documento" />
+                        class="block w-4/6 md:w-3/6 lg:w-2/6 mx-4 rounded-lg" placeholder="Numero documento" />
                     <TextInput  v-model="data.params.valor_debito" type="text"
-                        class="hidden md:block md:w-3/6 lg:w-2/6 mx-4 rounded-lg" placeholder="valor_debito" />
+                        class="hidden md:block md:w-3/6 lg:w-2/6 mx-4 rounded-lg" placeholder="Valor debito" />
                     <TextInput  v-model="data.params.valor_credito" type="text"
-                        class="hidden md:block md:w-3/6 lg:w-2/6 mx-4 rounded-lg" placeholder="valor_credito" />
+                        class="hidden md:block md:w-3/6 lg:w-2/6 mx-4 rounded-lg" placeholder="Valor credito" />
+                </div>
+                <div class="flex justify-between p-2">
+                    <div v-if="props.pluckResultados.length === 0" class="flex space-x-2 gap-4 text-red-600">
+                        No se ha cruzado la información
+                    </div>
+                    <div v-else class="flex space-x-2 gap-4">
+                        <ul v-for="result in props.pluckResultados">
+                            <li class="text-blue-600">{{result}}</li>
+                        </ul>
+                        {{}}
+                    </div>
                 </div>
                 <div class="overflow-x-auto scrollbar-table">
                     <table v-if="props.total > 0" class="w-full">

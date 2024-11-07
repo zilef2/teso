@@ -37,6 +37,7 @@ use function Psy\debug;
             'valor_debito',
             'valor_credito',
             'resultado_asientos',
+            'sin_afectacion',
         ];
     }
 
@@ -242,6 +243,7 @@ use function Psy\debug;
         $numberPermissions = MyModels::getPermissionToNumber(ZilefLogs::EscribirEnLog($this, ' IndexCE '));
         $laclase = $this->Mapear($this->Filtros($request));
 
+        $pluckResultados = Comprobante::Where('codigo','ce')->WhereNotNull('sin_afectacion')->distinct()->pluck('sin_afectacion');
 
         $perPage = $request->has('perPage') ? $request->perPage : 10;
         $total = $laclase->count();
@@ -268,6 +270,7 @@ use function Psy\debug;
             ]),
             'perPage' => (int)$perPage,
             'numberPermissions' => $numberPermissions,
+            'pluckResultados' => $pluckResultados,
         ]);
     }
     //</editor-fold>

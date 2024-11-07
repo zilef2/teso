@@ -27,6 +27,7 @@ const data = reactive({
         OnlyCP: props.filters?.OnlyCP,
         OnlyEmptyCP: props.filters?.OnlyEmptyCP,
         concepto_flujo_omologaci: props.filters?.concepto_flujo_omologaci,
+        sin_afectacion: props.filters?.sin_afectacion,
 
         codigo: props.filters?.codigo,
         numero_documento: props.filters?.numero_documento,
@@ -66,6 +67,7 @@ watchEffect(() => {
     data.params.OnlyCP = props.filters?.OnlyCP
     data.params.OnlyEmptyCP = props.filters?.OnlyEmptyCP
     data.params.concepto_flujo_omologaci = props.filters?.concepto_flujo_omologaci
+    data.params.sin_afectacion = props.filters?.sin_afectacion
 
     data.params.codigo = props.filters?.codigo
     data.params.numero_documento = props.filters?.numero_documento

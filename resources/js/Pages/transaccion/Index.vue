@@ -194,7 +194,7 @@ const Buscar_CP_CE = () => {
                     <div class="mx-2 mb-1">
                         <PrimaryButton v-if="!form.processing || !data.procensandCE" class="rounded-lg"
                                        @click="Buscar_CP_CE">
-                            Ajustes de CE
+                            Cruzar CE
                         </PrimaryButton>
                         <div v-else class="text-sky-600">
                             <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
