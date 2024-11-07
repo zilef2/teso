@@ -46,9 +46,9 @@ class TransaccionController extends Controller
             'contrapartida',
             'documento',
             'codigo',
-            'concepto_flujo_homologación',
+            'concepto_flujo_homologacion',
             'documento_ref',
-            'concepto_flujo_homologación',
+            'concepto_flujo_homologacion',
         ];
     }
 
@@ -152,13 +152,13 @@ class TransaccionController extends Controller
         ];
 
         //solo para el filtro de CE
-        $resultadosCFH = Transaccion::whereNotNull('concepto_flujo_homologación')->distinct()
-            ->pluck('concepto_flujo_homologación')
+        $resultadosCFH = Transaccion::whereNotNull('concepto_flujo_homologacion')->distinct()
+            ->pluck('concepto_flujo_homologacion')
             ->take(8);
-        $resultadosCFHCount = Transaccion::whereNotNull('concepto_flujo_homologación')
+        $resultadosCFHCount = Transaccion::whereNotNull('concepto_flujo_homologacion')
             ->Where('codigo','CE')
             ->distinct()
-            ->pluck('concepto_flujo_homologación')
+            ->pluck('concepto_flujo_homologacion')
             ->count();
         //return final
         return Inertia::render($this->FromController . '/Index', [
@@ -270,7 +270,7 @@ class TransaccionController extends Controller
 
 //            return redirect()->route('transaccion.index')->with('success',
             return back()->with('success',
-                'Operación exitosa. ' . $INT_TransaccionesOperadas . ' transacciones ' . $codigo . ' de agosto fueron revisadas'
+                'Operacion exitosa. ' . $INT_TransaccionesOperadas . ' transacciones ' . $codigo . ' de agosto fueron revisadas'
             );
         } catch (\Throwable $th) {
             DB::rollback();

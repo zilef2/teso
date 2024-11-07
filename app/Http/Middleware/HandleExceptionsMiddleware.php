@@ -26,7 +26,7 @@ class HandleExceptionsMiddleware{
 //            if (!($th instanceof QueryException || str_contains($th->getFile(), 'Http/Controllers'))) {
 //                throw $th;
 //            }
-//            // Obtiene información detallada del error
+//            // Obtiene informacion detallada del error
 //            $mensan = $th->getMessage() . ' L:' . $th->getLine() . ' Ubi: ' . $th->getFile();
 //            $trace = $th->getTraceAsString();
 //
@@ -40,7 +40,7 @@ class HandleExceptionsMiddleware{
 //
 //            $myhelp = new Myhelp();
 //            if (app()->environment('production')) {
-//                // Manejo en ambiente de producción
+//                // Manejo en ambiente de produccion
 //                return response()->json(['error' => 'Ocurrió un error en el servidor.'], 500);
 //            } elseif (app()->environment('testing') || app()->environment('local')) {
 //                return response()->json([

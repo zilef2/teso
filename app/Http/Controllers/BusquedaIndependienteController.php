@@ -29,7 +29,7 @@ class BusquedaIndependienteController extends Controller
                     $transa->update([
                         'n_contrapartidas' => 0,
                         'contrapartida' => 'No se encontró comprobantes para el documento',
-                        'concepto_flujo_homologación' => 'No se encontró comprobantes para el documento',
+                        'concepto_flujo_homologacion' => 'No se encontró comprobantes para el documento',
                     ]);
                     continue;
                 }
@@ -45,7 +45,7 @@ class BusquedaIndependienteController extends Controller
                     $transa->update([
                         'n_contrapartidas' => 0,
                         'contrapartida' => 'No se encontró un comprobante con codigo_cuenta = '. $transa->codigo_cuenta_contable,
-                        'concepto_flujo_homologación' => 'No se encontró',
+                        'concepto_flujo_homologacion' => 'No se encontró',
                     ]);
                     continue;
                 }
@@ -72,13 +72,13 @@ class BusquedaIndependienteController extends Controller
                     $transa->update([
                         'n_contrapartidas' => 1,
                         'contrapartida' => $int_ContrapartidaRef,
-                        'concepto_flujo_homologación' => $concepto,
+                        'concepto_flujo_homologacion' => $concepto,
                     ]);
                 } else {
                     $transa->update([
                         'n_contrapartidas' => 0,
                         'contrapartida' => 'No se encontro CP para doc_ref',
-                        'concepto_flujo_homologación' => 'No se encontro CP para doc_ref',
+                        'concepto_flujo_homologacion' => 'No se encontro CP para doc_ref',
                     ]);
                 }
             }
@@ -94,7 +94,7 @@ class BusquedaIndependienteController extends Controller
                 'categoria' => 'Crusando Ajustes'
             ]);
 
-            return 'Operación exitosa. ' . $Transacciones->count() . ' transacciones ' . $codigo . ' de agosto fueron revisadas';
+            return 'Operacion exitosa. ' . $Transacciones->count() . ' transacciones ' . $codigo . ' de agosto fueron revisadas';
         } catch (\Throwable $th) {
             $error = ZilefErrors::RastroError($th);
             Log::error($error);
@@ -131,7 +131,7 @@ class BusquedaIndependienteController extends Controller
                         $transa->update([
                             'n_contrapartidas' => 0,
                             'contrapartida' => $mensaje_t_Error,
-                            'concepto_flujo_homologación' => $mensaje_t_Error,
+                            'concepto_flujo_homologacion' => $mensaje_t_Error,
                         ]);
                         continue;
                     }
@@ -143,7 +143,7 @@ class BusquedaIndependienteController extends Controller
                     $transa->update([
                         'n_contrapartidas' => $NumContras,
                         'contrapartida' => $laContra->codigo_cuenta_contable,
-                        'concepto_flujo_homologación' => $laContra->concepto_flujo_homologación,
+                        'concepto_flujo_homologacion' => $laContra->concepto_flujo_homologacion,
                     ]);
                     //explain: ANULACIONES
                 } else { //se busca por comprobante y no en el aux
@@ -154,7 +154,7 @@ class BusquedaIndependienteController extends Controller
                     $transa->update([
                         'n_contrapartidas' => $NumContras,
                         'contrapartida' => $laContra2->codigo_cuenta,
-                        'concepto_flujo_homologación' => $contrapartida,
+                        'concepto_flujo_homologacion' => $contrapartida,
                     ]);
                 }
             }
@@ -189,7 +189,7 @@ class BusquedaIndependienteController extends Controller
         if ($elCero) {
             $transa->update([
                 'contrapartida' => "No se encontro un Debito y credito igual. Principal = $transaValor",
-                'concepto_flujo_homologación' => "Contrapartida = $contraValor",
+                'concepto_flujo_homologacion' => "Contrapartida = $contraValor",
             ]);
         }
         return $elCero;

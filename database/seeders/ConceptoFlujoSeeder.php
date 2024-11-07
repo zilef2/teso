@@ -20,20 +20,20 @@ class ConceptoFlujoSeeder extends Seeder
         concepto_flujo::create(["cuenta_contable" => 131701010, "concepto_flujo" => "Matrículas Académicas", "ingresos_o_egresos" => 'ingresos']);
         concepto_flujo::create(["cuenta_contable" => 131701020, "concepto_flujo" => "Servicios educativos", "ingresos_o_egresos" => 'ingresos']);
         concepto_flujo::create(["cuenta_contable" => 131701030, "concepto_flujo" => "Servicios educativos", "ingresos_o_egresos" => 'ingresos']);
-        concepto_flujo::create(["cuenta_contable" => 131701040, "concepto_flujo" => "Inscripción programas académicos", "ingresos_o_egresos" => 'ingresos']);
+        concepto_flujo::create(["cuenta_contable" => 131701040, "concepto_flujo" => "Inscripcion programas académicos", "ingresos_o_egresos" => 'ingresos']);
         concepto_flujo::create(["cuenta_contable" => 131701050, "concepto_flujo" => "Matrículas Académicas", "ingresos_o_egresos" => 'ingresos']);
         concepto_flujo::create(["cuenta_contable" => 131701060, "concepto_flujo" => "Servicios educativos", "ingresos_o_egresos" => 'ingresos']);
         concepto_flujo::create(["cuenta_contable" => 131701080, "concepto_flujo" => "Servicios educativos", "ingresos_o_egresos" => 'ingresos']);
         concepto_flujo::create(["cuenta_contable" => 131701090, "concepto_flujo" => "Matrículas Académicas", "ingresos_o_egresos" => 'ingresos']);
         concepto_flujo::create(["cuenta_contable" => 131701091, "concepto_flujo" => "Matrículas Académicas", "ingresos_o_egresos" => 'ingresos']);
-        concepto_flujo::create(["cuenta_contable" => 131719010, "concepto_flujo" => "Ingreso para ejecución de convenios", "ingresos_o_egresos" => 'ingresos']);
+        concepto_flujo::create(["cuenta_contable" => 131719010, "concepto_flujo" => "Ingreso para ejecucion de convenios", "ingresos_o_egresos" => 'ingresos']);
         concepto_flujo::create(["cuenta_contable" => 131790010, "concepto_flujo" => "Otras ventas de servicios (Lacma, facultad de Salud)", "ingresos_o_egresos" => 'ingresos']);
         concepto_flujo::create(["cuenta_contable" => 133712010, "concepto_flujo" => "Transferencias inversión", "ingresos_o_egresos" => 'ingresos']);
-        concepto_flujo::create(["cuenta_contable" => 138413010, "concepto_flujo" => "Devolución IVA", "ingresos_o_egresos" => 'ingresos']);
+        concepto_flujo::create(["cuenta_contable" => 138413010, "concepto_flujo" => "Devolucion IVA", "ingresos_o_egresos" => 'ingresos']);
         concepto_flujo::create(["cuenta_contable" => 138426010, "concepto_flujo" => "Reconocimiento de incapacidades", "ingresos_o_egresos" => 'ingresos']);
         concepto_flujo::create(["cuenta_contable" => 138439010, "concepto_flujo" => "Ingreso arrendamientos", "ingresos_o_egresos" => 'ingresos']);
         concepto_flujo::create(["cuenta_contable" => 138490020, "concepto_flujo" => "Otros ingresos", "ingresos_o_egresos" => 'ingresos']);
-        concepto_flujo::create(["cuenta_contable" => 138490040, "concepto_flujo" => "Ingresos para la ejecución de convenios", "ingresos_o_egresos" => 'ingresos']);
+        concepto_flujo::create(["cuenta_contable" => 138490040, "concepto_flujo" => "Ingresos para la ejecucion de convenios", "ingresos_o_egresos" => 'ingresos']);
         concepto_flujo::create(["cuenta_contable" => 240706010, "concepto_flujo" => "Matrículas Académicas", "ingresos_o_egresos" => 'ingresos']);
         concepto_flujo::create(["cuenta_contable" => 240706060, "concepto_flujo" => "Recaudo para terceros", "ingresos_o_egresos" => 'ingresos']);
         concepto_flujo::create(["cuenta_contable" => 240706140, "concepto_flujo" => "Recaudo para terceros", "ingresos_o_egresos" => 'ingresos']);
@@ -73,7 +73,7 @@ class ConceptoFlujoSeeder extends Seeder
         concepto_flujo::create(["cuenta_contable" => 290201757, "concepto_flujo" => "Rendimientos Financieros Cuentas Convenios", "ingresos_o_egresos" => 'ingresos']);
         concepto_flujo::create(["cuenta_contable" => 290201758, "concepto_flujo" => "Rendimientos Financieros Cuentas Convenios", "ingresos_o_egresos" => 'ingresos']);
         concepto_flujo::create(["cuenta_contable" => 291026010, "concepto_flujo" => "Matrículas Académicas", "ingresos_o_egresos" => 'ingresos']);
-        concepto_flujo::create(["cuenta_contable" => 430550060, "concepto_flujo" => "Utilidades en la administración de convenios", "ingresos_o_egresos" => 'ingresos']);
+        concepto_flujo::create(["cuenta_contable" => 430550060, "concepto_flujo" => "Utilidades en la administracion de convenios", "ingresos_o_egresos" => 'ingresos']);
         concepto_flujo::create(["cuenta_contable" => 439501060, "concepto_flujo" => "Matrículas Académicas", "ingresos_o_egresos" => 'ingresos']);
         concepto_flujo::create(["cuenta_contable" => 442803010, "concepto_flujo" => "Transferencias funcionamiento", "ingresos_o_egresos" => 'ingresos']);
         concepto_flujo::create(["cuenta_contable" => 480201010, "concepto_flujo" => "Rendimientos financieros propios", "ingresos_o_egresos" => 'ingresos']);
@@ -89,16 +89,16 @@ class ConceptoFlujoSeeder extends Seeder
         concepto_flujo::create(["cuenta_contable" => 720805032, "concepto_flujo" => "Otros ingresos", "ingresos_o_egresos" => 'ingresos']);
         concepto_flujo::create(["cuenta_contable" => 720805033, "concepto_flujo" => "Otros ingresos", "ingresos_o_egresos" => 'ingresos']);
         concepto_flujo::create(["cuenta_contable" => 720806030, "concepto_flujo" => "Otros ingresos", "ingresos_o_egresos" => 'ingresos']);
-        concepto_flujo::create(["cuenta_contable" => 819090010, "concepto_flujo" => "Devolución IVA", "ingresos_o_egresos" => 'ingresos']);
-        concepto_flujo::create(["cuenta_contable" => 890590010, "concepto_flujo" => "Devolución IVA", "ingresos_o_egresos" => 'ingresos']);
-        concepto_flujo::create(["cuenta_contable" => 512035010, "concepto_flujo" => "Ingreso para ejecución de convenios", "ingresos_o_egresos" => 'ingresos']);
-        concepto_flujo::create(["cuenta_contable" => 512035020, "concepto_flujo" => "Ingreso para ejecución de convenios", "ingresos_o_egresos" => 'ingresos']);
-        concepto_flujo::create(["cuenta_contable" => 799008020, "concepto_flujo" => "Ingreso para ejecución de convenios", "ingresos_o_egresos" => 'ingresos']);
-        concepto_flujo::create(["cuenta_contable" => 799008030, "concepto_flujo" => "Ingreso para ejecución de convenios", "ingresos_o_egresos" => 'ingresos']);
+        concepto_flujo::create(["cuenta_contable" => 819090010, "concepto_flujo" => "Devolucion IVA", "ingresos_o_egresos" => 'ingresos']);
+        concepto_flujo::create(["cuenta_contable" => 890590010, "concepto_flujo" => "Devolucion IVA", "ingresos_o_egresos" => 'ingresos']);
+        concepto_flujo::create(["cuenta_contable" => 512035010, "concepto_flujo" => "Ingreso para ejecucion de convenios", "ingresos_o_egresos" => 'ingresos']);
+        concepto_flujo::create(["cuenta_contable" => 512035020, "concepto_flujo" => "Ingreso para ejecucion de convenios", "ingresos_o_egresos" => 'ingresos']);
+        concepto_flujo::create(["cuenta_contable" => 799008020, "concepto_flujo" => "Ingreso para ejecucion de convenios", "ingresos_o_egresos" => 'ingresos']);
+        concepto_flujo::create(["cuenta_contable" => 799008030, "concepto_flujo" => "Ingreso para ejecucion de convenios", "ingresos_o_egresos" => 'ingresos']);
 
 
         //egresos
-        concepto_flujo::create(["cuenta_contable" => 240706140, "concepto_flujo" => "Recaudo para devolución de matrícula", "ingresos_o_egresos" => 'egresos',]);
+        concepto_flujo::create(["cuenta_contable" => 240706140, "concepto_flujo" => "Recaudo para devolucion de matrícula", "ingresos_o_egresos" => 'egresos',]);
         concepto_flujo::create(["cuenta_contable" => 240726010, "concepto_flujo" => "Reintegro rendimientos financieros Distrito", "ingresos_o_egresos" => 'egresos',]);
         concepto_flujo::create(["cuenta_contable" => 240726191, "concepto_flujo" => "Reintegro rendimientos financieros convenios", "ingresos_o_egresos" => 'egresos',]);
         concepto_flujo::create(["cuenta_contable" => 439501020, "concepto_flujo" => "Reintegros", "ingresos_o_egresos" => 'egresos',]);
@@ -107,8 +107,8 @@ class ConceptoFlujoSeeder extends Seeder
 
 
         concepto_flujo::create(["cuenta_contable" => 240101010, "concepto_flujo" => "Otros egresos", "ingresos_o_egresos" => 'egresos']);
-        concepto_flujo::create(["cuenta_contable" => 240706010, "concepto_flujo" => "Devolución matrículas académicas", "ingresos_o_egresos" => 'egresos']);
-        concepto_flujo::create(["cuenta_contable" => 240706140, "concepto_flujo" => "Devolución matrículas académicas", "ingresos_o_egresos" => 'egresos']);
+        concepto_flujo::create(["cuenta_contable" => 240706010, "concepto_flujo" => "Devolucion matrículas académicas", "ingresos_o_egresos" => 'egresos']);
+        concepto_flujo::create(["cuenta_contable" => 240706140, "concepto_flujo" => "Devolucion matrículas académicas", "ingresos_o_egresos" => 'egresos']);
         concepto_flujo::create(["cuenta_contable" => 240726010, "concepto_flujo" => "Reintegro rendimientos financieros Distrito", "ingresos_o_egresos" => 'egresos']);
         concepto_flujo::create(["cuenta_contable" => 240726191, "concepto_flujo" => "Reintegro rendimientos financieros convenios", "ingresos_o_egresos" => 'egresos']);
         concepto_flujo::create(["cuenta_contable" => 242404010, "concepto_flujo" => "Deducciones empleados / contratistas", "ingresos_o_egresos" => 'egresos']);
@@ -150,7 +150,7 @@ class ConceptoFlujoSeeder extends Seeder
         concepto_flujo::create(["cuenta_contable" => 244085020, "concepto_flujo" => "Retenciones en la fuente", "ingresos_o_egresos" => 'egresos']);
         concepto_flujo::create(["cuenta_contable" => 249054020, "concepto_flujo" => "Honorarios", "ingresos_o_egresos" => 'egresos']);
         concepto_flujo::create(["cuenta_contable" => 290201145, "concepto_flujo" => "Seguridad social", "ingresos_o_egresos" => 'egresos']);
-        concepto_flujo::create(["cuenta_contable" => 439501010, "concepto_flujo" => "Devolución matrículas académicas", "ingresos_o_egresos" => 'egresos']);
+        concepto_flujo::create(["cuenta_contable" => 439501010, "concepto_flujo" => "Devolucion matrículas académicas", "ingresos_o_egresos" => 'egresos']);
         concepto_flujo::create(["cuenta_contable" => 439501020, "concepto_flujo" => "Reintegros", "ingresos_o_egresos" => 'egresos']);
         concepto_flujo::create(["cuenta_contable" => 439501130, "concepto_flujo" => "Reintegros", "ingresos_o_egresos" => 'egresos']);
         concepto_flujo::create(["cuenta_contable" => 510101010, "concepto_flujo" => "Nómina institucional - Administrativa", "ingresos_o_egresos" => 'egresos']);
@@ -163,11 +163,11 @@ class ConceptoFlujoSeeder extends Seeder
         concepto_flujo::create(["cuenta_contable" => 510801010, "concepto_flujo" => "Contratistas directos", "ingresos_o_egresos" => 'egresos']);
         concepto_flujo::create(["cuenta_contable" => 510801020, "concepto_flujo" => "Contratistas directos", "ingresos_o_egresos" => 'egresos']);
         concepto_flujo::create(["cuenta_contable" => 510890010, "concepto_flujo" => "Subvenciones y sostenimiento", "ingresos_o_egresos" => 'egresos']);
-        concepto_flujo::create(["cuenta_contable" => 511119010, "concepto_flujo" => "Gastos de viaje y manutención", "ingresos_o_egresos" => 'egresos']);
+        concepto_flujo::create(["cuenta_contable" => 511119010, "concepto_flujo" => "Gastos de viaje y manutencion", "ingresos_o_egresos" => 'egresos']);
         concepto_flujo::create(["cuenta_contable" => 511179010, "concepto_flujo" => "Honorarios", "ingresos_o_egresos" => 'egresos']);
         concepto_flujo::create(["cuenta_contable" => 512024010, "concepto_flujo" => "Servicios financieros(GMF y comisiones)", "ingresos_o_egresos" => 'egresos']);
         concepto_flujo::create(["cuenta_contable" => 589501010, "concepto_flujo" => "Reintegros", "ingresos_o_egresos" => 'egresos']);
-        concepto_flujo::create(["cuenta_contable" => 720802050, "concepto_flujo" => "Gastos de viaje y manutención", "ingresos_o_egresos" => 'egresos']);
+        concepto_flujo::create(["cuenta_contable" => 720802050, "concepto_flujo" => "Gastos de viaje y manutencion", "ingresos_o_egresos" => 'egresos']);
         concepto_flujo::create(["cuenta_contable" => 720802120, "concepto_flujo" => "Movilidad académica", "ingresos_o_egresos" => 'egresos']);
         concepto_flujo::create(["cuenta_contable" => 720802150, "concepto_flujo" => "Subvenciones y sostenimiento", "ingresos_o_egresos" => 'egresos']);
         concepto_flujo::create(["cuenta_contable" => 720803010, "concepto_flujo" => "Nómina institucional - Docentes planta", "ingresos_o_egresos" => 'egresos']);

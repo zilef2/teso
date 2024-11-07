@@ -11,7 +11,7 @@ class JobController extends Controller
         // Obtener trabajos en la tabla de trabajos
         $jobs = DB::table('jobs')->get();
 
-        $maxAttempts = 2; // Cambia este valor según tu configuración
+        $maxAttempts = 2; // Cambia este valor según tu configuracion
         // Filtrar los trabajos finalizados y en proceso
         $completedJobs = $jobs->filter(function ($job) use ($maxAttempts) {
             return $job->attempts >= $maxAttempts; // Consideramos que si se han alcanzado los intentos máximos, está finalizado

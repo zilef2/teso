@@ -1,10 +1,10 @@
 <?php
 
 return [
-    'exception_message' => 'Mensaje de la excepción: :message',
-    'exception_trace' => 'Traza de la excepción: :trace',
-    'exception_message_title' => 'Mensaje de la excepción',
-    'exception_trace_title' => 'Traza de la excepción',
+    'exception_message' => 'Mensaje de la excepcion: :message',
+    'exception_trace' => 'Traza de la excepcion: :trace',
+    'exception_message_title' => 'Mensaje de la excepcion',
+    'exception_trace_title' => 'Traza de la excepcion',
 
     'backup_failed_subject' => 'Copia de seguridad de :application_name fallida',
     'backup_failed_body' => 'Importante: Ocurrió un error al realizar la copia de seguridad de :application_name',
@@ -28,13 +28,13 @@ return [
     'unhealthy_backup_found_subject_title' => 'Importante: Las copias de seguridad de :application_name están en mal estado. :problem',
     'unhealthy_backup_found_body' => 'Las copias de seguridad de :application_name en el disco :disk_name están en mal estado.',
     'unhealthy_backup_found_not_reachable' => 'No se puede acceder al destino de la copia de seguridad. :error',
-    'unhealthy_backup_found_empty' => 'No existe ninguna copia de seguridad de esta aplicación.',
+    'unhealthy_backup_found_empty' => 'No existe ninguna copia de seguridad de esta aplicacion.',
     'unhealthy_backup_found_old' => 'La última copia de seguriad hecha en :date es demasiado antigua.',
     'unhealthy_backup_found_unknown' => 'Lo siento, no es posible determinar la razón exacta.',
     'unhealthy_backup_found_full' => 'Las copias de seguridad  están ocupando demasiado espacio. El espacio utilizado actualmente es :disk_usage el cual es mayor que el límite permitido de :disk_limit.',
 
     'no_backups_info' => 'Aún no se hicieron copias de seguridad',
-    'application_name' => 'Nombre de la aplicación',
+    'application_name' => 'Nombre de la aplicacion',
     'backup_name' => 'Nombre de la copia de seguridad',
     'disk' => 'Disco',
     'newest_backup_size' => 'Tamaño de copia de seguridad más reciente',

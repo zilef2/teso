@@ -140,11 +140,11 @@ Route::get('/clear-c', function () {
 
 Route::get('/tmantenimiento', function () {
     echo Artisan::call('down --secret="token-it"');
-    return "Aplicación abajo: token-it";
+    return "Aplicacion abajo: token-it";
 });
 Route::get('/Arriba', function () {
     echo Artisan::call('up');
-    return "Aplicación funcionando";
+    return "Aplicacion funcionando";
 });
 
 //</editor-fold>

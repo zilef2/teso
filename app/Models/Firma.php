@@ -14,7 +14,7 @@ class Firma extends Model
         'inspeccion_id',
     ];
 
-    // Relación con el usuario
+    // Relacion con el usuario
     public function user()
     {
         return $this->belongsTo(User::class);

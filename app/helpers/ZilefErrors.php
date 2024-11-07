@@ -16,11 +16,11 @@ class ZilefErrors
 
     public static function RastroError($th): string
     {
-        // Obtener el archivo y la línea donde ocurrió la excepción
+        // Obtener el archivo y la línea donde ocurrió la excepcion
         $filePath = str_replace(base_path(), '', $th->getFile());
         $lineError = $th->getLine();
 
-        // Obtener el rastro del error desde la excepción, no desde el backtrace
+        // Obtener el rastro del error desde la excepcion, no desde el backtrace
         $backtrace = $th->getTrace();
 
         // Iterar sobre el backtrace para encontrar cada llamada relevante
@@ -30,7 +30,7 @@ class ZilefErrors
                 isset($trace['file'])
                 && strpos($trace['file'], base_path('app')) !== false  // Debe estar dentro de 'app'
                 && strpos($trace['file'], 'vendor') === false  // Ignorar las funciones de vendor
-                && strpos($trace['file'], 'ZilefErrors') === false  // Ignorar la función de manejo de errores
+                && strpos($trace['file'], 'ZilefErrors') === false  // Ignorar la funcion de manejo de errores
             ) {
                 $callerFile = basename($trace['file']);  // Usamos basename aquí para solo el nombre del archivo
                 $callerLine = $trace['line'];

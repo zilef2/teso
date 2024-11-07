@@ -16,7 +16,7 @@ class DashboardTest extends TestCase
         // Crear usuarios y roles de prueba
         $user = User::factory()->count(5)->create();
         $user->assignRole('superadmin');
-//        // Crear una inspección de prueba
+//        // Crear una inspeccion de prueba
         $inspeccion = Inspeccion::factory()->create(['updated_at' => now()]);
 //
 //        // Mockear el método estático MyModels::getPermissionToNumber
@@ -34,7 +34,7 @@ class DashboardTest extends TestCase
 //            $mock->shouldReceive('formatFechaColombia')->andReturn($inspeccion->updated_at->format('d/m/Y'));
 //        });
 //
-//        // Hacer la petición a la ruta del dashboard
+//        // Hacer la peticion a la ruta del dashboard
 //        $response = $this->get(route('dashboard'));
 //
 //        // Verificar que la respuesta sea exitosa

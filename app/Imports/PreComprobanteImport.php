@@ -212,7 +212,7 @@ use Maatwebsite\Excel\Validators\ValidationException;
             ]);
         }
 
-        // Si estamos cerca del límite, forzar recolección de basura
+        // Si estamos cerca del límite, forzar recoleccion de basura
         if ($memoryPercentage > 90) {
             gc_collect_cycles();
         }

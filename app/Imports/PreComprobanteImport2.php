@@ -147,7 +147,7 @@ class PreComprobanteImport2 implements ToCollection, WithStartRow
             }
             Log::info('validacion de comprobantes finalizada');
         } catch (ValidationException $e) {
-            Log::error('Error en la importación: ' . $e->getMessage() . ' En la linea: ' . $e->getLine());
+            Log::error('Error en la importacion: ' . $e->getMessage() . ' En la linea: ' . $e->getLine());
             throw new \Exception($e->getMessage());
         } catch (\Throwable $th) {
             $mensajeError = '  ' . $th->getMessage() . '. Informar al desarrollador - L:' . $th->getLine() . ' Ubi: ' . $th->getFile();

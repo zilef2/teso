@@ -27,7 +27,7 @@ class Myhelp {
             $mes = intval($paraMes->valor);
         }
         return transaccion::Where('codigo', $codigo)
-//            ->WhereNull('concepto_flujo_homologación')
+//            ->WhereNull('concepto_flujo_homologacion')
 //            ->WhereYear('fecha_elaboracion', $anio)
             ->whereMonth('fecha_elaboracion', $mes)->get();
     }
@@ -126,8 +126,8 @@ class Myhelp {
             $arrayCodes = [
                 23000 => ' No se puede eliminar porque está relacionado con otros registros.',
                 1451 => ' Hay otros campos que necesitan este registro',
-                1062 => ' Ya existe un registro con esa información.',
-                1048 => ' Campo obligatorio, por favor completa la información.',
+                1062 => ' Ya existe un registro con esa informacion.',
+                1048 => ' Campo obligatorio, por favor completa la informacion.',
                 1216 => ' Este registro no se puede eliminar, hay dependencias pendientes.'
             ];
 

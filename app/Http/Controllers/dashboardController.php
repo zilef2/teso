@@ -77,14 +77,14 @@ class dashboardController extends Controller
         $ResumenCI = [];
         $losconceptos=[];
         for ($i = $yearnow; $i >= $yearPast; $i--) {
-            $transacciones = transaccion:: select('concepto_flujo_homologación', 'valor_debito')
+            $transacciones = transaccion:: select('concepto_flujo_homologacion', 'valor_debito')
                 ->whereYear('fecha_elaboracion', $i)
                 ->orderby('valor_debito', 'DESC')
                 ->get()
             ;
 
             foreach ($transacciones as $transaccion) {
-                $concepto = $transaccion->concepto_flujo_homologación;
+                $concepto = $transaccion->concepto_flujo_homologacion;
 
                 if ($concepto != '' && $concepto != null
                     && !str_starts_with($concepto, "No se encontro")
@@ -110,13 +110,13 @@ class dashboardController extends Controller
         $losconceptos=[];
         $ResumenCI = [];
         for ($i = $yearnow; $i >= $yearPast; $i--) {
-            $transacciones = transaccion::select('concepto_flujo_homologación', 'valor_debito')
+            $transacciones = transaccion::select('concepto_flujo_homologacion', 'valor_debito')
                 ->whereYear('fecha_elaboracion', $i)
                 ->orderby('valor_debito', 'DESC')
                 ->get();
 
             foreach ($transacciones as $transaccion) {
-                $concepto = $transaccion->concepto_flujo_homologación;
+                $concepto = $transaccion->concepto_flujo_homologacion;
 
                 if ($concepto != '' && $concepto != null
                     && !str_starts_with($concepto, "No se encontro")

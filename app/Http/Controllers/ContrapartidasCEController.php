@@ -154,7 +154,7 @@ class ContrapartidasCEController extends Controller
         if ($elCero) {
             $compro->update([
                 'contrapartida' => "No se encontro un Debito y credito iguales.DEBITO: $principalValor",
-                'concepto_flujo_homologación' => "CONTRAPARTIDA CREDITO: $sumlasContrapartidas",
+                'concepto_flujo_homologacion' => "CONTRAPARTIDA CREDITO: $sumlasContrapartidas",
             ]);
         }
         return $elCero;
@@ -166,7 +166,7 @@ class ContrapartidasCEController extends Controller
         if ($HayComprobantes === 0) {
             $compro->update([
                 'contrapartida' => 'No se encontro ningun comprobante para el documento ' . $compro->documento,
-                'concepto_flujo_homologación' => 'No se encontro ningun comprobante para el documento ' . $compro->documento,
+                'concepto_flujo_homologacion' => 'No se encontro ningun comprobante para el documento ' . $compro->documento,
             ]);
         }
         return $HayComprobantes === 0;

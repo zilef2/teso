@@ -26,7 +26,7 @@ class transaccion extends Model
         'nit',
         'n_contrapartidas',
         'contrapartida',
-        'concepto_flujo_homologación',
+        'concepto_flujo_homologacion',
         'nombre',
         'cod_costos',
         'desc_costos',

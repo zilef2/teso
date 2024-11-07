@@ -41,7 +41,7 @@ return new class extends Migration
             $table->string('plan_cuentas')->nullable();
 
             $table->string('contrapartida')->nullable();
-            $table->string('concepto_flujo_homologación')->nullable();
+            $table->string('concepto_flujo_homologacion')->nullable();
             $table->string('n_contrapartidas')->nullable();
 
             $table->timestamps();

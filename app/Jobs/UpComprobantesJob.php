@@ -53,7 +53,7 @@ class UpComprobantesJob implements ShouldQueue
             // Configuraciones iniciales
             ini_set('memory_limit', '4G');
             set_time_limit(3600); // 1 hora
-            // Registrar inicio con información detallada
+            // Registrar inicio con informacion detallada
             Log::info("1) Inicio de UpComprobantesJob", [
                 'job_id' => $jobId,
                 'memory_start' => $this->formatBytes(memory_get_usage(true)),
@@ -74,7 +74,7 @@ class UpComprobantesJob implements ShouldQueue
             $memoryEnd = memory_get_usage(true);
             $memoryPeak = memory_get_peak_usage(true);
 
-            Log::info("4) Importación completada", [
+            Log::info("4) Importacion completada", [
                 'memory_used' => $this->formatBytes($memoryEnd - $memoryStart),
                 'memory_peak' => $this->formatBytes($memoryPeak),
                 'duration' => microtime(true) - $startTime,
@@ -85,7 +85,7 @@ class UpComprobantesJob implements ShouldQueue
             $this->enviarCorreoExito();
 
         } catch (\Throwable $th) {
-            // Capturar información detallada del error
+            // Capturar informacion detallada del error
             $errorDetails = [
                 'message' => $th->getMessage(),
                 'file' => $th->getFile(),

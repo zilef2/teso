@@ -81,7 +81,7 @@ use function Psy\debug;
             $busquedaind = new BusquedaIndependienteController();
             //<editor-fold desc="inicio">
             $Transacciones = transaccion::Where('codigo', $codigo)
-                //                ->WhereNull('concepto_flujo_homologación')
+                //                ->WhereNull('concepto_flujo_homologacion')
             ;
 
             $NtrasArchivo = transaccion::Where('codigo', $codigo)->count();
@@ -112,7 +112,7 @@ use function Psy\debug;
             try {
                 $busquedaind->Encontrar_AN_CI($Transacciones);
                 return redirect()->route('transaccion.index')->with('success',
-                    'Operación exitosa. ' . $NtrasSinConcepto . ' transacciones ' . $codigo . ' de agosto fueron revisadas | solo se busca 1 CP'
+                    'Operacion exitosa. ' . $NtrasSinConcepto . ' transacciones ' . $codigo . ' de agosto fueron revisadas | solo se busca 1 CP'
                 );
 
             } catch (\Throwable $th) {
@@ -144,7 +144,7 @@ use function Psy\debug;
         if ($elCero) {
             $transa->update([
                 'contrapartida' => "No se encontro un Debito y credito iguales.DEBITO: $principalValor",
-                'concepto_flujo_homologación' => "CONTRAPARTIDA CREDITO: $sumlasContrapartidas",
+                'concepto_flujo_homologacion' => "CONTRAPARTIDA CREDITO: $sumlasContrapartidas",
             ]);
         }
         return $elCero;
@@ -156,7 +156,7 @@ use function Psy\debug;
         if ($HayComprobantes === 0) {
             $transa->update([
                 'contrapartida' => 'No se encontro ningun comprobante para el documento ' . $transa->documento,
-                'concepto_flujo_homologación' => 'No se encontro ningun comprobante para el documento ' . $transa->documento,
+                'concepto_flujo_homologacion' => 'No se encontro ningun comprobante para el documento ' . $transa->documento,
             ]);
         }
         return $HayComprobantes === 0;
@@ -169,11 +169,11 @@ use function Psy\debug;
             $mes = intval($paraMes->valor);
         }
 
-        $conteo = transaccion::WhereNotNull('concepto_flujo_homologación')->whereMonth('fecha_elaboracion', $mes)->count();
-        $tranListas = transaccion::WhereNotNull('concepto_flujo_homologación')->whereMonth('fecha_elaboracion', $mes)->update([
+        $conteo = transaccion::WhereNotNull('concepto_flujo_homologacion')->whereMonth('fecha_elaboracion', $mes)->count();
+        $tranListas = transaccion::WhereNotNull('concepto_flujo_homologacion')->whereMonth('fecha_elaboracion', $mes)->update([
             'n_contrapartidas' => null,
             'contrapartida' => null,
-            'concepto_flujo_homologación' => null,
+            'concepto_flujo_homologacion' => null,
         ]);
         echo "Operacion: $tranListas. $conteo limpiadas";
     }

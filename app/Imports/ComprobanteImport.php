@@ -149,7 +149,7 @@ class ComprobanteImport implements ToModel, WithStartRow, WithMapping, WithChunk
             $this->ContarFilas++;
             return $result;
         } catch (\Throwable $th) {
-            // Capturar información detallada del error
+            // Capturar informacion detallada del error
             $errorDetails = [
                 'message' => $th->getMessage(),
                 'file' => $th->getFile(),
@@ -223,7 +223,7 @@ class ComprobanteImport implements ToModel, WithStartRow, WithMapping, WithChunk
                 'row0' => $therow[0],
                 'row1' => $therow[1],
             ]);
-            // Aquí puedes decidir cómo manejar el error en la fila, como saltarla, enviar una notificación, etc.
+            // Aquí puedes decidir cómo manejar el error en la fila, como saltarla, enviar una notificacion, etc.
             throw $th;
         }
     }

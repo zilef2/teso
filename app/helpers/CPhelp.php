@@ -46,7 +46,7 @@ class CPhelp {
             if ($sumprincipales !== $sumlasContrapartidas) {
                 $transa->update([
                     'contrapartida' => "$frase_reservada. Los creditos no concuerdan, principales suman: $sumprincipales",
-                    'concepto_flujo_homologación' => "contrapartidas suman: $sumlasContrapartidas",
+                    'concepto_flujo_homologacion' => "contrapartidas suman: $sumlasContrapartidas",
                 ]);
                 continue;
             }
@@ -61,7 +61,7 @@ class CPhelp {
                 $transa->update([
                     'n_contrapartidas' => count($lasContrapartidas),
                     'contrapartida' => $cuentaCP,
-                    'concepto_flujo_homologación' => $concepto,
+                    'concepto_flujo_homologacion' => $concepto,
                 ]);
             }
         }
@@ -86,7 +86,7 @@ class CPhelp {
         }
 
         $Transacciones = transaccion::Where('codigo', $codigo)
-//            ->WhereNull('concepto_flujo_homologación')
+//            ->WhereNull('concepto_flujo_homologacion')
 //            ->WhereYear('fecha_elaboracion', $anio)
             ->whereMonth('fecha_elaboracion', $mes)
             ->get();
