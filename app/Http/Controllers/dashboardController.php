@@ -77,9 +77,11 @@ class dashboardController extends Controller
         $ResumenCI = [];
         $losconceptos=[];
         for ($i = $yearnow; $i >= $yearPast; $i--) {
-            $transacciones = transaccion::whereYear('fecha_elaboracion', $i)
-                ->select('concepto_flujo_homologación', 'valor_debito')
-                ->get();
+            $transacciones = transaccion:: select('concepto_flujo_homologación', 'valor_debito')
+                ->whereYear('fecha_elaboracion', $i)
+                ->orderby('valor_debito', 'DESC')
+                ->get()
+            ;
 
             foreach ($transacciones as $transaccion) {
                 $concepto = $transaccion->concepto_flujo_homologación;
@@ -99,10 +101,8 @@ class dashboardController extends Controller
                     }
                 }
             }
+            ksort($ResumenCI[$i], SORT_NUMERIC);
         }
-//        dd(
-//            $ResumenCI, $losconceptos
-//        );
         return [$losconceptos, $ResumenCI];
     }
     private function ResumenCI2($yearnow, $yearPast)
@@ -110,8 +110,9 @@ class dashboardController extends Controller
         $losconceptos=[];
         $ResumenCI = [];
         for ($i = $yearnow; $i >= $yearPast; $i--) {
-            $transacciones = transaccion::whereYear('fecha_elaboracion', $i)
-                ->select('concepto_flujo_homologación', 'valor_debito')
+            $transacciones = transaccion::select('concepto_flujo_homologación', 'valor_debito')
+                ->whereYear('fecha_elaboracion', $i)
+                ->orderby('valor_debito', 'DESC')
                 ->get();
 
             foreach ($transacciones as $transaccion) {
