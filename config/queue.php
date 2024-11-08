@@ -40,6 +40,7 @@ return [
             'queue' => 'default',
             'retry_after' => 90,
             'after_commit' => false,
+            'threads' => 4,
         ],
 
         'beanstalkd' => [
