@@ -35,9 +35,7 @@ class ContrapartidasCEController extends Controller
             if (!CPhelp::Val_Exista_CE_auxiliar($codigo)) {
                 return back()->with('error', 'Faltan archivos. Auxiliar, CE,AS,AF');//comprobantes de egreso, asientos, sin afectacion
             }
-//            if(Comprobante::WhereNull('nit')->count() === 0){
-//                return back()->with('error', 'Existen comprobantes con NIT vacio');
-//            }
+
             DB::beginTransaction();
 
             $MesTransaccional = Parametro::Where("nombre", "Mes transaccional")->first();

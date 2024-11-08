@@ -17,6 +17,8 @@ return [
 		'asiento' => 'Asiento',
 		'parametro' => 'Parametro',
 		'afectacion' => 'Afectacion',
+		'Sinafectacion' => 'Sin afectacion',
+		'sinafectacion' => 'sin afectacion',
 		//aquipues
     ],
 
@@ -27,6 +29,8 @@ return [
 		'resultado_asientos' => 'Resultado asientos',
 		'sin_afectacion' => 'Sin afectacion',
 		'cuenta_contrapartida' => 'Cuenta contrapartida',
+		'Sinafectacion' => 'Sin afectacion',
+		'sinafectacion' => 'sin afectacion',
 		//aquipues
 
         //transaccion

@@ -31,6 +31,7 @@ const sidebarButtonsNormal = [ //SAME AS WEB.PHP
 	'asiento',
 	'afectacion',
 	'parametro',
+	'sinafectacion',
 	//aquipuesSide
 ];
 

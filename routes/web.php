@@ -108,6 +108,7 @@ Route::middleware(['auth'])->group(callback: function () {
     Route::resource('/concepto_flujo', \App\Http\Controllers\ConceptoflujoController::class);
 	Route::resource("/asiento", \App\Http\Controllers\AsientoController::class);
 	Route::resource("/afectacion", \App\Http\Controllers\AfectacionController::class);
+	Route::resource("/sinafectacion", \App\Http\Controllers\SinafectacionController::class);
 	//aquipues
     //</editor-fold>
 

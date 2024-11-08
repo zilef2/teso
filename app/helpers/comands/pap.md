@@ -43,3 +43,8 @@ php artisan make:job testingAndDoubs
 php artisan make:job UpComprobantesJob
 # lisenerMailLogin
 php artisan make:Mail NewSession
+
+
+
+## gran cambio de CE
+php artisan copy:u sinafectacion

@@ -25,6 +25,7 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             UserSeederCustomize::class,
             ConceptoFlujoSeeder::class,
+            ConceptoFlujoCESeeder::class,
         ]);
     }
 }
