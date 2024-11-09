@@ -1,17 +1,16 @@
 import {ref} from "vue";
 import {Chart} from 'chart.js';
 
-export let chart12 = ref(null);
-export let chart13 = ref(null);
+export let chartResumenCI2 = ref(null);
+export let chartResumenSinEjecucion = ref(null);
 let ctx_entidades
 let charInstance = []
 let tipoVar = 'bar'
 
 export async function ResumenCI(ObjetoJson,conceptos) {
 
-    let anios = [2023,2024]
     await new Promise(resolve => setTimeout(resolve, 2));
-    ctx_entidades = chart13.value.getContext('2d');
+    ctx_entidades = chartResumenSinEjecucion.value.getContext('2d');
     charInstance = new Chart(ctx_entidades, {
         type: tipoVar,
         data: {
@@ -65,7 +64,7 @@ export async function ResumenCI(ObjetoJson,conceptos) {
 export async function ResumenCI2(ObjetoJson,conceptos) {
 
     await new Promise(resolve => setTimeout(resolve, 2));
-    ctx_entidades = chart12.value.getContext('2d');
+    ctx_entidades = chartResumenCI2.value.getContext('2d');
     charInstance = new Chart(ctx_entidades, {
         data: {
             labels: Object.values(conceptos),

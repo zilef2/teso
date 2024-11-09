@@ -5,10 +5,10 @@ import {Head} from '@inertiajs/vue3';
 import Chart from 'chart.js/auto';
 import {ref, onMounted, watchEffect, reactive} from 'vue';
 import EfeActOperacion from "@/Pages/EfeActOperacion.vue";
-import {buildCharEnti, chart10} from "@/Pages/chars/numeroEntidades.js";
+import {buildCharEnti, charConteoEntities} from "@/Pages/chars/numeroEntidades.js";
 import {buildMini, charConteomini} from "@/Pages/chars/numeroEntidadesmini.js";
 import {buildCharCPnull, verificadorCP} from "@/Pages/chars/ComparacionContrapartidaNull.js";
-import {ResumenCI,ResumenCI2, chart12,chart13} from "@/Pages/chars/ResumenCI.js";
+import {ResumenCI,ResumenCI2, chartResumenCI2 ,chartResumenSinEjecucion} from "@/Pages/chars/ResumenCI.js";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import {Link} from '@inertiajs/vue3';
 
@@ -40,22 +40,23 @@ const data = reactive({
 
 
 const chartCanvas1 = ref(null);
-const chartCanvas2 = ref(null);
+const ChartOrigenRecursos = ref(null);
 const chartCanvasEfec = ref(null);
-const char10 = chart10;
+const charConteoEntity = charConteoEntities;
 const charConteomin = charConteomini;
 let ctx_a, ctx_b, ctx_c
 let charInstance = []
 onMounted(async () => {
-    await buildCharEnti(props.ConteoEntidades[0])
+
     await buildMini(props.ConteoEntidades[1])
+    await buildCharEnti(props.ConteoEntidades[0])
     await buildCharCPnull(props.ComparacionCP)
     await ResumenCI(props.ResumenCI,props.conceptos)
     await ResumenCI2(props.ResumenCI2,props.conceptos2)
 
     // ctx_b = chartCanvas1.value.getContext('2d');
     // buildChar2(1)//la2
-    ctx_c = chartCanvas2.value.getContext('2d'); // la3
+    ctx_c = ChartOrigenRecursos.value.getContext('2d'); // la3
     new Chart(ctx_c, {
         data: {
             datasets: [{
@@ -128,29 +129,31 @@ onMounted(async () => {
                          :chartCanvasHijaEntrada="chartCanvasHijaEntrada"
                          :ctxEntrada="ctxEntrada"
         />
-<!--        <PrimaryButton class="rounded-lg mx-2" @click="changeChar(0)">-->
-<!--            Dona 1-->
-<!--        </PrimaryButton>-->
-        <Link :href="route('jobs')">
-            <PrimaryButton class="rounded-lg mx-2">
-                Ver Cruces
+        <div class="mb-6">
+            <!--        <PrimaryButton class="rounded-lg mx-2" @click="changeChar(0)">-->
+            <!--            Dona 1-->
+            <!--        </PrimaryButton>-->
+            <Link v-if="props.numberPermissions > 9000" :href="route('jobs')">
+                <PrimaryButton class="rounded-lg mx-2">
+                    Ver Cruces
+                </PrimaryButton>
+            </Link>
+            <PrimaryButton class="rounded-lg mx-2" @click="data.IngresosOpen = true">
+                Entradas
             </PrimaryButton>
-        </Link>
-        <PrimaryButton class="rounded-lg mx-2" @click="data.IngresosOpen = true">
-            Entradas
-        </PrimaryButton>
-
-        <div class="grid grid-cols-1 4xl:grid-cols-2">
-            <div class="mb-20 w-4/6 2xl:w-5/6"><canvas ref="chart12"></canvas></div>
-            <div class="mb-20 w-4/6 2xl:w-5/6"><canvas ref="chart13"></canvas></div>
         </div>
-        <div v-if="props.numberPermissions > 9000" class="grid grid-cols-1 2xl:grid-cols-2">
+
+        <div v-show="props.numberPermissions > 9000" class="grid grid-cols-1 2xl:grid-cols-2">
             <div class="mb-20 w-full md:w-5/6 3xl:w-full"><canvas ref="charConteomin"></canvas></div>
-            <div class="mb-20 w-full md:w-5/6 3xl:w-full"><canvas ref="char10"></canvas></div>
+            <div class="mb-20 w-full md:w-5/6 3xl:w-full"><canvas ref="charConteoEntity"></canvas></div>
 <!--            <div class="mb-20 w-full md:w-4/6 3xl:w-full"><canvas ref="chartCanvasEfec"></canvas></div>-->
 <!--            <div class="my-20 w-full md:w-5/6"><canvas ref="chartCanvas1"></canvas></div>-->
-            <div class="my-20 w-full md:w-4/6 3xl:w-full"><canvas ref="chartCanvas2"></canvas></div>
             <div class="my-20 w-1/2 "><canvas ref="verificadorCP"></canvas></div>
+        </div>
+        <div class="grid grid-cols-1 2xl:grid-cols-2 4xl:grid-cols-3">
+            <div v-show="props.numberPermissions > 19000" class="mb-20 w-4/6 2xl:w-5/6"><canvas ref="chartResumenSinEjecucion"></canvas></div>
+            <div class="mb-20 w-full 3xl:w-5/6"><canvas ref="chartResumenCI2"></canvas></div>
+            <div v-show="props.numberPermissions > 19000" class="mb-20 w-full 3xl:w-5/6"><canvas ref="ChartOrigenRecursos"></canvas></div>
         </div>
     </AuthenticatedLayout>
 </template>
