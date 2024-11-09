@@ -106,8 +106,6 @@ Route::middleware(['auth'])->group(callback: function () {
     Route::resource('/porcentajeInteresCuenta', PorcentajeInteresCuentaController::class);
     Route::resource('/Comprobante', ComprobanteController::class);
     Route::resource('/concepto_flujo', \App\Http\Controllers\ConceptoflujoController::class);
-	Route::resource("/asiento", \App\Http\Controllers\AsientoController::class);
-	Route::resource("/afectacion", \App\Http\Controllers\AfectacionController::class);
 	Route::resource("/sinafectacion", \App\Http\Controllers\SinafectacionController::class);
 	Route::resource("/cesinafectacion", \App\Http\Controllers\CesinafectacionController::class);
 	Route::resource("/ceconafectacion", \App\Http\Controllers\CeconafectacionController::class);

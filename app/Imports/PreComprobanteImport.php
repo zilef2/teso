@@ -150,9 +150,14 @@ use Maatwebsite\Excel\Validators\ValidationException;
             $this->ContarFilasAbsolutas = $totalRows;
             Log::info("Iniciando procesamiento de $totalRows filas");
 
+            //comienzan las validaciones
+            $this->ConProblemas = 1;
+            if(strcmp($rows[0][0] , 'ce') === 0){
+                Log::info("Se intentó subir archivo de CE");
+                return null;
+            }
             $this->HaSidoGuardadoAnteriormente($rows[0]);
             if($rows[1]) $this->HaSidoGuardadoAnteriormente($rows[1]);
-            $this->ConProblemas = 1;
             foreach ($rows->chunk($this->chunkSize) as $index => $chunk) {
 
                 $chunkStart = $index * $this->chunkSize;
@@ -165,13 +170,10 @@ use Maatwebsite\Excel\Validators\ValidationException;
 
                 foreach ($chunk as $row) {
                     $this->currentRow++;
-
                     // Verificaciones de memoria cada 100 filas
                     if ($this->currentRow % 100 == 0) {
                         $this->checkMemory();
                     }
-
-//                    $this->procesarFila($row);
                 }
 
                 $memoryAfter = memory_get_usage(true);
@@ -183,7 +185,6 @@ use Maatwebsite\Excel\Validators\ValidationException;
                 ]);
 
                 // Limpiar memoria después de cada chunk
-                gc_collect_cycles();
             }
             $this->ConProblemas = 0;
 
@@ -213,24 +214,8 @@ use Maatwebsite\Excel\Validators\ValidationException;
         }
 
         // Si estamos cerca del límite, forzar recoleccion de basura
-        if ($memoryPercentage > 90) {
+        if ($memoryPercentage > 70) {
             gc_collect_cycles();
-        }
-    }
-
-    private function procesarFila($row)
-    {
-        try {
-            // Tu lógica actual de procesamiento
-            // ...
-
-        } catch (\Throwable $th) {
-            $this->MensajeMortal = "Error procesando fila {$this->currentRow}: " . $th->getMessage();
-            Log::error($this->MensajeMortal, [
-                'row_data' => $row->toArray(),
-                'memory' => $this->formatBytes(memory_get_usage(true))
-            ]);
-            throw $th;
         }
     }
 

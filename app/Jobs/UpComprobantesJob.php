@@ -67,6 +67,7 @@ class UpComprobantesJob implements ShouldQueue
                 throw new \Exception("El archivo no existe: " . $this->path);
             }
 
+            //todo: falta el precomprobante
             $memoryStart = memory_get_usage(true);
             $elImport = new ComprobanteImport();
             Excel::import($elImport, $filePath);

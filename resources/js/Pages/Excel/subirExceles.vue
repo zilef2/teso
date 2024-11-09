@@ -21,7 +21,7 @@ const data = reactive({
       '',
       'El excel debe contar con el formato aprobado',
       'El excel debe contar con el formato aprobado (CI,AJ, AN)', //comprobantes
-      'El excel debe contar con el formato aprobado', //asientos
+      'El excel debe contar con el formato aprobado', //CE con afectacion
       '', //cuentas
       'El excel debe contar con el formato aprobado (CE)',//afe
     ],
