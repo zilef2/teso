@@ -47,4 +47,8 @@ php artisan make:Mail NewSession
 
 
 ## gran cambio de CE
-php artisan copy:u sinafectacion
+las clases afectacion, CE, asiento no serán usadas
+ahora se usaran cesinafectacion, ceconafectacion, y ordenpago
+php artisan copy:u cesinafectacion
+php artisan copy:u ceconafectacion
+php artisan copy:u ordenpago

@@ -25,5 +25,6 @@ class afectacion extends Model
         'consecutivo2',
         'nombre_empresa',
         'nombre_dependencia',
+
     ];//todo:ask: preguntar - consecutivo2
 }

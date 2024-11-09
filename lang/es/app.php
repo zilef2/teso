@@ -19,6 +19,12 @@ return [
 		'afectacion' => 'Afectacion',
 		'Sinafectacion' => 'Sin afectacion',
 		'sinafectacion' => 'sin afectacion',
+		'cesinafectacion' => 'Ce sin afectacion',
+		'ce_sinafectacion' => 'ce sin afectacion',
+		'ceconafectacion' => 'Ce con afectacion',
+		'ce_conafectacion' => 'ce con afectacion',
+		'ordenpago' => 'Orden de pago',
+		'orden_pago' => 'orden de pago',
 		//aquipues
     ],
 
@@ -27,10 +33,15 @@ return [
         'parametro' => 'parametro',
 		'afectacion' => 'Afectacion',
 		'resultado_asientos' => 'Resultado asientos',
-		'sin_afectacion' => 'Sin afectacion',
 		'cuenta_contrapartida' => 'Cuenta contrapartida',
-		'Sinafectacion' => 'Sin afectacion',
-		'sinafectacion' => 'sin afectacion',
+        'sinafectacion' => 'Sin afectacion',
+        'sin_afectacion' => 'sin afectacion',
+        'cesinafectacion' => 'sin afectacion',
+        'ce_sinafectacion' => 'sin afectacion',
+        'ceconafectacion' => 'con afectacion',
+        'ce_conafectacion' => 'con afectacion',
+        'ordenpago' => 'Orden de pago',
+        'orden_pago' => 'orden de pago',
 		//aquipues
 
         //transaccion
