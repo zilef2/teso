@@ -155,7 +155,7 @@ class ConAfectacionImport implements ToModel, WithStartRow, ShouldQueue, WithChu
     /**
      * @throws Exception
      */
-    private function HaSidoGuardadoAnteriormente($therow)
+    private function HaSidoGuardadoAnteriormente($therow) //aquiiiu
     {
         $laFecha = HelpExcel::getFechaExcel($therow[15]); //fecha_elaboracion
         $mes = $laFecha->format('m'); // Obtiene el mes (en formato numérico)
