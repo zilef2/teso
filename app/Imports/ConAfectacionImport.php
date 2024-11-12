@@ -5,6 +5,7 @@ namespace App\Imports;
 use App\helpers\HelpExcel;
 use App\helpers\Myhelp;
 use App\helpers\ZilefLogs;
+use App\Models\ceconafectacion;
 use App\Models\Comprobante;
 use App\Models\transaccion;
 use Exception;
@@ -17,7 +18,7 @@ use Maatwebsite\Excel\Concerns\WithStartRow;
 use Maatwebsite\Excel\Events\ImportFailed;
 use Opcodes\LogViewer\Log;
 
-class TransaccionesImport implements ToModel, WithStartRow, ShouldQueue, WithChunkReading
+class ConAfectacionImport implements ToModel, WithStartRow, ShouldQueue, WithChunkReading
 {
 
     public int $ContarFilasAbsolutas;
@@ -26,7 +27,6 @@ class TransaccionesImport implements ToModel, WithStartRow, ShouldQueue, WithChu
     public int $contarVacios;
     public string $contarVaciosstring;
 
-    protected array $DebenSerNulos;
     private $SoloUnaVez = 0;
 
 
@@ -37,43 +37,12 @@ class TransaccionesImport implements ToModel, WithStartRow, ShouldQueue, WithChu
      */
     function __construct()
     {
-        //        if ($valor < 0) {
-        //            throw new \Exception("El valor no puede ser negativo.");
-        //        }
-
         //contares
         $this->ContarFilasAbsolutas = 1; //startRow = 2, por tanto se tiene que comenzar en 1
         $this->ContarFilas = 0;
-
         //errores
         $this->contarVacios = 0;
         $this->contarVaciosstring = "";
-        $this->DebenSerNulos = [
-            'codigo_cuenta_contable',
-            'nombre_cuenta',
-            'codigo',
-            'documento',
-            'fecha_elaboracion',
-            'descripcion',
-            'comprobante',
-            'valor_debito',
-            'valor_credito',
-            'nit',
-            'nombre',
-            'cod_costos',
-            'desc_costos',
-            'codigo_interno_cuenta',
-            'codigo_tercero',
-            'ccostos',
-            'saldo_inicial',
-            'saldo_final',
-            'nombre_empresa',
-            'nit_empresa',
-            'documento_ref',
-            'consecutivo',
-            'periodo',
-            'plan_cuentas',
-        ];
     }
 
 
@@ -83,17 +52,37 @@ class TransaccionesImport implements ToModel, WithStartRow, ShouldQueue, WithChu
 
     public function chunkSize(): int
     {
-        return 4000;
+        return 2000;
     }
 
     /**
      * @throws \Exception
      */
     public function Requeridos($theRow){
+        /*
+        'consecutivo',
+        'no_op',
+        'numero_cheque',
+        'valor_egreso',
+        'valor_total',
+        'nombre',
+        'numero_cuenta',
+        'codigo_resumido',
+        'nombre_proyecto',
+        'nit',
+        'nombre',
+        'saldo_rubro',
+        'rubro',
+        'nombre_empresa',
+        'nombre_dependencia',
+        'fecha_elaboracion',
+        'estado',
+        'descripcion',
+        */
         $columnasPermitidasVacias = [
-            10, //  nombre K
-            11, //  cod_costos L
-            12, //  desc_costos_codigo M
+//            10, //  nombre K
+//            11, //  cod_costos L
+//            12, //  desc_costos_codigo M
         ]; //max: 23 plan_cuentas
 
         foreach ($theRow as $key => $value) {
@@ -116,8 +105,8 @@ class TransaccionesImport implements ToModel, WithStartRow, ShouldQueue, WithChu
 //                throw new Exception($mensajesito.$this->ContarFilasAbsolutas);
         }
 
-        if (!is_string($theRow[1])){
-            dd($theRow,$theRow[1],'TIPO DE VALOR INCORRECTO (el nombre del banco debe ser un texto) EN LA FILA '.$this->ContarFilasAbsolutas);
+        if (!is_numeric($theRow[1])){
+            dd($theRow,$theRow[1],'TIPO DE VALOR INCORRECTO (deberia ser un numbero) EN LA FILA '.$this->ContarFilasAbsolutas);
         }
 //        if (!is_string($theRow[2])){
 //            dd($theRow,$theRow[2],'TIPO DE VALOR INCORRECTO (deberia ser un texto) EN LA FILA '.$this->ContarFilasAbsolutas);
@@ -134,9 +123,6 @@ class TransaccionesImport implements ToModel, WithStartRow, ShouldQueue, WithChu
     public function model(array $row){
         $this->ContarFilasAbsolutas++;
         try {
-            if (strcmp(strtolower($row[2]), 'tb') === 0) {
-                return null;
-            }
             if($this->Requeridos($row) === -1) {
                 throw new \Exception('|Error en filas del excel');
             }
@@ -148,8 +134,10 @@ class TransaccionesImport implements ToModel, WithStartRow, ShouldQueue, WithChu
                 }
             }
 
-
             $result = $this->TheNewObject($row);
+            dd(
+                $result
+            );
             $this->ContarFilas++;
             return $result;
 
@@ -169,12 +157,12 @@ class TransaccionesImport implements ToModel, WithStartRow, ShouldQueue, WithChu
      */
     private function HaSidoGuardadoAnteriormente($therow)
     {
-        $laFecha = HelpExcel::getFechaExcel($therow[4]); //fecha_elaboracion
+        $laFecha = HelpExcel::getFechaExcel($therow[15]); //fecha_elaboracion
         $mes = $laFecha->format('m'); // Obtiene el mes (en formato numérico)
         $anio = $laFecha->format('Y'); // Obtiene el año
 
-        $ExisteUnComprobante = transaccion::
-            Where('documento',$therow[3])//documento
+        $ExisteUnComprobante = ceconafectacion::
+            Where('consecutivo',$therow[0])
             ->WhereYear('fecha_elaboracion',$anio)
             ->whereMonth('fecha_elaboracion',$mes)->count();
 
@@ -185,31 +173,25 @@ class TransaccionesImport implements ToModel, WithStartRow, ShouldQueue, WithChu
 
     private function TheNewObject($therow){
 
-        return new transaccion([
-        'codigo_cuenta_contable' => $therow[0],
-        'nombre_cuenta' => $therow[1],
-        'codigo' => $therow[2],
-        'documento' => intval($therow[3]),
-        'fecha_elaboracion' => HelpExcel::getFechaExcel($therow[4]),
-        'descripcion' => $therow[5],
-        'comprobante' => $therow[6],
-        'valor_debito' => $therow[7],
-        'valor_credito' => $therow[8],
-        'nit' => $therow[9],
-        'nombre' => $therow[10],
-        'cod_costos' => $therow[11],
-        'desc_costos' => $therow[12],
-        'codigo_interno_cuenta' => $therow[13],
-        'codigo_tercero' => $therow[14],
-        'ccostos' => $therow[15],
-        'saldo_inicial' => $therow[16],
-        'saldo_final' => $therow[17],
-        'nombre_empresa' => $therow[18],
-        'nit_empresa' => $therow[19],
-        'documento_ref' => $therow[20],
-        'consecutivo' => $therow[21],
-        'periodo' => $therow[22],
-        'plan_cuentas' => $therow[23],
+        return new ceconafectacion([
+            'consecutivo' => $therow[0],
+            'no_op' => $therow[1],
+            'numero_cheque' => $therow[2],
+            'valor_egreso' => $therow[3],
+            'valor_total' => $therow[4],
+            'nombre' => $therow[5],
+            'numero_cuenta' => $therow[6],
+            'codigo_resumido' => $therow[7],
+            'nombre_proyecto' => $therow[8],
+            'nit' => $therow[9],
+            'nombre2' => $therow[10],
+            'saldo_rubro' => $therow[11],
+            'rubro' => $therow[12],
+            'nombre_empresa' => $therow[13],
+            'nombre_dependencia' => $therow[14],
+            'fecha_elaboracion' => HelpExcel::getFechaExcel($therow[15]),
+            'estado' => $therow[16],
+            'descripcion' => $therow[17],
         ]);
     }
 
@@ -218,10 +200,10 @@ class TransaccionesImport implements ToModel, WithStartRow, ShouldQueue, WithChu
         return [
             ImportFailed::class => function (ImportFailed $event) {
                 Mail::raw('error', function ($message) {
-                    $message->to('ajelof2@gmail.com')->subject('Fallo TransaccionesImport');
+                    $message->to('ajelof2+11@gmail.com')->subject('Fallo TransaccionesImport');
                 });
                 $exception = $event->getException();
-                Log::error('Importación transacciones fallida', [
+                Log::error('Importación '. get_class($this).' fallida', [
                     'error' => $exception->getMessage(),
 //                    'file' => $event->getFile(),
                     'stack' => $exception->getTraceAsString(),

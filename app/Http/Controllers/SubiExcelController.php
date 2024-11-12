@@ -8,6 +8,7 @@ use App\helpers\ZilefLogs;
 use App\Imports\afectacionImport;
 use App\Imports\AsientoImport;
 use App\Imports\ComprobanteImport;
+use App\Imports\ConAfectacionImport;
 use App\Imports\CuentaImport;
 use App\Imports\PreAfectacionImport;
 use App\Imports\PreComprobanteImport;
@@ -36,9 +37,7 @@ class SubiExcelController extends Controller
             0,
             transaccion::count(),
             Comprobante::count(),
-            asiento::count(),
             cuenta::count(),
-            afectacion::count(),
         ];
         return Inertia::render('Excel/subirExceles', [
             'title' => 'Importar datos',
@@ -117,29 +116,30 @@ class SubiExcelController extends Controller
 
                 $personalImp = new TransaccionesImport();
                 $pesoKilobyte = ((int)($thefile->getSize())) / (1024);
-                if ($pesoKilobyte > 500) {
-                    Excel::queueImport($personalImp, $thefile);
-                    $mensajesito = "La operacion no debera tardar mucho";
-                    return back()->with('warning', $mensajesito);
-                } else {
-                    Excel::import($personalImp, $thefile);
+//                if ($pesoKilobyte > 500) {
+//                    Excel::queueImport($personalImp, $thefile);
+//                    $mensajesito = "La operacion no debera tardar mucho";
+//                    return back()->with('warning', $mensajesito);
+//                } else {
+                Excel::import($personalImp, $thefile);
 
-                    $countfilas = $personalImp->ContarFilasAbsolutas;
-                    $MensajeWarning = HelpExcel::MensajeWarComprobante($personalImp);
-
-                    if ($MensajeWarning !== '') { //exito
-                        return back()->with('success', 'Registros nuevos: ' . $countfilas)
-                            ->with('warning2', $MensajeWarning);
-                    }
-
-                    ZilefLogs::EscribirEnLog($this, 'IMPORT:' . $entidad, '. operacion con exito', false);
-                    DB::commit();
-                    if ($countfilas == 0) {
-                        return back()->with('warning', __('app.label.op_successfully') . ' No hubo cambios');
-                    } else {
-                        return back()->with('success', __('app.label.op_successfully') . ' Se leyeron ' . $countfilas . ' filas con exito');
-                    }
+                $countfilas = $personalImp->ContarFilasAbsolutas;
+                $MensajeWarning = HelpExcel::MensajeWarComprobante($personalImp);
+                if ($MensajeWarning !== '') { //exito
+                    return back()->with('success', 'Registros nuevos: ' . $countfilas)
+                        ->with('warning', $MensajeWarning);
+//                            ->with('warning2', $MensajeWarning);
                 }
+
+                ZilefLogs::EscribirEnLog($this, 'IMPORT:' . $entidad, '. operacion con exito', false);
+                DB::commit();
+                return back()->with('success', "El archivo se procesará en segundo plano");
+//                    if ($countfilas == 0) {
+//                        return back()->with('warning', __('app.label.op_successfully') . ' No hubo cambios');
+//                    } else {
+//                        return back()->with('success', __('app.label.op_successfully') . ' Se leyeron ' . $countfilas . ' filas con exito');
+//                    }
+//                }
             } else {
                 DB::rollback();
                 return back()->with('error', __('app.label.op_not_successfully') . ' Archivo no seleccionado');
@@ -259,10 +259,10 @@ class SubiExcelController extends Controller
         }
     }
 
-    public function uploadFileAfe(Request $request)
+    public function uploadFileAfe(Request $request)//todo: esto no se ha verificado desde el cambio del 8nov2024
     {
         $ente = "Afectacion";
-        ZilefLogs::EscribirEnLog($this, get_called_class(), 'importando ' . $ente, false);
+        ZilefLogs::EscribirEnLog($this, get_called_class(), 'importando sin afe' . $ente, false);
         $countfilas = 0;
         try {
             DB::beginTransaction();
@@ -297,6 +297,71 @@ class SubiExcelController extends Controller
                 } else {
                     return back()->with('success', __('app.label.op_successfully') . ' Se leyeron ' . $countfilas . ' filas con exito');
                 }
+            } else {
+                DB::rollback();
+                return back()->with('error', __('app.label.op_not_successfully') . ' Archivo no seleccionado');
+            }
+        } catch (\Throwable $th) {
+            DB::rollback();
+            $lasession = session('larow') ?? 'error de session';
+            $lasession = $lasession[0] ?? 'error de session';
+
+            if (str_starts_with($th->getMessage(), '|')) {
+                ZilefLogs::EscribirEnLog($this, 'IMPORT:' . $ente, ' Fallo importacion: '
+                    . $th->getMessage(), false);
+                return back()->with('warning', $th->getMessage());
+
+            } else {
+
+                $mensajeError = $th->getMessage() . ' L:' . $th->getLine() . ' Ubi: ' . $th->getFile();
+                ZilefLogs::EscribirEnLog($this, 'IMPORT:' . $ente, ' Fallo importacion: '
+                    . $mensajeError, false);
+                return back()->with(
+                    'error', __('app.label.op_not_successfully')
+                    . ' Comprobante del error: ' . $lasession
+                    . ' error en la iteracion ' . $countfilas . ' ' . $mensajeError
+                );
+            }
+        }
+    }
+
+    public function uploadFileConAfe(Request $request)//todo: esto no se ha verificado desde el cambio del 8nov2024
+    {
+        $ente = "ceconafectacion";
+        ZilefLogs::EscribirEnLog($this, get_called_class(), 'importando con afe ' . $ente, false);
+        $countfilas = 0;
+        try {
+            DB::beginTransaction();
+            $thefile = $request->archivo[$request->Contador];
+            if ($thefile) {
+
+                $helpExcel = new HelpExcel();
+                $mensageWarning = $helpExcel->NewValidarArchivoExcel($request);
+                if ($mensageWarning != '') {
+                    DB::rollback();
+                    return back()->with('warning', $mensageWarning);
+                }
+                $personalImp = new ConAfectacionImport();
+                Excel::import($personalImp, $thefile);
+                $countfilas = $personalImp->ContarFilas;
+                $ContarFilasAbsolutas = $personalImp->ContarFilasAbsolutas;
+
+                $MensajeWarning = HelpExcel::MensajeWarComprobante($personalImp);
+                if ($MensajeWarning !== '') {
+                    ZilefLogs::EscribirEnLog($this, 'IMPORT:' . $ente, ' finalizo con exito, se leyeron ' . $ContarFilasAbsolutas . ' filas', false);
+                    return back()->with('success', "Archivo de: $ente. Se han leido $countfilas filas")
+                        ->with('warning2', $MensajeWarning);
+                }
+
+                ZilefLogs::EscribirEnLog($this, 'IMPORT:' . $ente, ' finalizo con exito', false);
+
+                DB::commit();
+                return back()->with('success', "El archivo se procesará en segundo plano");
+//                if ($countfilas == 0) {
+//                    return back()->with('success', __('app.label.op_successfully') . ' No hubo cambios');
+//                } else {
+//                    return back()->with('success', __('app.label.op_successfully') . ' Se leyeron ' . $countfilas . ' filas con exito');
+//                }
             } else {
                 DB::rollback();
                 return back()->with('error', __('app.label.op_not_successfully') . ' Archivo no seleccionado');

@@ -28,7 +28,6 @@ class ceconafectacion extends Model
         'fecha_elaboracion',
         'estado',
         'descripcion',
-
     ];
 
 }

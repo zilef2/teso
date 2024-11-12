@@ -18,7 +18,6 @@ use Inertia\Inertia;
 
 class ZilefLogs
 {
-
     public function erroresExcel($errorFeo)
     {
         // $fila = session('ultimaPalabra');
@@ -43,7 +42,10 @@ class ZilefLogs
 
                 Log::info('Vista:' . $nombreC . ' Padre: ' . $nombreP . '|  U:' . Auth::user()->name . $ElMensaje);
             } else {
-                Log::info('Vista: ' . $nombreC . ' Padre: ' . $nombreP . '||  U:' . Auth::user()->name ?? 'us desconocido' . ' | ' . $clase . '| ' . $mensaje);
+                if(Auth::user())
+                    Log::info('Vista: ' . $nombreC . ' Padre: ' . $nombreP . '||  U:' . Auth::user()->name ?? 'us desconocido' . ' | ' . $clase . '| ' . $mensaje);
+                else
+                    Log::info('Vista: ' . $nombreC . ' Padre: ' . $nombreP . '||  OnJob. | ' . $clase . '| ' . $mensaje);
             }
         } else {
             Log::critical('Vista: ' . $nombreC . ' ||| U:' . Auth::user()->name . ' ||' . $clase . '|| ' . $mensaje);

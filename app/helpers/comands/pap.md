@@ -2,6 +2,7 @@
 php artisan queue:restart
 php artisan queue:work --queue=default --tries=3
 php artisan queue:work --queue=default --tries=1 --timeout=3600
+php artisan queue:work --queue=imports
 
 # INICIO DEL PROYECTO
 // 18septiembre2024 FLUEF

@@ -8,7 +8,6 @@ import pkg from 'lodash';
 import {ArrowUpCircleIcon, TableCellsIcon} from '@heroicons/vue/24/solid';
 import '@vuepic/vue-datepicker/dist/main.css'
 
-
 const {_, debounce, pickBy} = pkg
 const props = defineProps({
     title: String,
@@ -21,29 +20,29 @@ const data = reactive({
       '',
       'El excel debe contar con el formato aprobado',
       'El excel debe contar con el formato aprobado (CI,AJ, AN)', //comprobantes
-      'El excel debe contar con el formato aprobado', //CE con afectacion
+      'El excel debe contar con el formato aprobado (Sin afectacion)',//afe sin
+      'El excel debe contar con el formato aprobado (Con afectacion)',//afe con
       '', //cuentas
-      'El excel debe contar con el formato aprobado (CE)',//afe
     ],
     rutas:[
         '',
         'upExTransacciones',
         'uploadFileComprobantes',
-        'uploadFileAsientos',
-        'upExCuentas',
         'uploadFileAfe',
+        'uploadFileConAfe',
+        'upExCuentas',
     ],
     NombresEntidades: [
         '',
         'Transacciones',
         'Comprobantes',
-        'Asientos',
-        'cuentas',
         'CE sin Afectacion',
+        'CE con Afectacion',
+        'cuentas',
     ],
 
     //tailwind
-    ClassCantidadDeBotonesPorPagina: 'p-4 w-full md:w-1/2 xl:w-1/3 4xl:w-1/6',
+    ClassCantidadDeBotonesPorPagina: 'p-4 w-full md:w-1/2 xl:w-1/3 2xl:w-1/4 4xl:w-1/6',
 })
 
 const form = useForm({
@@ -161,33 +160,6 @@ formatoNecesita[2] = [
     'documento_ref',
     'plan_cuentas',
 ]
-//asientos
-formatoNecesita[3] = [
-    'codigo_cuenta',
-    'nombre_cuenta',
-    'codigo',
-    'documento',
-    'fecha_elaboracion',
-    'descripcion',
-    'comprobante',
-    'valor_debito',
-    'valor_credito',
-    'nit',
-    'nombre',
-    'cod_costos',
-    'desc_costos',
-    'codigo_interno_cuenta',
-    'codigo_tercero',
-    'ccostos',
-    'saldo_inicial',
-    'saldo_final',
-    'nombre_empresa',
-    'nit_empresa',
-    'documento_ref',
-    'consecutivo',
-    'periodo',
-    'plan_cuentas',
-]
 
 //cuentas
 formatoNecesita[4] = [
@@ -199,8 +171,8 @@ formatoNecesita[4] = [
     'convenio',
     'estado'
 ]
-//afectacion
-formatoNecesita[5] = [
+//sin afectacion
+formatoNecesita[3] = [
     'valor_debito',
     'valor_credito',
     'codigo_cuenta',
@@ -217,6 +189,27 @@ formatoNecesita[5] = [
     'consecutivo',
     'nombre_empresa',
     'nombre_dependencia',
+]
+//con afectacion
+formatoNecesita[5] = [
+    'consecutivo',
+    'no_op',
+    'numero_cheque',
+    'valor_egreso',
+    'valor_total',
+    'nombre',
+    'numero_cuenta',
+    'codigo_resumido',
+    'nombre_proyecto',
+    'nit',
+    'nombre',
+    'saldo_rubro',
+    'rubro',
+    'nombre_empresa',
+    'nombre_dependencia',
+    'fecha_elaboracion',
+    'estado',
+    'descripcion',
 
 ]
 

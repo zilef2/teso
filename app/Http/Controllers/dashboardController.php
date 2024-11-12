@@ -9,6 +9,7 @@ use App\helpers\ZilefLogs;
 use App\Models\afectacion;
 use App\Models\asiento;
 use App\Models\ceconafectacion;
+use App\Models\cesinafectacion;
 use App\Models\Comprobante;
 use App\Models\concepto_flujo;
 use App\Models\Inspeccion;
@@ -33,7 +34,8 @@ class dashboardController extends Controller
             $ConteoEntidades[0]['Comprobanteci' . $i] = Comprobante::Where('codigo', 'ci')->WhereYear('fecha_elaboracion', $i)->count();
             $ConteoEntidades[0]['Comprobantece' . $i] = Comprobante::Where('codigo', 'ce')->WhereYear('fecha_elaboracion', $i)->count();
             $ConteoEntidades[0]['afectacion' . $i] = ceconafectacion::WhereYear('fecha_elaboracion', $i)->count();
-            $ConteoEntidades[0]['afectacion' . $i] = cesinafectacion::WhereYear('fecha_elaboracion', $i)->count();
+            $ConteoEntidades[0]['afectacion' . $i] = 0;
+//            $ConteoEntidades[0]['afectacion' . $i] = cesinafectacion::WhereYear('fecha_elaboracion', $i)->count();
 
             $ConteoEntidades[1]['Comprobanteaj' . $i] = Comprobante::Where('codigo', 'aj')->WhereYear('fecha_elaboracion', $i)->count();
             $ConteoEntidades[1]['Comprobantean' . $i] = Comprobante::Where('codigo', 'an')->WhereYear('fecha_elaboracion', $i)->count();
