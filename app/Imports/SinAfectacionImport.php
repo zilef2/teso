@@ -18,7 +18,7 @@ use Maatwebsite\Excel\Concerns\WithStartRow;
 use Maatwebsite\Excel\Events\ImportFailed;
 use Opcodes\LogViewer\Log;
 
-class ConAfectacionImport implements ToModel, WithStartRow, ShouldQueue, WithChunkReading
+class SinAfectacionImport implements ToModel, WithStartRow, ShouldQueue, WithChunkReading
 {
 
     public int $ContarFilasAbsolutas;

@@ -17,6 +17,8 @@ use App\Jobs\BC_AnulacionesJob;
 use App\Jobs\UpAsientosJob;
 use App\Jobs\UpComprobantesJob;
 use App\Models\asiento;
+use App\Models\ceconafectacion;
+use App\Models\cesinafectacion;
 use App\Models\Comprobante;
 use App\Models\cuenta;
 use App\Models\transaccion;
@@ -34,9 +36,11 @@ class SubiExcelController extends Controller
     { //just  a view
         ZilefLogs::EscribirEnLog($this, 'subirexceles', ' ingreso a la vista subir excel');
         $ntransaccion = [
-            0,
+            0, // no se muestra por pantalla el dato 0
             transaccion::count(),
             Comprobante::count(),
+            cesinafectacion::count(),
+            ceconafectacion::count(),
             cuenta::count(),
         ];
         return Inertia::render('Excel/subirExceles', [
@@ -261,7 +265,7 @@ class SubiExcelController extends Controller
 
     public function uploadFileAfe(Request $request)//todo: esto no se ha verificado desde el cambio del 8nov2024
     {
-        $ente = "Afectacion";
+        $ente = "sin afectacion";//cesinafectacion
         ZilefLogs::EscribirEnLog($this, get_called_class(), 'importando sin afe' . $ente, false);
         $countfilas = 0;
         try {

@@ -4,8 +4,7 @@ namespace App\Imports;
 
 use App\helpers\HelpExcel;
 use App\helpers\ZilefLogs;
-use App\Models\afectacion;
-use App\Models\asiento;
+use App\Models\cesinafectacion;
 use Illuminate\Database\Eloquent\Model;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
@@ -122,7 +121,7 @@ class PreAfectacionImport implements ToCollection, WithStartRow
         $mes = $laFecha->format('m'); // Obtiene el mes (en formato numérico)
         $anio = $laFecha->format('Y'); // Obtiene el año
 
-        $ExisteUnComprobante = afectacion::Where('codigo', $therow[0])
+        $ExisteUnComprobante = cesinafectacion::Where('codigo', $therow[0])
             ->WhereYear('fecha_elaboracion', $anio)
             ->whereMonth('fecha_elaboracion', $mes)->count();
 

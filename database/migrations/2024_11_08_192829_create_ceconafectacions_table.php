@@ -30,7 +30,7 @@ return new class extends Migration {
             $table->string('nombre_dependencia');
             $table->date('fecha_elaboracion');
             $table->string('estado');
-            $table->string('descripcion');
+            $table->string('descripcion',1200);
             $table->timestamps();
         });
     }
