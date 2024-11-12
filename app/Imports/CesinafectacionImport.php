@@ -4,13 +4,13 @@ namespace App\Imports;
 
 use App\helpers\HelpExcel;
 use App\helpers\ZilefLogs;
-use App\Models\afectacion;
+use App\Models\cesinafectacion;
 use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithStartRow;
 
-class afectacionImport implements ToModel, WithStartRow
+class CesinafectacionImport implements ToModel, WithStartRow
 {
     public int $ContarFilas;
 
@@ -30,12 +30,12 @@ class afectacionImport implements ToModel, WithStartRow
      * @return Model|null
      * @throws Exception
      */
-    public function model(array $row): Model|afectacion
+    public function model(array $row): Model|cesinafectacion
     {
         try {
             $this->ContarFilas++; //filas que se registraron en el aplicativo
 
-            return new afectacion([
+            return new cesinafectacion([
                 'valor_debito' => $row[0],
                 'valor_credito' => $row[1],
                 'codigo_cuenta' => $row[2],

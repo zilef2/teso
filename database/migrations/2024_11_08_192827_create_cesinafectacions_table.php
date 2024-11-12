@@ -23,15 +23,15 @@ return new class extends Migration
             $table->string('codigo');
             $table->string('fecha_elaboracion');
             $table->string('consecutivo');
-            $table->string('descripcion',1200);
-            $table->string('descripcion_concepto',1200);
+            $table->string('descripcion',1200)->nullable();
+            $table->string('descripcion_concepto',1200)->nullable();
             $table->string('codigo_banco');
             $table->string('otros');
             $table->string('taquilla');
             $table->string('consecutivo2');
             $table->string('nombre_empresa');
             $table->string('nombre_dependencia');
-            $table->string('descripcion2', 1200);
+            $table->string('descripcion2', 1200)->nullable();
             $table->timestamps();
         });
     }

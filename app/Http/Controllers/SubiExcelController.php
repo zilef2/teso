@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\helpers\HelpExcel;
 use App\helpers\Myhelp;
 use App\helpers\ZilefLogs;
-use App\Imports\afectacionImport;
+use App\Imports\CesinafectacionImport;
 use App\Imports\AsientoImport;
 use App\Imports\ComprobanteImport;
 use App\Imports\ConAfectacionImport;
@@ -16,7 +16,6 @@ use App\Imports\TransaccionesImport;
 use App\Jobs\BC_AnulacionesJob;
 use App\Jobs\UpAsientosJob;
 use App\Jobs\UpComprobantesJob;
-use App\Models\asiento;
 use App\Models\ceconafectacion;
 use App\Models\cesinafectacion;
 use App\Models\Comprobante;
@@ -283,7 +282,7 @@ class SubiExcelController extends Controller
                 Excel::import($preImport, $thefile);
                 $countfilasAbsolutas = $preImport->ContarFilasAbsolutas;
 
-                $personalImp = new afectacionImport();
+                $personalImp = new CesinafectacionImport();
                 Excel::import($personalImp, $thefile);
                 $countfilas = $personalImp->ContarFilas;
 
