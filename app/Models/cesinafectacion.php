@@ -27,5 +27,4 @@ class cesinafectacion extends Model
         'nombre_empresa',
         'nombre_dependencia',
     ];
-
 }

@@ -3,6 +3,8 @@ namespace App\helpers;
 
 use App\Models\afectacion;
 use App\Models\asiento;
+use App\Models\ceconafectacion;
+use App\Models\cesinafectacion;
 use App\Models\Comprobante;
 use App\Models\concepto_flujo;
 use App\Models\Parametro;
@@ -114,9 +116,9 @@ class CPhelp {
     {
         $Auxiliar = transaccion::count();
         $CE = Comprobante::Where('codigo',$codigo)->count();
-        $asiento = asiento::count();
-        $afectacion = afectacion::count();
-        return $Auxiliar > 0 && $CE > 0 && $asiento > 0 && $afectacion > 0;
+        $sinaf = cesinafectacion::count();
+        $conaf = ceconafectacion::count();
+        return $Auxiliar > 0 && $CE > 0 && $sinaf > 0 && $conaf > 0;
     }
 
     public static function VerificarDuplicados(int $numerounico,asiento $asiento, $intentos = 0)

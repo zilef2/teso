@@ -9,7 +9,7 @@ return new class extends Migration
     /**
      * Run the migrations.
 * php artisan migrate --path=database/migrations/2024_11_12_create_users_table.php
-* php artisan migrate --path=database/migrations/2024_11_08_192827_create_cesinafectacions_table.php
+php artisan migrate --path=database/migrations/2024_11_08_192827_create_cesinafectacions_table.php
  */
     public function up(): void
     {

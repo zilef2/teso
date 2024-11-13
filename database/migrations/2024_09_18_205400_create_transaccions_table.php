@@ -43,6 +43,7 @@ return new class extends Migration
             $table->string('contrapartida')->nullable();
             $table->string('concepto_flujo_homologacion')->nullable();
             $table->string('n_contrapartidas')->nullable();
+            $table->integer('sin_afectacion')->nullable();
 
             $table->timestamps();
         });

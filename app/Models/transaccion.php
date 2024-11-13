@@ -41,6 +41,7 @@ class transaccion extends Model
         'consecutivo',
         'periodo',
         'plan_cuentas',
+        'sin_afectacion',
 
     ];
 
